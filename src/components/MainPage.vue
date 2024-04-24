@@ -2,7 +2,7 @@
   <v-app class="rounded rounded-md">
     <AppHeader></AppHeader>
     <AppSideBar></AppSideBar>
-    <v-main class="no-top-margin">
+    <v-main>
       <router-view/>
     </v-main>
   </v-app>
@@ -14,7 +14,4 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 </script>
 
 <style scoped>
-.no-top-margin {
-  margin-top: 0 !important;
-}
 </style>

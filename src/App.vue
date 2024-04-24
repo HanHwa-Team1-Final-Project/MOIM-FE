@@ -14,9 +14,7 @@
 
 <script setup>
 import EventDialog from "@/pages/event/EventDialog.vue";
-// import MoimDialog from "@/pages/moim/MoimDialog.vue";
 import {useMainStore} from "@/stores";
-
 
 const mainStore = useMainStore();
 </script>

@@ -153,7 +153,7 @@ export default {
       }
       if(notiInfo.notificationType == "GROUP_CHOICE") {
         console.log(notiInfo.notificationType)
-        // this.$refs.moimDetail.choiceDialog(notiInfo.groupId, notiInfo.message, notiInfo.notificationType);
+        this.$refs.moimDetail.choiceDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.message, notiInfo.notificationType);
       }
     },
     getAuthToken() {

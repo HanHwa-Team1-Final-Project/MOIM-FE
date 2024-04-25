@@ -3,12 +3,12 @@
     <v-card class="pa-4">
       <v-card-title class="text-h5" style="width: 100%; display: flex; align-items: center;">
         <v-icon class="mr-2" style="font-size: 40px;">mdi-account-multiple-plus</v-icon>
-        <!-- <div v-if="notificationType"
+        <div v-if="notificationType == 'GROUP_CHOICE'"
             class="title-text"
             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
         >{{title}}
-        </div> -->
-        <div
+        </div>
+        <div v-else
             class="title-text"
             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
         >"{{ hostNickname }}" 님이 "{{title}}" 참여를 요청했습니다.
@@ -71,33 +71,35 @@
             <input type="datetime-local" :value="voteDeadline" readonly>
           </v-col>
            <!-- 추천일정 선택 -->
-           <!-- <v-col cols="12" md="2"><h4>추천 일정</h4></v-col>
-           <v-col cols="12" md="10">
+           <v-col cols="12" md="2" v-if="notificationType == 'GROUP_CHOICE'"><h4>추천 일정</h4></v-col>
+           <v-col cols="12" md="10" v-if="notificationType == 'GROUP_CHOICE'">
              <v-container>
                <v-radio-group
-                 v-model="choiceEvent"
+                 v-model="eventIndex"
                  :rules="[
                    (value) => !!value || '3가지 선택지 중 하나를 선택해주세요',
-                 ]"
+                  ]"
                  required
                >
-                 <v-radio value="1">
+                 <v-radio
+                 v-for="option in options"
+                 :key="option.value"
+                 :value="option.value">
                    <template v-slot:label>
-                     <div>중요 & 긴급하지 않음</div>
+                     <div>{{option.label}}</div>
                    </template>
                  </v-radio>
                </v-radio-group>
              </v-container>
-           </v-col>  -->
-
+           </v-col> 
         </v-row>
       </v-card-text>
-      <!-- <v-card-actions v-if="notificationType">
+      <v-card-actions v-if="notificationType == 'GROUP_CHOICE'">
         <v-spacer/>
-        <v-btn color="#3085d6" text @click="confirm('Y')">확정</v-btn>
-        <v-btn color="#d33" text @click="confirm('N')">취소</v-btn>
-      </v-card-actions> -->
-      <v-card-actions>
+        <v-btn color="#3085d6" text @click="confirm">확정</v-btn>
+        <!-- <v-btn color="#d33" text @click="delete">취소</v-btn> -->
+      </v-card-actions>
+      <v-card-actions v-else>
         <v-spacer/>
         <v-btn color="#3085d6" text @click="vote('Y')">수락</v-btn>
         <v-btn color="#d33" text @click="vote('N')">거부</v-btn>
@@ -127,9 +129,17 @@ export default {
       voteDeadline: '',
       contents: '',
       fileUrl: '',
-      choiceEvent: '',
+      eventIndex: 1,
+      options: [],
+      confirmEvent: '',
     };
   },
+  watch(eventIndex) {
+    console.log("선택 인덱스", eventIndex)
+  },
+  // watch(confirmEvent) {
+  //   console.log("선택 일정", confirmEvent)
+  // },
   methods: {
     openDialog(groupId, hostNickname) {
       this.hostNickname = hostNickname;
@@ -137,10 +147,11 @@ export default {
       this.dialog = true;
       this.getMoimInfo(groupId);
     },
-    choiceDialog(groupId, message, notificationType) {
-      this.title = message;
-      this.groupId = groupId;
+    choiceDialog(groupId, hostNickname, message, notificationType) {
       this.notificationType = notificationType;
+      this.title = message;
+      this.hostNickname = hostNickname;
+      this.groupId = groupId;
       this.dialog = true;
       this.getMoimInfo(groupId);
       this.getavailable(groupId);
@@ -157,7 +168,9 @@ export default {
         const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/groups/pending/${groupId}`, {headers});
         const groupInfo = response.data.data;
         console.log("그룹 정보", groupInfo)
-        this.title = groupInfo.title
+        if(this.notificationType != 'GROUP_CHOICE') {
+          this.title = groupInfo.title
+        }
         this.startDate = `${groupInfo.expectStartDate} ${groupInfo.expectStartTime}`
         this.endDate = `${groupInfo.expectEndDate} ${groupInfo.expectEndTime}`
         this.runningTime = this.convertMinutes(groupInfo.runningTime)
@@ -191,7 +204,24 @@ export default {
         const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${groupId}/choice`, {headers});
         const availableDays = response.data.data;
         console.log("추천 일정 리스트", availableDays)
-        
+        // availableDay 값으로 오름차순 정렬
+        const sortedAvailableDays = availableDays.sort((a, b) => new Date(a.availableDay) - new Date(b.availableDay));
+        this.options = sortedAvailableDays.map((item, index) => ({
+          value: index + 1,
+          label: new Intl.DateTimeFormat('ko-KR', 
+          {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true // 12시간제 사용
+          }).format(new Date(item.availableDay))
+        }));
+        console.log(this.options)
+        console.log(this.eventIndex)
+        this.confirmEvent = sortedAvailableDays[this.eventIndex - 1].availableDay;
+        console.log(this.confirmEvent)
       } catch (error) {
         console.log(error);
       }
@@ -231,31 +261,41 @@ export default {
       }
       
     },
-    async confirm(confirmYn) {
-      console.log(confirmYn)
+    // 모임 확정
+    async confirm() {
+      const token = localStorage.getItem("accessToken");
+      const headers = {Authorization: `Bearer ${token}`};
+      try {
+        console.log(this.confirmEvent)
+        const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
+        console.log("확정 모임", response.data.data)
+        this.dialog = false;
+        Swal.fire({
+          title: '모임이 확정되었습니다.',
+          icon: 'success'
+        })
+       
+      }catch(e){
+        alert(e)
+      }
+    },
+    // 모임 취소 - 삭제
+    delete() {
+      console.log("삭제")
       // const token = localStorage.getItem("accessToken");
       // const headers = {Authorization: `Bearer ${token}`};
       // try {
-        // const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/groupInfo/${this.groupInfoId}/notification?agreeYn=${agreeYn}`, {headers});
-        // console.log("vote 정보 ", this.groupId, this.groupInfoId)
-        // console.log("답", response.data.data)
-        // this.dialog = false;
-        // if(response.data.data.isAgree == "Y") {
-        //   Swal.fire({
-        //     title: '참여 완료되었습니다.',
-        //     icon: 'success'
-        //   })
-        // }
-        // if(response.data.data.isAgree == "N") {
-        //   Swal.fire({
-        //     title: '참여 거부하였습니다.',
-        //     icon: 'error'
-        //   })
-        // }
+      //   const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
+      //   console.log("확정 모임", response.data.data)
+      //   this.dialog = false;
+      //   Swal.fire({
+      //     title: '모임이 확정되었습니다.',
+      //     icon: 'success'
+      //   })
+       
       // }catch(e){
       //   alert(e)
       // }
-      
     }
   }
 };

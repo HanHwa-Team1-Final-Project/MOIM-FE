@@ -131,6 +131,7 @@ export default {
       fileUrl: '',
       eventIndex: 1,
       options: [],
+      sortedAvailableDays: [],
       confirmEvent: '',
     };
   },
@@ -205,8 +206,8 @@ export default {
         const availableDays = response.data.data;
         console.log("추천 일정 리스트", availableDays)
         // availableDay 값으로 오름차순 정렬
-        const sortedAvailableDays = availableDays.sort((a, b) => new Date(a.availableDay) - new Date(b.availableDay));
-        this.options = sortedAvailableDays.map((item, index) => ({
+        this.sortedAvailableDays = availableDays.sort((a, b) => new Date(a.availableDay) - new Date(b.availableDay));
+        this.options = this.sortedAvailableDays.map((item, index) => ({
           value: index + 1,
           label: new Intl.DateTimeFormat('ko-KR', 
           {
@@ -219,9 +220,6 @@ export default {
           }).format(new Date(item.availableDay))
         }));
         console.log(this.options)
-        console.log(this.eventIndex)
-        this.confirmEvent = sortedAvailableDays[this.eventIndex - 1].availableDay;
-        console.log(this.confirmEvent)
       } catch (error) {
         console.log(error);
       }
@@ -266,6 +264,7 @@ export default {
       const token = localStorage.getItem("accessToken");
       const headers = {Authorization: `Bearer ${token}`};
       try {
+        this.confirmEvent = this.sortedAvailableDays[this.eventIndex - 1].availableDay;
         console.log(this.confirmEvent)
         const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
         console.log("확정 모임", response.data.data)
@@ -280,8 +279,8 @@ export default {
       }
     },
     // 모임 취소 - 삭제
-    delete() {
-      console.log("삭제")
+    // delete() {
+    //   console.log("삭제")
       // const token = localStorage.getItem("accessToken");
       // const headers = {Authorization: `Bearer ${token}`};
       // try {
@@ -296,7 +295,7 @@ export default {
       // }catch(e){
       //   alert(e)
       // }
-    }
+    // }
   }
 };
 </script>

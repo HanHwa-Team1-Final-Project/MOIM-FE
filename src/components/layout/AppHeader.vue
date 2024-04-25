@@ -145,6 +145,7 @@ export default {
           }
         })
       });
+      this.getNotification();
   },
   methods: {
     onNotiClick(notiInfo) {

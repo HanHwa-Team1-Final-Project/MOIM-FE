@@ -145,6 +145,7 @@ export default {
           }
         })
       });
+      this.getNotification();
   },
   methods: {
     onNotiClick(notiInfo) {
@@ -152,8 +153,10 @@ export default {
         this.$refs.moimDetail.openDialog(notiInfo.groupId, notiInfo.hostName);
       }
       if(notiInfo.notificationType == "GROUP_CHOICE") {
-        console.log(notiInfo.notificationType)
         this.$refs.moimDetail.choiceDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.message, notiInfo.notificationType);
+      }
+      if(notiInfo.notificationType == "GROUP_CONFIRM") {
+        this.$refs.moimDetail.confirmDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.notificationType);
       }
     },
     getAuthToken() {

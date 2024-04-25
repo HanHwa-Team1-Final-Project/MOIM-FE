@@ -3,7 +3,7 @@
     <v-card class="pa-4">
       <v-card-title class="text-h5" style="width: 100%; display: flex; align-items: center;">
         <v-icon class="mr-2" style="font-size: 40px;">mdi-account-multiple-plus</v-icon>
-        <div v-if="notificationType == 'GROUP_CHOICE'"
+        <div v-if="notificationType == 'GROUP_CHOICE' || notificationType == 'GROUP_CONFIRM'"
             class="title-text"
             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
         >{{title}}
@@ -66,8 +66,8 @@
           <v-col cols="12" md="10" v-if="fileUrl">
             <v-btn :href="fileUrl" target="_blank" download>파일 다운로드</v-btn>
           </v-col>
-          <v-col cols="12" md="2"><h4>마감일</h4></v-col>
-          <v-col cols="12" md="10">
+          <v-col cols="12" md="2" v-if="voteDeadline"><h4>마감일</h4></v-col>
+          <v-col cols="12" md="10" v-if="voteDeadline">
             <input type="datetime-local" :value="voteDeadline" readonly>
           </v-col>
            <!-- 추천일정 선택 -->
@@ -99,7 +99,12 @@
         <v-btn color="#3085d6" text @click="confirm">확정</v-btn>
         <!-- <v-btn color="#d33" text @click="delete">취소</v-btn> -->
       </v-card-actions>
-      <v-card-actions v-else>
+      <v-card-actions v-if="notificationType == 'GROUP_CONFIRM'">
+        <v-spacer/>
+        <v-btn color="#3085d6" text @click="addEvent">일정 등록</v-btn>
+        <!-- <v-btn color="#d33" text @click="delete">취소</v-btn> -->
+      </v-card-actions>
+      <v-card-actions v-if="!notificationType">
         <v-spacer/>
         <v-btn color="#3085d6" text @click="vote('Y')">수락</v-btn>
         <v-btn color="#d33" text @click="vote('N')">거부</v-btn>
@@ -126,11 +131,12 @@ export default {
       runningTime: null,
       members: [],
       place: '',
-      voteDeadline: '',
+      voteDeadline: null,
       contents: '',
       fileUrl: '',
       eventIndex: 1,
       options: [],
+      sortedAvailableDays: [],
       confirmEvent: '',
     };
   },
@@ -155,6 +161,15 @@ export default {
       this.dialog = true;
       this.getMoimInfo(groupId);
       this.getavailable(groupId);
+    },
+    confirmDialog(groupId, hostNickname, notificationType) {
+      this.notificationType = notificationType;
+      this.hostNickname = hostNickname;
+      this.groupId = groupId;
+      this.voteDeadline = null;
+      this.runningTime = null;
+      this.dialog = true;
+      this.getConfirmMoim(groupId);
     },
     async getMoimInfo(groupId) {
       try {
@@ -192,6 +207,40 @@ export default {
         console.log(error);
       }
     },
+    async getConfirmMoim(groupId) {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (token == null) {
+          alert("로그인이 필요합니다.");
+          this.$router.push({name: "Login"});
+          return;
+        }
+        const headers = {Authorization: `Bearer ${token}`};
+        const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/groups/confirmed/${groupId}`, {headers});
+        const groupInfo = response.data.data;
+        console.log("그룹 정보", groupInfo)
+        this.title = groupInfo.title;
+        const date = groupInfo.confirmedDate;
+        console.log("확정일", date)
+        this.startDate = date.replace('T', ' ')
+        console.log("시작일",this.startDate)
+        this.endDate = this.addMinutesToDate(date, groupInfo.runningTime);
+        console.log("running 더하기", this.endDate)
+        const members = [];
+        members.push(this.hostNickname)
+        groupInfo.groupInfos.forEach(member => {
+          members.push(member.nickname);
+        });
+        console.log(members)
+        this.members = members;
+        console.log("this.members", this.members)
+        this.place = groupInfo.place;
+        this.contents = groupInfo.contents;
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getavailable(groupId) {
       try {
         const token = localStorage.getItem("accessToken");
@@ -205,8 +254,8 @@ export default {
         const availableDays = response.data.data;
         console.log("추천 일정 리스트", availableDays)
         // availableDay 값으로 오름차순 정렬
-        const sortedAvailableDays = availableDays.sort((a, b) => new Date(a.availableDay) - new Date(b.availableDay));
-        this.options = sortedAvailableDays.map((item, index) => ({
+        this.sortedAvailableDays = availableDays.sort((a, b) => new Date(a.availableDay) - new Date(b.availableDay));
+        this.options = this.sortedAvailableDays.map((item, index) => ({
           value: index + 1,
           label: new Intl.DateTimeFormat('ko-KR', 
           {
@@ -219,12 +268,24 @@ export default {
           }).format(new Date(item.availableDay))
         }));
         console.log(this.options)
-        console.log(this.eventIndex)
-        this.confirmEvent = sortedAvailableDays[this.eventIndex - 1].availableDay;
-        console.log(this.confirmEvent)
       } catch (error) {
         console.log(error);
       }
+    },
+    addMinutesToDate(dateString, minutesToAdd) {
+      // dateString을 Date 객체로 변환
+      const date = new Date(dateString);
+      // 분을 더함
+      date.setMinutes(date.getMinutes() + minutesToAdd);
+
+      // 로컬 시간대를 기준으로 Date를 문자열로 변환
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 0을 1월로 취급하므로 +1
+      const day = date.getDate().toString().padStart(2, '0');
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      return `${year}-${month}-${day} ${hours}:${minutes}:00`;
     },
     convertMinutes(minutes) {
       const hours = Math.floor(minutes / 60);
@@ -247,6 +308,7 @@ export default {
         if(response.data.data.isAgree == "Y") {
           Swal.fire({
             title: '참여 완료되었습니다.',
+            text: '일정이 확정되면 알려드릴게요.',
             icon: 'success'
           })
         }
@@ -266,22 +328,24 @@ export default {
       const token = localStorage.getItem("accessToken");
       const headers = {Authorization: `Bearer ${token}`};
       try {
+        this.confirmEvent = this.sortedAvailableDays[this.eventIndex - 1].availableDay;
         console.log(this.confirmEvent)
         const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
         console.log("확정 모임", response.data.data)
         this.dialog = false;
         Swal.fire({
           title: '모임이 확정되었습니다.',
+          text: '일정에 등록해보세요!',
           icon: 'success'
-        })
+        }).then(this.o)
        
       }catch(e){
         alert(e)
       }
     },
     // 모임 취소 - 삭제
-    delete() {
-      console.log("삭제")
+    // delete() {
+    //   console.log("삭제")
       // const token = localStorage.getItem("accessToken");
       // const headers = {Authorization: `Bearer ${token}`};
       // try {
@@ -296,7 +360,7 @@ export default {
       // }catch(e){
       //   alert(e)
       // }
-    }
+    // }
   }
 };
 </script>

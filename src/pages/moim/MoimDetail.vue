@@ -75,14 +75,15 @@
            <v-col cols="12" md="10" v-if="notificationType == 'GROUP_CHOICE'">
              <v-container>
                <v-radio-group
-                 v-model="choiceEvent"
+                 v-model="eventIndex"
                  :rules="[
-                   (value) => !!value || '3가지 선택지 중 하나를 선택해주세요']"
+                   (value) => !!value || '3가지 선택지 중 하나를 선택해주세요',
+                  ]"
                  required
                >
                  <v-radio
-                 v-for="(option, index) in options"
-                 :key="index"
+                 v-for="option in options"
+                 :key="option.value"
                  :value="option.value">
                    <template v-slot:label>
                      <div>{{option.label}}</div>
@@ -95,8 +96,8 @@
       </v-card-text>
       <v-card-actions v-if="notificationType == 'GROUP_CHOICE'">
         <v-spacer/>
-        <v-btn color="#3085d6" text @click="confirm('Y')">확정</v-btn>
-        <v-btn color="#d33" text @click="confirm('N')">취소</v-btn>
+        <v-btn color="#3085d6" text @click="confirm">확정</v-btn>
+        <!-- <v-btn color="#d33" text @click="delete">취소</v-btn> -->
       </v-card-actions>
       <v-card-actions v-else>
         <v-spacer/>
@@ -128,10 +129,17 @@ export default {
       voteDeadline: '',
       contents: '',
       fileUrl: '',
-      choiceEvent: null,
+      eventIndex: 1,
       options: [],
+      confirmEvent: '',
     };
   },
+  watch(eventIndex) {
+    console.log("선택 인덱스", eventIndex)
+  },
+  // watch(confirmEvent) {
+  //   console.log("선택 일정", confirmEvent)
+  // },
   methods: {
     openDialog(groupId, hostNickname) {
       this.hostNickname = hostNickname;
@@ -210,7 +218,10 @@ export default {
             hour12: true // 12시간제 사용
           }).format(new Date(item.availableDay))
         }));
-        console.log(this.choiceEvent)
+        console.log(this.options)
+        console.log(this.eventIndex)
+        this.confirmEvent = sortedAvailableDays[this.eventIndex - 1].availableDay;
+        console.log(this.confirmEvent)
       } catch (error) {
         console.log(error);
       }
@@ -250,31 +261,41 @@ export default {
       }
       
     },
-    confirm(confirmYn) {
-      console.log(confirmYn)
+    // 모임 확정
+    async confirm() {
+      const token = localStorage.getItem("accessToken");
+      const headers = {Authorization: `Bearer ${token}`};
+      try {
+        console.log(this.confirmEvent)
+        const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
+        console.log("확정 모임", response.data.data)
+        this.dialog = false;
+        Swal.fire({
+          title: '모임이 확정되었습니다.',
+          icon: 'success'
+        })
+       
+      }catch(e){
+        alert(e)
+      }
+    },
+    // 모임 취소 - 삭제
+    delete() {
+      console.log("삭제")
       // const token = localStorage.getItem("accessToken");
       // const headers = {Authorization: `Bearer ${token}`};
       // try {
-        // const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/groupInfo/${this.groupInfoId}/notification?agreeYn=${agreeYn}`, {headers});
-        // console.log("vote 정보 ", this.groupId, this.groupInfoId)
-        // console.log("답", response.data.data)
-        // this.dialog = false;
-        // if(response.data.data.isAgree == "Y") {
-        //   Swal.fire({
-        //     title: '참여 완료되었습니다.',
-        //     icon: 'success'
-        //   })
-        // }
-        // if(response.data.data.isAgree == "N") {
-        //   Swal.fire({
-        //     title: '참여 거부하였습니다.',
-        //     icon: 'error'
-        //   })
-        // }
+      //   const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
+      //   console.log("확정 모임", response.data.data)
+      //   this.dialog = false;
+      //   Swal.fire({
+      //     title: '모임이 확정되었습니다.',
+      //     icon: 'success'
+      //   })
+       
       // }catch(e){
       //   alert(e)
       // }
-      
     }
   }
 };

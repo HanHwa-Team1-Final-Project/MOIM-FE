@@ -308,7 +308,7 @@ export default {
         if(response.data.data.isAgree == "Y") {
           Swal.fire({
             title: '참여 완료되었습니다.',
-            subtitle: '일정이 확정되면 알려드릴게요.',
+            text: '일정이 확정되면 알려드릴게요.',
             icon: 'success'
           })
         }
@@ -335,7 +335,7 @@ export default {
         this.dialog = false;
         Swal.fire({
           title: '모임이 확정되었습니다.',
-          // subtitle: '일정에 등록해보세요!',
+          text: '일정에 등록해보세요!',
           icon: 'success'
         }).then(this.o)
        

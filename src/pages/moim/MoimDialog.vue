@@ -470,7 +470,7 @@ export default {
         window.location.reload();
         Swal.fire({
             title: '모임이 등록되었습니다.',
-            subtitle: '모든 참여자가 확인하면 알려드릴게요.',
+            text: '모든 참여자가 확인하면 알려드릴게요.',
             icon: 'success'
           })
         

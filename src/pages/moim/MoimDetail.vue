@@ -45,13 +45,22 @@
             <v-icon class="mr-2">mdi-account-multiple</v-icon>
           </v-col>
           <v-col cols="12" md="10" v-if="members">
+            <div
+              v-for="(member, index) in members"
+              :key="index"
+              class="participant-info"
+            >
+              {{ member.nickname }} <span v-html="getAgreementIcon(member.isAgreed)"></span>
+            </div>
+          </v-col>
+          <!-- <v-col cols="12" md="10" v-if="members">
               <v-chip
                 v-for="(member, index) in members"
                 :key="index"
                 :prepend-avatar="profileImage"
                 :text="member"
               ></v-chip>
-          </v-col>
+          </v-col> -->
           <!-- 내용 조회 -->
           <v-col cols="12" md="2" v-if="contents">
             <v-icon class="mr-2">mdi-format-align-left</v-icon>
@@ -170,6 +179,15 @@ export default {
       this.dialog = true;
       this.getConfirmMoim(groupId);
     },
+    getAgreementIcon(status) {
+      if (status === "Y") {
+        return '<i class="fa-regular fa-square-check" style="color: #3085d6;"></i>';
+      } else if (status === "N") {
+        return '<i class="fa-regular fa-square-check" style="color: #d33;"></i>';
+      } else if (status === "P") {
+        return '<i class="fa-regular fa-square" style="color: #000000;"></i>';
+      }
+    },
     async getMoimInfo(groupId) {
       try {
         const token = localStorage.getItem("accessToken");
@@ -191,9 +209,15 @@ export default {
         this.groupInfoId = groupInfo.groupInfos[0].id
         console.log("getMoimInfo의 id", this.groupInfoId)
         const members = [];
-        members.push(this.hostNickname)
+        members.push({
+          nickname: this.hostNickname,
+          isAgreed: "Y"
+        })
         groupInfo.groupInfos.forEach(member => {
-          members.push(member.nickname);
+          members.push({
+            nickname: member.nickname,
+            isAgreed: member.isAgreed
+          })
         });
         console.log(members)
         this.members = members;
@@ -227,9 +251,15 @@ export default {
         this.endDate = this.addMinutesToDate(date, groupInfo.runningTime);
         console.log("running 더하기", this.endDate)
         const members = [];
-        members.push(this.hostNickname)
+        members.push({
+          nickname: this.hostNickname,
+          isAgreed: "Y"
+        })
         groupInfo.groupInfos.forEach(member => {
-          members.push(member.nickname);
+          members.push({
+            nickname: member.nickname,
+          isAgreed: member.isAgreed
+          });
         });
         console.log(members)
         this.members = members;

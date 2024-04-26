@@ -101,8 +101,7 @@
       </v-card-actions>
       <v-card-actions v-if="notificationType == 'GROUP_CONFIRM'">
         <v-spacer/>
-        <v-btn color="#3085d6" text @click="addEvent">일정 등록</v-btn>
-        <!-- <v-btn color="#d33" text @click="delete">취소</v-btn> -->
+        <v-btn color="#3085d6" text @click="addEvent(confirmGroupInfo)">일정 등록</v-btn>
       </v-card-actions>
       <v-card-actions v-if="!notificationType">
         <v-spacer/>
@@ -111,13 +110,18 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <EventDialog ref="eventDialog"></EventDialog>
 </template>
 
 <script>
 import axiosInstance from "@/axios";
 import Swal from 'sweetalert2'
+import EventDialog from "../event/EventDialog.vue";
 
 export default {
+  components: {
+    EventDialog,
+  },
   data() {
     return {
       dialog: false,
@@ -138,6 +142,7 @@ export default {
       options: [],
       sortedAvailableDays: [],
       confirmEvent: '',
+      confirmGroupInfo: '',
     };
   },
   watch(eventIndex) {
@@ -218,6 +223,7 @@ export default {
         const headers = {Authorization: `Bearer ${token}`};
         const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/groups/confirmed/${groupId}`, {headers});
         const groupInfo = response.data.data;
+        this.confirmGroupInfo = groupInfo;
         console.log("그룹 정보", groupInfo)
         this.title = groupInfo.title;
         const date = groupInfo.confirmedDate;
@@ -336,13 +342,24 @@ export default {
         Swal.fire({
           title: '모임이 확정되었습니다.',
           text: '일정에 등록해보세요!',
-          icon: 'success'
-        }).then(this.o)
-       
+          icon: 'success',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
+        }).then((result) => {
+          if(result.isConfirmed) {
+            console.log("이벤트변경시작", response.data.data)
+            this.$refs.eventDialog.changeDialog(response.data.data)
+          }
+        })
       }catch(e){
         alert(e)
       }
     },
+    addEvent(GroupInfo) {
+      this.$refs.eventDialog.changeDialog(GroupInfo);
+      this.dialog = false;
+    }
     // 모임 취소 - 삭제
     // delete() {
     //   console.log("삭제")

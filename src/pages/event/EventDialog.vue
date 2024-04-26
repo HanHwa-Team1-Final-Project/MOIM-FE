@@ -199,6 +199,15 @@ export default {
       }
       this.isDialogOpen = true;
     },
+    changeDialog(moimInfo) {
+      console.log("잘들어왔나",moimInfo)
+      this.title = moimInfo.title;
+      this.memo =  moimInfo.contents;
+      this.place = moimInfo.place;
+      this.startDateTime = moimInfo.confirmedDate;
+      this.endDateTime = this.addMinutesToDate(moimInfo.confirmedDate, moimInfo.runningTime);
+      this.isDialogOpen = true;
+    },
     openDialog() {
       this.isDialogOpen = true;
     },
@@ -213,6 +222,21 @@ export default {
       this.repeatEndDate = null;
       this.repeatType = null;
       this.isDialogOpen = false;
+    },
+    addMinutesToDate(dateString, minutesToAdd) {
+      // dateString을 Date 객체로 변환
+      const date = new Date(dateString);
+      // 분을 더함
+      date.setMinutes(date.getMinutes() + minutesToAdd);
+
+      // 로컬 시간대를 기준으로 Date를 문자열로 변환
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 0을 1월로 취급하므로 +1
+      const day = date.getDate().toString().padStart(2, '0');
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}:00`;
     },
     addTodo() {
       this.todos.push({ text: "", done: false });
@@ -327,9 +351,15 @@ export default {
         this.closeDialog();
         Swal.fire({
             title: '일정이 생성되었습니다.',
-            icon: 'success'
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              window.location.reload();
+            }
           })
-           window.location.reload();
         // this.$router.push({ name: "fullCalendarComponent" });
       } catch (error) {
         console.error(error);

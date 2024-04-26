@@ -41,7 +41,7 @@ import axiosInstance from "@/axios";
 export default {
   data() {
     return {
-      isDialogOpen: true,
+      isDialogOpen: false,
       profileImage: "",
       editableProfileImage: null,
       nickname: "",

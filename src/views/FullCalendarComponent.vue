@@ -104,15 +104,19 @@ export default {
 <style lang='css'>
 
 .demo-app {
+  margin-top: -18%;
   display: flex;
-  min-height: 100%;
+  justify-content: center; /* 가로 방향으로 중앙 정렬 */
+  align-items: center; /* 세로 방향으로 중앙 정렬 */
+  height: 100vh; /* 뷰포트의 전체 높이 */
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
 }
 
 .demo-app-main {
-  flex-grow: 1;
+  flex-grow: 0.7;
   padding: 3em;
+  
 }
 
 </style>

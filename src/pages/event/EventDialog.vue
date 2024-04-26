@@ -216,6 +216,8 @@ export default {
       this.memo = "";
       this.place = "";
       this.timeType = "";
+      this.startDateTime = "";
+      this.endDateTime = "";
       this.alertQuantity = null;
       this.todos = [];
       this.files = [];

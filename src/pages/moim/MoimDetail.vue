@@ -145,12 +145,6 @@ export default {
       confirmGroupInfo: '',
     };
   },
-  watch(eventIndex) {
-    console.log("선택 인덱스", eventIndex)
-  },
-  // watch(confirmEvent) {
-  //   console.log("선택 일정", confirmEvent)
-  // },
   methods: {
     openDialog(groupId, hostNickname) {
       this.hostNickname = hostNickname;

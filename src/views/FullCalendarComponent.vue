@@ -208,10 +208,14 @@ export default {
   min-height: 100%;
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
+  justify-content: center; /* 가로 방향으로 중앙 정렬 */
+  align-items: center; /* 세로 방향으로 중앙 정렬 */
+  height: 80vh; /* 뷰포트의 전체 높이 */
+  margin-top: -10%;
 }
 
 .demo-app-main {
-  flex-grow: 1;
+  flex-grow: 0.7;
   padding: 3em;
 }
 

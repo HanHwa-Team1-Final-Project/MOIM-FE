@@ -22,6 +22,9 @@
           v-for="(item, i) in items"
           :key="i"
           :value="i"
+          @click="notiToMoim(item, $event)"
+          :data-notificationType="item.notificationType"
+          :data-id="item.id"
         >
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -155,6 +158,15 @@ export default {
         this.$refs.moimDetail.confirmDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.notificationType);
       }
     },
+    notiToMoim(noti, event) {
+      console.log(noti)
+      const notificationType = event.currentTarget.getAttribute('data-notificationType')
+      const id = event.currentTarget.getAttribute('data-id')
+      if(notificationType.substring(0, 5) == "GROUP") {
+        window.location.href = `MoimList?groupId=${id}`;
+      }
+      
+    },
     getAuthToken() {
       const token = localStorage.getItem("accessToken");
       if (!token) {
@@ -216,7 +228,9 @@ export default {
           timeAgo = this.calculateTimeAgo(noti.sendTime),
           notifications.push({
               title: noti.message,
-              subtitle: timeAgo
+              subtitle: timeAgo,
+              id: noti.id,
+              notificationType: noti.notificationType
           });
         });
         this.items = notifications;

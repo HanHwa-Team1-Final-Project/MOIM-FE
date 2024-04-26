@@ -3,14 +3,14 @@
     <!-- 화면을 가득 채우기 위해 fluid 속성 사용 -->
     <v-row justify="center" align="center" style="height: 100vh;">
       <!-- 왼쪽 컬럼 -->
-      <v-col cols="12" sm="8" md="4">
+      <v-col cols="12" sm="8" md="7" lg="5" xl="3">
         <v-card class="elevation-12">
           <v-toolbar class="custom-toolbar">
-            <v-toolbar-title class="title-padding">로그인</v-toolbar-title>
+            <v-toolbar-title class="title-padding-toolbar">로그인</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form v-model="form" class="padded-form" @submit.prevent="onSubmit">
-              <v-card-title class="title-padding">이메일</v-card-title>
+              <v-card-title class="title-padding-title">이메일</v-card-title>
               <v-text-field
                   name="email"
                   placeholder="이메일을 입력하세요."
@@ -23,7 +23,7 @@
                   variant="outlined"
                   density="comfortable"
               />
-              <v-card-title class="title-padding">비밀번호</v-card-title>
+              <v-card-title class="title-padding-title">비밀번호</v-card-title>
               <v-text-field
                   name="password"
                   placeholder="비밀번호를 입력하세요."
@@ -62,11 +62,11 @@
                 회원가입
               </v-btn>
               <v-btn
-                  class="register-button mt-2"
+                  class="register-button my-6"
                   block
                   variant="outlined"
                   color="#0f2a14"
-                  size="x-large"
+                  size="large"
                   prepend-icon="mdi-google"
                   @click="googleLogin"
               >
@@ -154,8 +154,14 @@ export default {
   padding-right: 16px;
 }
 
-.title-padding {
+.title-padding-toolbar {
   padding-left: 0;
+  font-weight: 900 !important;
+}
+
+.title-padding-title {
+  padding-left: 0;
+  font-weight: 500 !important;
 }
 
 .register-button {
@@ -163,12 +169,12 @@ export default {
   border-color: #e0e0e0 !important; /* 외곽선 색상 */
 }
 
-.login-form {
-  border: 1px solid #000; /* 로그인 폼 테두리 추가 */
-  max-width: 400px; /* 적절한 최대 너비 설정 */
+/* 불필요한 하단 여백 삭제 */
+.v-application__wrap {
+  min-height: 0;
 }
 
-.left-panel {
-  background-color: #ffffff;
+body {
+  overflow-y: auto;
 }
 </style>

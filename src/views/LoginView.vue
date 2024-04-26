@@ -62,14 +62,14 @@
                 회원가입
               </v-btn>
               <v-btn
-                  class="register-button my-6"
+                  class="register-button my-6 google-login-button"
                   block
                   variant="outlined"
                   color="#0f2a14"
                   size="large"
-                  prepend-icon="mdi-google"
                   @click="googleLogin"
               >
+                <GoogleLogo class="google-logo"/>
                 구글 계정으로 계속하기
               </v-btn>
             </v-form>
@@ -82,8 +82,10 @@
 
 <script>
 import axiosInstance from "@/axios";
+import GoogleLogo from "@/components/GoogleLogo.vue";
 
 export default {
+  components: {GoogleLogo},
   data() {
     return {
       form: false,
@@ -169,8 +171,16 @@ export default {
   border-color: #e0e0e0 !important; /* 외곽선 색상 */
 }
 
-/* 불필요한 하단 여백 삭제 */
+.google-login-button {
+  /* 버튼 내부 아이템을 수직으로 중앙 정렬 */
+  display: flex;
+  align-items: center;
+}
+.google-logo {
+  margin-right: 10px;  /* 우측 여백 추가 */
+}
 .v-application__wrap {
+  /* 불필요한 하단 여백 삭제 */
   min-height: 0;
 }
 

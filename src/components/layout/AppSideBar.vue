@@ -5,7 +5,9 @@
         :prepend-avatar="profileImage"
         :subtitle="email"
         :title="nickname"
+        @click="MyPageClicked"
       ></v-list-item>
+      <MyPageDialog ref="MyPageDialog"></MyPageDialog>
     </v-list>
 
     <v-divider></v-divider>
@@ -32,7 +34,7 @@
 <script>
 import EventDialog from '@/pages/event/EventDialog.vue';
 import MoimDialog from '@/pages/moim/MoimDialog.vue';
-
+import MyPageDialog from '@/pages/myPage/MyPageDialog.vue';
 
 // import {useMainStore} from "@/stores";
 import axiosInstance from "@/axios";
@@ -47,7 +49,8 @@ export default {
   // },
   components: {
     EventDialog,
-    MoimDialog
+    MoimDialog,
+    MyPageDialog,
 
   },
   data() {
@@ -81,7 +84,6 @@ export default {
           this.profileImage = userData.profileImage;
           this.email = userData.email;
           this.nickname = userData.nickname;
-          console.log("profileImage ", this.profileImage);
         } else {
           console.error("Failed to fetch user data");
         }
@@ -108,7 +110,10 @@ export default {
     goToMoimList() {
       this.$router.push({ path: '/MoimList' });
     },
-    
+    MyPageClicked(){
+
+      this.$refs.MyPageDialog.openDialog();
+    }
 
   }
 }

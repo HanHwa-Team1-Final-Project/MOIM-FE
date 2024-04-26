@@ -1,0 +1,22 @@
+/* src/style/loginViewStyle.scss */
+
+.login-form {
+  border: 1px solid #000; /* 로그인 폼 테두리 추가 */
+  max-width: 400px; /* 적절한 최대 너비 설정 */
+}
+
+.left-panel {
+  /* 왼쪽 패널 스타일링 */
+  padding-top: 40%; /* 상단으로부터의 간격 조정 */
+  height: 95vh;
+  background-color: #ffffff;
+}
+
+.right-panel {
+  /* 오른쪽 패널 스타일링 */
+  background-color: #6f8a6b;
+  height: 95vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

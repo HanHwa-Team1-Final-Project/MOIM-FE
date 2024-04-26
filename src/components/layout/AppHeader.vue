@@ -4,10 +4,6 @@
       color="teal-darken-4"
       image="https://picsum.photos/seed/picsum/1920/1080"
   >
-    <template v-slot:prepend>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-    </template>
-
     <v-app-bar-title>MOIM</v-app-bar-title>
 
     <v-spacer></v-spacer>
@@ -113,25 +109,25 @@ export default {
         // })
       });
     }
-    sse.addEventListener('sendEventAlarm', (e) => { 
+    sse.addEventListener('sendEventAlarm', (e) => {
         const obj = JSON.parse(e.data);
         // let timeAgo = this.calculateTimeAgo(obj.sendTime)
         // this.items.push({
         //   title: obj.message,
         //   subtitle: timeAgo
-        // }) 
+        // })
         this.Toast.fire({
           icon: 'info',
           title: obj.message
         })
       });
-      sse.addEventListener('sendToParticipant', (e) => { 
+      sse.addEventListener('sendToParticipant', (e) => {
         const obj = JSON.parse(e.data);
         // let timeAgo = this.calculateTimeAgo(obj.sendTime)
         // this.items.push({
         //   title: obj.message,
         //   subtitle: timeAgo
-        // }) 
+        // })
         console.log("sse 정보", obj)
         this.Toast.fire({
           showConfirmButton: true,

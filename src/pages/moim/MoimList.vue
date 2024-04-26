@@ -1,5 +1,6 @@
 <template>
-  <v-container fluid class="search-results">
+<v-container fluid>
+  <v-container class="search-results">
     <v-row>
       <v-col cols="12" md="4">
         <v-row v-if="moims.length > 0">
@@ -127,6 +128,7 @@
         </v-card>
       </v-col>
     </v-row>
+  </v-container>
   </v-container>
 </template>
 

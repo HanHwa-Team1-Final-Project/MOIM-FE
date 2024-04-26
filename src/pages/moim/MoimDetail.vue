@@ -97,7 +97,7 @@
       <v-card-actions v-if="notificationType == 'GROUP_CHOICE'">
         <v-spacer/>
         <v-btn color="#3085d6" text @click="confirm">확정</v-btn>
-        <!-- <v-btn color="#d33" text @click="delete">취소</v-btn> -->
+        <v-btn color="#d33" text @click="cancelMoim">취소</v-btn>
       </v-card-actions>
       <v-card-actions v-if="notificationType == 'GROUP_CONFIRM'">
         <v-spacer/>
@@ -359,25 +359,25 @@ export default {
     addEvent(GroupInfo) {
       this.$refs.eventDialog.changeDialog(GroupInfo);
       this.dialog = false;
-    }
+    },
     // 모임 취소 - 삭제
-    // delete() {
-    //   console.log("삭제")
-      // const token = localStorage.getItem("accessToken");
-      // const headers = {Authorization: `Bearer ${token}`};
-      // try {
-      //   const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/confirm?confirmDay=${this.confirmEvent}`, {headers});
-      //   console.log("확정 모임", response.data.data)
-      //   this.dialog = false;
-      //   Swal.fire({
-      //     title: '모임이 확정되었습니다.',
-      //     icon: 'success'
-      //   })
+    async cancelMoim() {
+      console.log("삭제")
+      const token = localStorage.getItem("accessToken");
+      const headers = {Authorization: `Bearer ${token}`};
+      try {
+        const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${this.groupId}/cancel`, {headers});
+        console.log("취소 모임", response.data.data)
+        this.dialog = false;
+        Swal.fire({
+          title: '모임이 취소되었습니다.',
+          icon: 'error'
+        })
        
-      // }catch(e){
-      //   alert(e)
-      // }
-    // }
+      }catch(e){
+        alert(e)
+      }
+    }
   }
 };
 </script>

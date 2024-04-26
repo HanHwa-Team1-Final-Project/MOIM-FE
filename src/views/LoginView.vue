@@ -4,7 +4,7 @@
     <v-row justify="center" align="center" style="height: 100vh;">
       <!-- 왼쪽 컬럼 -->
       <v-col cols="12" sm="8" md="7" lg="5" xl="3">
-        <v-card class="elevation-12 pt-5 rounded-card">
+        <v-card class="elevation-5 pt-5 rounded-card">
           <v-toolbar class="custom-toolbar justify-center">
             <v-row>
               <v-col class="d-flex justify-center">

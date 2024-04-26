@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600">
+  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="true">
     <v-card class="pa-4">
       <v-card-title>
         <v-icon class="mr-2">mdi-calendar-plus</v-icon>
@@ -203,6 +203,7 @@ export default {
       expectStartDate: "",
       expectEndDate: "",
       expectStartTime: "",
+      expectEndTime: "",
       contents: "",
       files: [],
       alertQuantity: null,
@@ -245,7 +246,20 @@ export default {
     },
     closeDialog() {
       this.isDialogOpen = false;
-      // isDialogOpen = computed(() => mainStore.isDialogOpen);
+      this.title = "";
+      this.friends = [];
+      this.people = [];
+      this.place = "";
+      this.runningTime= null;
+      this.voteDeadline= "";
+      this.expectStartDate= "";
+      this.expectEndDate= "";
+      this.expectStartTime= "";
+      this.expectEndTime= "";
+      this.contents= "";
+      this.files= [];
+      this.alertQuantity= null;
+      this.alertType= "";
     },
 
     async fetchPeople() {
@@ -465,14 +479,21 @@ export default {
           },
         });
         console.log("모임 등록완료");
-
         this.closeDialog();
-        window.location.reload();
+        
         Swal.fire({
             title: '모임이 등록되었습니다.',
             text: '모든 참여자가 확인하면 알려드릴게요.',
-            icon: 'success'
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              window.location.reload();
+            }
           })
+          
         
       } catch (error) {
         console.log(error);

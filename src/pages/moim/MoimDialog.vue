@@ -273,8 +273,7 @@ export default {
             nickname: user.nickname,
             email: user.email,
           }));
-          console.log("사람들 정보", this.people);
-          console.log("1번 사람사람", this.people[0]);
+        
         } else {
           console.error("사람들을 불러오는데 실패했습니다: API 에러 반환", response.data);
           this.people = [];

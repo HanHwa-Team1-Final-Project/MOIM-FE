@@ -4,9 +4,16 @@
     <v-row justify="center" align="center" style="height: 100vh;">
       <!-- 왼쪽 컬럼 -->
       <v-col cols="12" sm="8" md="7" lg="5" xl="3">
-        <v-card class="elevation-12">
-          <v-toolbar class="custom-toolbar">
-            <v-toolbar-title class="title-padding-toolbar">로그인</v-toolbar-title>
+        <v-card class="elevation-12 pt-5 rounded-card">
+          <v-toolbar class="custom-toolbar justify-center">
+            <v-row>
+              <v-col class="d-flex justify-center">
+                <div class="text-block">
+                  <div class="title-padding-toolbar">모임? MOIM!</div>
+                  <div class="catchphrase">효율적인 일정 관리의 시작</div>
+                </div>
+              </v-col>
+            </v-row>
           </v-toolbar>
           <v-card-text>
             <v-form v-model="form" class="padded-form" @submit.prevent="onSubmit">
@@ -15,19 +22,19 @@
                   name="email"
                   placeholder="이메일을 입력하세요."
                   type="email"
-                  color="#35964a"
+                  color="#0aca08"
                   clearable
                   v-model="email"
                   :readonly="loading"
                   :rules="[rules.required, rules.email]"
-                  variant="outlined"
+                  variant="underlined"
                   density="comfortable"
               />
               <v-card-title class="title-padding-title">비밀번호</v-card-title>
               <v-text-field
                   name="password"
                   placeholder="비밀번호를 입력하세요."
-                  color="#35964a"
+                  color="#0aca08"
                   clearable
                   v-model="password"
                   :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -35,7 +42,7 @@
                   :readonly="loading"
                   :rules="[rules.required]"
                   @click:append-inner="visible = !visible"
-                  variant="outlined"
+                  variant="underlined"
                   density="comfortable"
               />
               <v-btn
@@ -46,7 +53,7 @@
                   type="submit"
                   variant="elevated"
                   block
-                  class="my-6"
+                  class="my-6 login-btn"
               >
                 로그인
               </v-btn>
@@ -56,7 +63,7 @@
                   block
                   variant="outlined"
                   size="large"
-                  color="#0f2a14"
+                  color="#0aca08"
                   @click="$router.push({name:'register'})"
               >
                 회원가입
@@ -65,12 +72,14 @@
                   class="register-button my-6 google-login-button"
                   block
                   variant="outlined"
-                  color="#0f2a14"
+                  color="#0aca08"
                   size="large"
                   @click="googleLogin"
               >
-                <GoogleLogo class="google-logo"/>
-                구글 계정으로 계속하기
+                <div class="google-container">
+                  <GoogleLogo class="google-logo"/>
+                  <span class="google-text">구글 계정으로 계속하기</span>
+                </div>
               </v-btn>
             </v-form>
           </v-card-text>
@@ -148,7 +157,14 @@ export default {
 
 <style>
 .custom-toolbar {
-  padding: 16px;
+  padding: 24px;
+  line-height: 1.2;
+  min-height: auto;
+  background-color: #ffffff; /* 흰색 */
+}
+
+.custom-toolbar .v-toolbar__content {
+  overflow: visible !important;
 }
 
 .padded-form {
@@ -157,13 +173,19 @@ export default {
 }
 
 .title-padding-toolbar {
-  padding-left: 0;
+  line-height: 1.2;
   font-weight: 900 !important;
+  font-size: 40px; /* 글자 크기 수정 */
+  background: linear-gradient(90deg, #0aca08, #06c7ba); /* 그라데이션 배경 적용 */
+  background-size: 100%; /* 그라데이션 정도*/
+  -webkit-background-clip: text; /* 그라데이션을 텍스트에 적용 */
+  -webkit-text-fill-color: transparent; /* 원래의 텍스트 색상을 투명하게 하여 그라데이션을 보여줌 */
 }
 
 .title-padding-title {
   padding-left: 0;
   font-weight: 500 !important;
+  color: #2b783b;
 }
 
 .register-button {
@@ -176,9 +198,40 @@ export default {
   display: flex;
   align-items: center;
 }
+
+.google-container {
+  display: flex;     /* flex 레이아웃 적용 */
+  align-items: center;   /* 아이템들을 수직 중앙에 배치 */
+}
+
 .google-logo {
   margin-right: 10px;  /* 우측 여백 추가 */
 }
+
+.rounded-card {
+  border-radius: 15px;
+}
+
+.text-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.catchphrase {
+  line-height: 1.2;
+  text-align: center;       /* 가운데 정렬 */
+  font-size: 18px;          /* 폰트 크기 변경 */
+  color: #666;              /* 텍스트 색상 변경 */
+  margin-top: 10px;         /* "모임? MOIM!" 텍스트와의 간격 설정 */
+  padding-bottom: 10px; /* 이 부분을 추가해보세요. */
+}
+
+.login-btn {
+  background: linear-gradient(90deg, #0aca08, #06c7ba) !important;
+}
+
 .v-application__wrap {
   /* 불필요한 하단 여백 삭제 */
   min-height: 0;

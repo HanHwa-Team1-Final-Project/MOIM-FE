@@ -17,7 +17,6 @@
 
           <v-col cols="12" md="2"><h4>닉네임</h4></v-col>
           <v-col cols="12" md="10">
-            
             <input type="text" :value="nickname" readonly />
           </v-col>
 
@@ -29,6 +28,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn color="red darken-1" v-if="isLoggedIn" @click="logout"
+          >로그아웃</v-btn
+        >
         <v-btn color="blue darken-1" @click="closeDialog">닫기</v-btn>
       </v-card-actions>
     </v-card>
@@ -50,6 +52,15 @@ export default {
       isEditing: false,
       updateUserData: "",
     };
+  },
+  computed: {
+    // 로그인 상태 확인
+    isLoggedIn() {
+      return (
+        localStorage.getItem("accessToken") &&
+        localStorage.getItem("refreshToken")
+      );
+    },
   },
   mounted() {
     this.getUserData();
@@ -98,6 +109,12 @@ export default {
         console.error("Error fetching user data:", error);
       }
     },
+
+    logout() {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      this.$router.push({ name: "login" });
+    },
     // handleFileUpload(event) {
     //   const file = event.target.files[0];
     //   this.editableProfileImage = URL.createObjectURL(file);
@@ -109,7 +126,7 @@ export default {
     //     updateUserData.append("profileImage", this.editableProfileImage);
     //   }
     //   console.log("수정된 nickname", this.editableNickname);
-      
+
     //   console.log("수정된 파일", this.editableProfileImage);
 
     //   const authToken = localStorage.getItem("accessToken");

@@ -8,6 +8,21 @@
 
     <v-spacer></v-spacer>
 
+    <v-text-field
+        @focus="searchClosed=false"
+        @blur="searchClosed=true"
+        v-model="searchQuery"
+        placeholder="일정 검색"
+        prepend-inner-icon="mdi-magnify"
+        class="expanding-search mt-6"
+        :class="{ 'closed': searchClosed && !searchQuery }"
+        filled
+        dense
+        clearable
+        @keydown.enter="searchEvents"
+        @click:append="searchEvents"
+    ></v-text-field>
+
     <v-menu>
       <template v-slot:activator="{ props }">
         <v-btn icon v-bind="props" @click="getNotification">
@@ -34,23 +49,9 @@
       </v-list>
     </v-menu>
 
-    <v-text-field
-        @focus="searchClosed=false"
-        @blur="searchClosed=true"
-        v-model="searchQuery"
-        placeholder="일정 검색"
-        prepend-inner-icon="mdi-magnify"
-        class="expanding-search mt-6"
-        :class="{ 'closed': searchClosed && !searchQuery }"
-        filled
-        dense
-        clearable
-        @keydown.enter="searchEvents"
-        @click:append="searchEvents"
-    ></v-text-field>
-
-    <v-btn icon>
-      <v-icon>mdi-dots-vertical</v-icon>
+    <v-btn flat color="black" @click="logout">
+      <v-icon>mdi-logout</v-icon>
+      <span>로그아웃</span>
     </v-btn>
   </v-app-bar>
 
@@ -147,6 +148,10 @@ export default {
       this.getNotification();
   },
   methods: {
+    logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    },
     onNotiClick(notiInfo) {
       if(notiInfo.notificationType == "GROUP_CREATE" || notiInfo.notificationType == "GROUP_DEADLINE") {
         this.$refs.moimDetail.openDialog(notiInfo.groupId, notiInfo.hostName);

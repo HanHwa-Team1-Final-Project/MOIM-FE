@@ -80,8 +80,9 @@ export default {
 </script>
 
 <style>
-.search-results {
-  margin-top: -15%;
+.search-results .result-card {
+  transition: box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out;
+  cursor: pointer;
 }
 
 .circle-button {
@@ -98,6 +99,8 @@ export default {
   color: #162A2C;
   margin-right: 20px;
   margin-left: 10px;
+  font-weight: bold; 
+  font-size: 16px; 
 }
 
 .result-card {
@@ -105,6 +108,12 @@ export default {
 }
 
 .result-card-time {
-  background-color: #FEFCF6;
+  background-color: none;
 }
+
+.result-card-time .v-list-item-title,
+.result-card-time .v-list-item-subtitle {
+  font-size: 0.875rem;
+}
+
 </style>

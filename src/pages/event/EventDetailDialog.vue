@@ -59,7 +59,7 @@
         <v-spacer></v-spacer>
         <v-btn color="green darken-1" text @click="goToUpdateEvent">수정</v-btn>
         <v-btn color="green darken-1" text @click="showDeleteDialog" v-if="repeatParent != null">삭제</v-btn>
-        <v-btn color="green darken-1" text @click="deleteSingleEvent" v-else>단일 일정 삭제</v-btn>
+        <v-btn color="green darken-1" text @click="deleteSingleEvent" v-else>삭제</v-btn>
       
       </v-card-actions>
       <DeleteRepeatEvent

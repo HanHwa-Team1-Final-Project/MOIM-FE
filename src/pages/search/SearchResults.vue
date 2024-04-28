@@ -11,12 +11,12 @@
             @click="onResultClick(result)"
             link>
           <template v-slot:prepend>
-            <v-btn class="circle-button">
+            <span class="circle-day">
               {{ getDay(result.startDate) }}
-            </v-btn>
+            </span>
           </template>
-          <template v-slot:append>
-            <v-list lines="one" class="result-card-time">
+          <template v-slot:append >
+            <v-list lines="one" class="result-card-a">
               <v-list-item
                   :title="'시작'"
                   :subtitle="formatDateAndTime(result.startDate)"
@@ -31,7 +31,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row justify="center" v-else>
+    <v-row justify="center" class="none-result" v-else>
       <p>검색 결과가 없습니다.</p>
     </v-row>
   </v-container>
@@ -81,11 +81,17 @@ export default {
 
 <style>
 .search-results .result-card {
+  margin-top: 20px;
   transition: box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out;
   cursor: pointer;
 }
 
-.circle-button {
+.none-result {
+  margin-top: 10%;
+  font-size: 18px;
+}
+
+.circle-day {
   border-radius: 50%; /* 원형 버튼을 만들기 위한 CSS */
   min-width: 50px; /* 버튼의 최소 너비 */
   min-height: 50px; /* 버튼의 최소 높이 */
@@ -94,21 +100,17 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  background-color: #E0BB76;
+  background-color: #ffffff;
   color: #162A2C;
   margin-right: 20px;
   margin-left: 10px;
   font-weight: bold; 
   font-size: 16px; 
+  border: 2px solid #162A2C;
 }
 
 .result-card {
-  background-color: #FEFCF6;
-}
-
-.result-card-time {
-  background-color: none;
+  background-color: #ffffff;
 }
 
 .result-card-time .v-list-item-title,

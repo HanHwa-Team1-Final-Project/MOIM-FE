@@ -1,115 +1,158 @@
 <template>
   <v-container fluid class="pa-0 eisenhower-matrix">
-    <v-row no-gutters class="justify-center">
       <EventDetail ref="dialog"></EventDetail>
-      <!-- 조각 1 -->
-      <v-col cols="2" class="pa-3" style="flex-basis: 30%; max-width: 22%;">
-        <v-card id="Q1" class="mb-3 d-flex justify-center align-center" dark
-                style="height: 60px; font-size: 1.3em; font-weight: bold;">
-          중요 & 긴급하지 않음
-        </v-card>
-        <draggable
-            class="drag-area"
-            :list="eventsQ1"
-            group="events"
-            @change="updateEventsTo1"
-        >
-          <template #item="{ element }">
-            <v-card
-                :key="element.id"
-                class="mb-3 event-item"
-                prepend-icon="mdi-check-circle-outline"
-                :title="element.title"
-                :subtitle="formatDate(element.startDate)"
-                @click="onEventClick(element)"
-            >
-            </v-card>
-          </template>
-        </draggable>
-      </v-col>
+      
 
-      <!-- 조각 2 -->
-      <v-col cols="2" class="pa-3" style="flex-basis: 30%; max-width: 22%;">
-        <v-card id="Q2" class="mb-3 d-flex justify-center align-center" dark
-                style="height: 60px; font-size: 1.3em; font-weight: bold;">
-          중요 & 긴급
-        </v-card>
+      <v-row no-gutters class="d-flex">
+        <v-col cols="1" class="no-background"></v-col> <!-- 중요 텍스트를 위한 공간 확보 -->
+        <v-col cols="5" class="d-flex justify-center no-background">
+          <div class="mb-3" style="font-size: 1.2em; font-weight: bold;">
+            긴급
+          </div>
+        </v-col>
+        <v-col cols="5" class="d-flex justify-center no-background">
+          <div class="mb-3" style="font-size: 1.2em; font-weight: bold;">
+            긴급하지 않음
+          </div>
+        </v-col>
+      </v-row>
 
-        <draggable
-            class="drag-area"
-            :list="eventsQ2"
-            group="events"
-            @change="updateEventsTo2"
-        >
-          <template #item="{ element }">
-            <v-card
-                :key="element.id"
-                class="mb-3 event-item"
-                prepend-icon="mdi-check-circle-outline"
-                :title="element.title"
-                :subtitle="formatDate(element.startDate)"
-                @click="onEventClick(element)"
-            >
-            </v-card>
-          </template>
-        </draggable>
-      </v-col>
+      <v-row no-gutters class="d-flex">
+        <v-col cols="1" class="pa-0 ma-0 d-flex align-center justify-center no-background">
+          <div style="font-size: 1.2em; font-weight: bold; writing-mode: tb-rl;">
+            중요
+          </div>
+        </v-col>
+          <!-- 2사분면 -->
+        <v-col cols="5" class="pa-3" id="Q2">
+          <!-- <v-card id="Q2" class="mb-3 d-flex justify-center align-center" dark
+                  style="height: 60px; font-size: 1.2em; font-weight: bold;">
+            중요 & 긴급
+          </v-card> -->
 
-      <!-- 조각 3 -->
-      <v-col cols="2" class="pa-3" style="flex-basis: 30%; max-width: 22%;">
-        <v-card id="Q3" class="mb-3 d-flex justify-center align-center" dark
-                style="height: 60px; font-size: 1.3em; font-weight: bold;">
-          중요하지 않음 & 긴급
-        </v-card>
+          <draggable
+              class="drag-area"
+              :list="eventsQ2"
+              group="events"
+              @change="updateEventsTo2"
+          >
+            <template #item="{ element }">
+              <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
+                <v-row align="center" class="pa-2" no-gutters>
+                  <v-col cols="auto" class="no-background">
+                    <v-icon>mdi-check-circle-outline</v-icon>
+                  </v-col>
+                  <v-col class="no-background">
+                    <div class="title-text">{{ element.title }}</div>
+                    </v-col>
+                  <v-col class="no-background">
+                    <div class="subtitle-text">{{ formatDate(element.startDate) }}</div>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </template>
+          </draggable>
+        </v-col>
 
-        <draggable
-            class="drag-area"
-            :list="eventsQ3"
-            group="events"
-            @change="updateEventsTo3"
-        >
-          <template #item="{ element }">
-            <v-card
-                :key="element.id"
-                class="mb-3 event-item"
-                prepend-icon="mdi-check-circle-outline"
-                :title="element.title"
-                :subtitle="formatDate(element.startDate)"
-                @click="onEventClick(element)"
-            >
-            </v-card>
-          </template>
-        </draggable>
-      </v-col>
+        <!-- 1사분면 -->
+        <v-col cols="5" class="pa-3" id="Q1">
+          <!-- <v-card id="Q1" class="mb-3 d-flex justify-center align-center" dark
+                  style="height: 60px; font-size: 1.2em; font-weight: bold;">
+            중요 & 긴급하지 않음
+          </v-card> -->
+          <draggable
+              class="drag-area"
+              :list="eventsQ1"
+              group="events"
+              @change="updateEventsTo1"
+          >
+            <template #item="{ element }">
+              <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
+                <v-row align="center" class="pa-2" no-gutters>
+                  <v-col cols="auto" class="no-background">
+                    <v-icon>mdi-check-circle-outline</v-icon>
+                  </v-col>
+                  <v-col class="no-background">
+                    <div class="title-text">{{ element.title }}</div>
+                    </v-col>
+                  <v-col class="no-background">
+                    <div class="subtitle-text">{{ formatDate(element.startDate) }}</div>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </template>
+          </draggable>
+        </v-col>
+      </v-row>
+      
+      <v-row no-gutters class="d-flex">
+        <v-col cols="1" class="pa-0 ma-0 d-flex align-center justify-center no-background">
+          <div style="font-size: 1.2em; font-weight: bold; writing-mode: tb-rl;">
+            중요하지 않음
+          </div>
+        </v-col>
+        <!-- 3사분면 -->
+        <v-col cols="5" class="pa-3" id="Q3">
+          <!-- <v-card id="Q3" class="mb-3 d-flex justify-center align-center" dark style="height: 60px; font-size: 1.2em; font-weight: bold;">
+            중요하지 않음 & 긴급
+          </v-card> -->
+              
 
-      <!-- 조각 4 -->
-      <v-col cols="2" class="pa-3" style="flex-basis: 30%; max-width: 22%;">
-        <v-card id="Q4" class="mb-3 d-flex justify-center align-center" dark
-                style="height: 60px; font-size: 1.3em; font-weight: bold;">
-          중요하지 않음 & 긴급하지 않음
-        </v-card>
+          <draggable
+              class="drag-area"
+              :list="eventsQ3"
+              group="events"
+              @change="updateEventsTo3"
+          >
+            <template #item="{ element }">
+              <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
+                <v-row align="center" class="pa-2" no-gutters>
+                  <v-col cols="auto" class="no-background">
+                    <v-icon>mdi-check-circle-outline</v-icon>
+                  </v-col>
+                  <v-col class="no-background">
+                    <div class="title-text">{{ element.title }}</div>
+                    </v-col>
+                  <v-col class="no-background">
+                    <div class="subtitle-text">{{ formatDate(element.startDate) }}</div>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </template>
+          </draggable>
+        </v-col>
 
-        <draggable
-            class="drag-area"
-            :list="eventsQ4"
-            group="events"
-            @change="updateEventsTo4"
-        >
-          <template #item="{ element }">
-            <v-card
-                :key="element.id"
-                class="mb-3 event-item"
-                prepend-icon="mdi-check-circle-outline"
-                :title="element.title"
-                :subtitle="formatDate(element.startDate)"
-                @click="onEventClick(element)"
-            >
-            </v-card>
-          </template>
-        </draggable>
-      </v-col>
+        <!-- 4사분면 -->
+        <v-col cols="5" class="pa-3" id="Q4">
+          <!-- <v-card id="Q4" class="mb-3 d-flex justify-center align-center" dark
+                  style="height: 60px; font-size: 1.2em; font-weight: bold;">
+            중요하지 않음 & 긴급하지 않음
+          </v-card> -->
 
-    </v-row>
+          <draggable
+              class="drag-area"
+              :list="eventsQ4"
+              group="events"
+              @change="updateEventsTo4"
+          >
+            <template #item="{ element }">
+              <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
+                <v-row align="center" class="pa-2" no-gutters>
+                  <v-col cols="auto" class="no-background">
+                    <v-icon>mdi-check-circle-outline</v-icon>
+                  </v-col>
+                  <v-col class="no-background">
+                    <div class="title-text">{{ element.title }}</div>
+                    </v-col>
+                  <v-col class="no-background">
+                    <div class="subtitle-text">{{ formatDate(element.startDate) }}</div>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </template>
+          </draggable>
+        </v-col>
+      </v-row>
   </v-container>
 </template>
 
@@ -376,7 +419,7 @@ export default {
 .EisenhowerParent {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   right: 5%;
   /* 오른쪽 끝에 위치 사이드바 위치에 따라 바꾸기!!! */
   top: 10vh;
@@ -384,13 +427,20 @@ export default {
 }
 
 .eisenhower-matrix {
-  margin-top: -13%;
-  height: 100vh;
-  /* Full viewport height */
+  margin-top: -18%;
+  height: calc(100vh - 10vh); /* 헤더 높이를 고려한 높이 조정 */
 }
 
 .event-item {
-  font-size: 1.25rem;
+  font-size: 0.8em;
+}
+.title-text {
+  font-size: 17px; /* 제목 글씨 크기 조절 */
+  font-weight: bold;
+}
+
+.subtitle-text {
+  font-size: 14px; /* 부제목 글씨 크기 조절 */
 }
 
 .v-col {
@@ -399,19 +449,27 @@ export default {
   margin: 0.5rem; /* Some margin around every column */
 }
 
+.no-background {
+  background-color: transparent; /* 배경색 투명하게 */
+}
+
+.drag-area{
+  min-height: 250px;
+}
+
 #Q1 {
-  background: #f3676b;
+  background: rgba(224, 163, 148, 0.6);
 }
 
 #Q2 {
-  background: #f08d75;
+  background:  rgba(224, 143, 146, 0.6);
 }
 
 #Q3 {
-  background: #8fdcb2;
+  background: rgba(148, 216, 178, 0.6);
 }
 
 #Q4 {
-  background: #4672d3;
+  background: rgba(140, 162, 211, 0.6);
 }
 </style>

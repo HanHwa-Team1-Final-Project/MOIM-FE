@@ -17,7 +17,7 @@
         v-model="searchQuery"
         placeholder="일정 검색"
         prepend-inner-icon="mdi-magnify"
-        class="expanding-search mt-6"
+        class="expanding-search mt-6 "
         :class="{ 'closed': searchClosed && !searchQuery }"
         filled
         dense

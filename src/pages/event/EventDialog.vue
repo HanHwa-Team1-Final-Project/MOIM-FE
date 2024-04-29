@@ -135,32 +135,25 @@
             </v-row>
             <v-btn flat @click="addNoti">알림 추가</v-btn>
           </v-col>
-          <!-- <v-col cols="12" md="5">
-            <v-text-field
-              type="number"
-              variant="underlined"
-              v-model="alertQuantity"
-              label="알람 시간"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" md="5">
-            <v-select v-model="timeType" variant="underlined" :items="timeTypes" label="시간 단위">
-            </v-select>
-          </v-col> -->
+          <!-- 반복 -->
           <v-col cols="12" md="2"><h4>반복</h4></v-col>
-          <v-col cols="12" md="5">
-            <v-select
-              v-model="repeatType"
-              variant="underlined"
-              :items="repeatTypes"
-              label="반복 단위"
-            >
-            </v-select>
-          </v-col>
-          <v-col cols="12" md="2"><h4>반복종료</h4></v-col>
-          <v-col cols="12" md="3">
-            <input type="date" v-model="repeatEndDate" />
+          <v-col cols="12" sm="10">
+            <v-row v-if="showRepeatSettings">
+              <v-col cols="12" md="5">
+                <v-select
+                  v-model="repeatType"
+                  variant="underlined"
+                  :items="repeatTypes"
+                  label="반복 단위"
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="12" md="2"><h4>종료</h4></v-col>
+              <v-col cols="12" md="3">
+                <input type="date" v-model="repeatEndDate" />
+              </v-col>
+            </v-row>
+            <v-btn flat @click="toggleAndReset">반복 설정</v-btn>
           </v-col>
           <v-col cols="12" md="12">
             <v-file-input
@@ -214,6 +207,7 @@ export default {
       todos: [],
       notis: [],
       files: [],
+      showRepeatSettings: false,
     };
   },
 
@@ -262,6 +256,13 @@ export default {
       this.repeatEndDate = null;
       this.repeatType = null;
       this.isDialogOpen = false;
+    },
+    toggleAndReset() {
+      this.showRepeatSettings = !this.showRepeatSettings;
+      // 반복 설정을 펼칠 때마다 값 초기화
+      this.repeatType = null; // 반복 단위 초기화
+      this.repeatEndDate = null; // 반복 종료일 초기화
+
     },
     addMinutesToDate(dateString, minutesToAdd) {
       // dateString을 Date 객체로 변환

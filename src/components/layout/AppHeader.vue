@@ -15,9 +15,10 @@
         @focus="searchClosed=false"
         @blur="searchClosed=true"
         v-model="searchQuery"
+        variant="underlined"
         placeholder="일정 검색"
         prepend-inner-icon="mdi-magnify"
-        class="expanding-search mt-6"
+        class="expanding-search mt-4"
         :class="{ 'closed': searchClosed && !searchQuery }"
         filled
         dense
@@ -295,7 +296,8 @@ export default {
     &:before, &:after
       border-color: transparent !important
   &.closed
-    max-width: 45px
+    max-width: 100px
+    
     .v-input__slot
       background: transparent !important
   .v-menu__content

@@ -27,14 +27,15 @@
         <v-container>
           <v-radio-group v-model="eventMatrix"
                          :rules="[value => !!value || '4가지 선택지 중 하나를 선택해주세요']" required>
-            <v-radio value="Q1">
-              <template v-slot:label>
-                <div>중요 & 긴급하지 않음</div>
-              </template>
-            </v-radio>
+            
             <v-radio value="Q2">
               <template v-slot:label>
                 <div>중요 & 긴급</div>
+              </template>
+            </v-radio>
+            <v-radio value="Q1">
+              <template v-slot:label>
+                <div>중요 & 긴급하지 않음</div>
               </template>
             </v-radio>
             <v-radio value="Q3">

@@ -31,19 +31,26 @@
           <v-col cols="12" md="10">
             <input type="text" :value="getEisenhowerMatrixLabel(radios)" readonly>
           </v-col>
-          <!-- 알람 조회 -->
+          <!-- 메모 조회 -->
+          <v-col cols="12" md="2" v-if="memo">
+            <v-icon class="mr-2">mdi-format-align-left</v-icon>
+          </v-col>
+          <v-col cols="12" md="10" v-if="memo">
+            <v-textarea :value="memo" variant="solo-filled" readonly auto-grow></v-textarea>
+          </v-col>
+          <!-- 할일 조회 -->
           <v-col cols="12" md="2" v-if="displayAlarmInfo">
             <v-icon class="mr-2">mdi-bell-outline</v-icon>
           </v-col>
           <v-col cols="12" md="10" v-if="displayAlarmInfo">
             <p v-html="displayAlarmInfo"></p>
           </v-col>
-           <!-- 메모 조회 -->
-           <v-col cols="12" md="2" v-if="memo">
-            <v-icon class="mr-2">mdi-format-align-left</v-icon>
+          <!-- 알람 조회 -->
+          <v-col cols="12" md="2" v-if="displayAlarmInfo">
+            <v-icon class="mr-2">mdi-bell-outline</v-icon>
           </v-col>
-          <v-col cols="12" md="10" v-if="memo">
-            <v-textarea :value="memo" variant="solo-filled" readonly auto-grow></v-textarea>
+          <v-col cols="12" md="10" v-if="displayAlarmInfo">
+            <p v-html="displayAlarmInfo"></p>
           </v-col>
           <!-- 파일 다운로드 -->
           <v-col cols="12" md="2" v-if="fileUrl">

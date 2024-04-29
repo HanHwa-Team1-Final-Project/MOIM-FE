@@ -1,10 +1,13 @@
 <template>
-  <v-app-bar
+  <!-- <v-app-bar
       :elevation="0"
       color="teal-darken-4"
       image="https://picsum.photos/seed/picsum/1920/1080"
+  > -->
+  <v-app-bar
+      :elevation="0"
   >
-    <v-app-bar-title>MOIM</v-app-bar-title>
+    <v-app-bar-title class="moim" @click="goCalendar">MOIM</v-app-bar-title>
 
     <v-spacer></v-spacer>
 
@@ -22,6 +25,8 @@
         @keydown.enter="searchEvents"
         @click:append="searchEvents"
     ></v-text-field>
+
+    <v-spacer></v-spacer>
 
     <v-menu>
       <template v-slot:activator="{ props }">
@@ -181,6 +186,9 @@ export default {
       }
       return token;
     },
+    goCalendar() {
+      this.$router.push({ name: "fullCalendarComponent" });
+    },
 
     async searchEvents() {
       // 토큰 관련 에러 처리
@@ -293,5 +301,9 @@ export default {
   .v-menu__content
     max-height: 300px
     overflow-y: auto
+
+::v-deep .moim 
+  cursor: pointer
+  margin-left: 30px
 
 </style>

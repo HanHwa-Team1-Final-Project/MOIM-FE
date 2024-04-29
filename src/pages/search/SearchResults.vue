@@ -11,7 +11,7 @@
             @click="onResultClick(result)"
             link>
           <template v-slot:prepend>
-            <span class="circle-day">
+            <span class="circle-day" :style="{ backgroundColor: getBackgroundColor(result.matrix) }">
               {{ getDay(result.startDate) }}
             </span>
           </template>
@@ -63,7 +63,21 @@ export default {
           result.repeatParent,
           result.alarmYn,
       );
-    }
+    },
+    getBackgroundColor(matrixValue) {
+      switch(matrixValue) {
+        case 'Q2':
+          return '#FF5252'; // 빨간색
+        case 'Q1':
+          return '#FFCA28'; // 노란색
+        case 'Q4':
+          return '#29B6F6'; // 파란색
+        case 'Q3':
+          return '#66BB6A'; // 녹색
+        default:
+          return '#ffffff'; // 기본값은 흰색
+      }
+    },
   },
   setup() {
     const searchStore = useSearchStore();

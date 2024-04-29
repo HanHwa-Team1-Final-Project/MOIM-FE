@@ -13,6 +13,9 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
+      
+      <v-list-item prepend-icon="mdi-calendar" title="Calendar" @click="goTo('fullCalendarComponent')"></v-list-item>
+      <v-list-item prepend-icon="mdi-trello" title="Eisenhower Matrix" @click="goToEisenhowerMatrix"></v-list-item>
       <v-list-item
         prepend-icon="mdi-widgets"
         title="일정 생성"
@@ -22,8 +25,6 @@
       <EventDialog ref="EventCreate"></EventDialog>
       <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
       <MoimDialog ref="MoimCreate"></MoimDialog>
-      <v-list-item prepend-icon="mdi-trello" title="Eisenhower Matrix" @click="goToEisenhowerMatrix"></v-list-item>
-      <v-list-item prepend-icon="mdi-calendar" title="FullCalendar 테스트" @click="goTo('fullCalendarComponent')"></v-list-item>
       <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" @click="goToMoimList"></v-list-item>
     </v-list>
   </v-navigation-drawer>

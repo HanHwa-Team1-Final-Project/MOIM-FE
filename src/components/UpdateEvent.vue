@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="update-main">
     <v-form ref="form" lazy-validation>
       <v-text-field
           v-model="eventTitle"
@@ -73,7 +73,7 @@
       </v-file-input>
       <v-btn @click="updateForm">수정 완료</v-btn>
     </v-form>
-    <p>Event ID: {{ eventId }}</p>
+    <!-- <p>Event ID: {{ eventId }}</p>
     <p>Event Title: {{ eventTitle }}</p>
     <p>Event Memo: {{ eventMemo }}</p>
     <p>Event StartDate: {{ eventStartDate }}</p>
@@ -81,13 +81,15 @@
     <p>Event Place: {{ eventPlace }}</p>
     <p>Event Matrix: {{ eventMatrix }}</p>
     <p>Event AlarmYn: {{ eventAlarmYn }}</p>
-    <p>Event FileUrl: {{ eventFileUrl }}</p>
+    <p>Event FileUrl: {{ eventFileUrl }}</p> -->
   </v-container>
 </template>
 
 <script>
 import {useEventStore} from "@/stores/updateEventStore";
 import axiosInstance from "@/axios";
+
+import Swal from 'sweetalert2'
 
 export default {
   data() {
@@ -184,8 +186,17 @@ export default {
           }
         });
         console.log("수정 완료")
-        window.alert(this.eventTitle + " 일정이 수정되었습니다.")
-        window.location.reload();
+        Swal.fire({
+            title: '일정이 수정되었습니다.',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              this.$router.push({ name: "fullCalendarComponent" });
+            }
+          })
       } catch (error) {
         console.log(error);
       }
@@ -194,4 +205,7 @@ export default {
 }
 </script>
 <style>
+.update-main {
+  margin-top: -17%;
+}
 </style>

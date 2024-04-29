@@ -34,7 +34,7 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         headerToolbar: {
-          left: 'prev,next today',
+          left: 'prev next today',
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
@@ -80,16 +80,23 @@ export default {
         const getEvents = response.data.data;
         console.log("월간 일정: ", getEvents);
         const events = [];
-        getEvents.forEach(event =>
+        getEvents.forEach(event => {
+          const color = event.matrix === 'Q2' ? '#FF7A85' : 
+                  event.matrix === 'Q1' ? '#FFEB5A' : 
+                  event.matrix === 'Q3' ? '#5BFFB0' : '#1EDDFF'; // 'defaultColor'는 event.matrix가 q1, q2, q3 중 어느 것에도 해당하지 않을 때 사용할 색상입니다.
+
             events.push({
               title: event.title,
               id: event.id,
+              color: color,
               start: new Date(event.startDate),
               end: new Date(event.endDate),
               extendedProps: {
                 sourceId: 'events'
               }
-            }));
+            });
+        });
+          
         this.events = events;
 
         // FullCalendar에 일정이 이미 로드되어 있는지 확인한다.
@@ -218,5 +225,21 @@ export default {
   flex-grow: 0.7;
   padding: 3em;
 }
+
+.fc-button {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #555555 !important;
+  font-weight: bold !important;
+
+}
+
+.fc-button-active {
+  background-color: #363636 !important;
+  border-color: #363636 !important;
+  color: #ffffff !important;
+  font-weight: bold !important;
+}
+
 
 </style>

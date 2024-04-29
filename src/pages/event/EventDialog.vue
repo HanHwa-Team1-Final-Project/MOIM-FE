@@ -71,16 +71,17 @@
                 ]"
                 required
               >
-                <v-radio value="Q1">
-                  <template v-slot:label>
-                    <div>중요 & 긴급하지 않음</div>
-                  </template>
-                </v-radio>
                 <v-radio value="Q2">
                   <template v-slot:label>
                     <div>중요 & 긴급</div>
                   </template>
                 </v-radio>
+                <v-radio value="Q1">
+                  <template v-slot:label>
+                    <div>중요 & 긴급하지 않음</div>
+                  </template>
+                </v-radio>
+                
                 <v-radio value="Q3">
                   <template v-slot:label>
                     <div>중요하지 않음 & 긴급</div>
@@ -161,7 +162,7 @@ export default {
       title: "",
       memo: "",
       place: "",
-      radios: "Q1",
+      radios: "Q2",
       startDateTime: null,
       endDateTime: null,
       alertQuantity: null,
@@ -359,6 +360,7 @@ export default {
             confirmButtonText: '확인',
           }).then((result) => {
             if(result.isConfirmed) {
+              this.$router.push({ name: "fullCalendarComponent" });
               window.location.reload();
             }
           })

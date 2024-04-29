@@ -1,10 +1,30 @@
 <template>
-  <v-app-bar
+  <!-- <v-app-bar
       :elevation="0"
       color="teal-darken-4"
       image="https://picsum.photos/seed/picsum/1920/1080"
+  > -->
+  <v-app-bar
+      :elevation="0"
   >
-    <v-app-bar-title>MOIM</v-app-bar-title>
+    <v-app-bar-title class="moim" @click="goCalendar">MOIM</v-app-bar-title>
+
+    <v-spacer></v-spacer>
+
+    <v-text-field
+        @focus="searchClosed=false"
+        @blur="searchClosed=true"
+        v-model="searchQuery"
+        placeholder="일정 검색"
+        prepend-inner-icon="mdi-magnify"
+        class="expanding-search mt-6"
+        :class="{ 'closed': searchClosed && !searchQuery }"
+        filled
+        dense
+        clearable
+        @keydown.enter="searchEvents"
+        @click:append="searchEvents"
+    ></v-text-field>
 
     <v-spacer></v-spacer>
 
@@ -34,23 +54,9 @@
       </v-list>
     </v-menu>
 
-    <v-text-field
-        @focus="searchClosed=false"
-        @blur="searchClosed=true"
-        v-model="searchQuery"
-        placeholder="일정 검색"
-        prepend-inner-icon="mdi-magnify"
-        class="expanding-search mt-6"
-        :class="{ 'closed': searchClosed && !searchQuery }"
-        filled
-        dense
-        clearable
-        @keydown.enter="searchEvents"
-        @click:append="searchEvents"
-    ></v-text-field>
-
-    <v-btn icon>
-      <v-icon>mdi-dots-vertical</v-icon>
+    <v-btn flat color="black" @click="logout">
+      <v-icon>mdi-logout</v-icon>
+      <span>로그아웃</span>
     </v-btn>
   </v-app-bar>
 
@@ -147,6 +153,10 @@ export default {
       this.getNotification();
   },
   methods: {
+    logout() {
+        localStorage.clear();
+        window.location.href = "/";
+    },
     onNotiClick(notiInfo) {
       if(notiInfo.notificationType == "GROUP_CREATE" || notiInfo.notificationType == "GROUP_DEADLINE") {
         this.$refs.moimDetail.openDialog(notiInfo.groupId, notiInfo.hostName);
@@ -175,6 +185,9 @@ export default {
         return "";
       }
       return token;
+    },
+    goCalendar() {
+      this.$router.push({ name: "fullCalendarComponent" });
     },
 
     async searchEvents() {
@@ -288,5 +301,9 @@ export default {
   .v-menu__content
     max-height: 300px
     overflow-y: auto
+
+::v-deep .moim 
+  cursor: pointer
+  margin-left: 30px
 
 </style>

@@ -1,12 +1,18 @@
 <template>
   <v-dialog v-model="isVisible" max-width="600">
     <v-card class="pa-4">
-      <v-card-title>
-        <v-icon class="mr-2">mdi-calendar-check</v-icon>
-        {{title}}
+      <v-card-title class="text-h5" style="width: 100%; display: flex; align-items: center;">
+        <v-icon class="mr-2" style="font-size: 25px;">mdi-calendar-check</v-icon>
+        <div
+            class="title-text"
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+        >{{ title }}
+        </div>
+        <v-spacer></v-spacer>
+        <v-btn class="no-shadow" density="comfortable" icon="mdi-close" @click="closeDialog"></v-btn>
       </v-card-title>
-      <v-card-text>
-        <v-row dense>
+      <v-card-text class="mt-5">
+        <v-row>
           <v-col cols="12" md="2"><h4>시작일</h4></v-col>
           <v-col cols="12" md="10">
             <input type="datetime-local" :value="startDateTime" readonly>
@@ -15,41 +21,52 @@
           <v-col cols="12" md="10">
             <input type="datetime-local" :value="endDateTime" readonly>
           </v-col>
-          <v-col cols="12" md="2"><h4>장소</h4></v-col>
-          <v-col cols="12" md="10">
+           <!-- 장소 조회 -->
+          <v-col cols="12" md="2" v-if="place"><v-icon class="mr-2">mdi-map-marker</v-icon></v-col>
+          <v-col cols="12" md="10" v-if="place">
             <input type="text" :value="place" readonly>
           </v-col>
-          <v-col cols="12" md="2"><h4>중요도</h4></v-col>
+          <!-- 아이젠하워 매트릭스 조회 -->
+          <v-col cols="12" md="2"><v-icon class="mr-2">mdi-alert-circle-outline</v-icon></v-col>
           <v-col cols="12" md="10">
             <input type="text" :value="getEisenhowerMatrixLabel(radios)" readonly>
           </v-col>
-          <!-- <v-col cols="12" md="2"><h4>알림</h4></v-col>
-          <v-col cols="12" md="10">
-            <v-text-field :value="`알림 ${alertQuantity} ${getTimeTypeLabel(timeType)}`" readonly>
-            </v-text-field>
-          </v-col> -->
-          <v-col cols="12" md="2"><h4>메모</h4></v-col>
-            <v-col cols="12" md="10">
-              <input type="text" :value="memo" readonly>
-            </v-col>
-          <v-col cols="12" md="12">
-            <!-- 파일 목록은 보여주되, 다운로드 링크나 뷰어를 제공할 수 있습니다. -->
-            <!-- <v-subheader>첨부 파일</v-subheader> -->
-            <v-list dense>
-              <v-list-item v-for="file in files" :key="file.name">
-                <!-- <v-list-item-content>
-                  <v-list-item-title>{{ file.name }}</v-list-item-title>
-                </v-list-item-content> -->
-              </v-list-item>
-            </v-list>
+          <!-- 알람 조회 -->
+          <v-col cols="12" md="2" v-if="displayAlarmInfo">
+            <v-icon class="mr-2">mdi-bell-outline</v-icon>
+          </v-col>
+          <v-col cols="12" md="10" v-if="displayAlarmInfo">
+            <p v-html="displayAlarmInfo"></p>
+          </v-col>
+           <!-- 메모 조회 -->
+           <v-col cols="12" md="2" v-if="memo">
+            <v-icon class="mr-2">mdi-format-align-left</v-icon>
+          </v-col>
+          <v-col cols="12" md="10" v-if="memo">
+            <v-textarea :value="memo" variant="solo-filled" readonly auto-grow></v-textarea>
+          </v-col>
+          <!-- 파일 다운로드 -->
+          <v-col cols="12" md="2" v-if="fileUrl">
+            <v-icon class="mr-2">mdi-file-multiple-outline</v-icon>
+          </v-col>
+          <v-col cols="12" md="10" v-if="fileUrl">
+            <v-btn :href="fileUrl" target="_blank" download>파일 다운로드</v-btn>
           </v-col>
         </v-row>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" @click="closeDialog">닫기</v-btn>
+        <v-btn color="green darken-1" text @click="goToUpdateEvent">수정</v-btn>
+        <v-btn color="green darken-1" text @click="showDeleteDialog" v-if="repeatParent != null">삭제</v-btn>
+        <v-btn color="green darken-1" text @click="deleteSingleEvent" v-else>삭제</v-btn>
+      
       </v-card-actions>
+      <DeleteRepeatEvent
+          ref="delRepeatDialog"
+          :eventId="id"
+          :repeatParent="repeatParent"
+      />
     </v-card>
   </v-dialog>
 </template>
@@ -57,32 +74,30 @@
 
 <script>
 import axiosInstance from "@/axios";
+import {useEventStore} from "@/stores/updateEventStore";
+import DeleteRepeatEvent from "@/pages/search/DeleteRepeatEvent.vue";
+
+import Swal from 'sweetalert2'
 
 export default {
   props: ['eventId'],
+  components: {DeleteRepeatEvent},
   data() {
     return {
       // Dialog 상태
       isVisible: false,
       // 상세 정보를 위한 데이터
+      id: '',
       title: '',
       startDateTime: '',
       endDateTime: '',
       place: '',
       radios: '', // Eisenhower Matrix 선택 값
-      alertQuantity: '30',
-      timeType: 'minutes',
-      memo: 'Bring your own laptop.',
-      files: [
-        { name: 'Workshop Outline.pdf' },
-        { name: 'Preparation Guide.pdf' }
-      ],
-      // 시간 단위 선택 항목
-      timeTypes: [
-        { text: 'Minutes', value: 'minutes' },
-        { text: 'Hours', value: 'hours' },
-        { text: 'Days', value: 'days' }
-      ],
+      alarmInfo: '',
+      displayAlarmInfo: '',
+      memo: '',
+      fileUrl: '',
+      repeatParent: ''
     };
   },
   methods: {
@@ -105,18 +120,72 @@ export default {
         this.title = eventDetail.title;
         this.memo = eventDetail.memo;
         this.place = eventDetail.place;
-
-
+        this.fileUrl = eventDetail.fileUrl;
+        this.repeatParent = eventDetail.repeatParent;
       } catch (error) {
         console.log(error);
       }
     },
     openDialog(eventId) {
       this.isVisible = true;
+      this.id = eventId;
       this.getEventDetail(eventId);
+      this.getAlarmInfo(eventId);
     },
     closeDialog() {
       this.isVisible = false;
+    },
+    showDeleteDialog() {
+      this.$refs.delRepeatDialog.openDeleteRepeatEventDialog();
+    },
+    goToUpdateEvent() {
+      const eventStore = useEventStore();
+      const event = {
+        id: this.id,
+        title: this.title,
+        memo: this.memo,
+        startDate: this.startDateTime,
+        endDate: this.endDateTime,
+        place: this.place,
+        matrix: this.radios,
+        fileUrl: this.fileUrl,
+      }
+      eventStore.setCurrentEvent(event);
+      this.$router.push({name: "updateEvent"});
+    },
+    async getAlarmInfo(eventId) {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (token == null) {
+          alert("로그인이 필요합니다.");
+          this.$router.push({name: "Login"});
+          return;
+        }
+        const headers = {Authorization: `Bearer ${token}`};
+        const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/events/search/alarm/${eventId}`, {headers});
+        this.alarmInfo = response.data.data;
+        this.displayAlarmInfo = this.alarmInfo.map(alarm => {
+          let timeUnit = '';
+          switch (alarm.alarmType) {
+            case 'M':
+              timeUnit = '분';
+              break;
+            case 'H':
+              timeUnit = '시간';
+              break;
+            case 'D':
+              timeUnit = '일';
+              break;
+            default:
+              timeUnit = '';
+          }
+          return `${alarm.setTime}${timeUnit} 전<br/>`;
+        }).join('');
+
+        console.log('The alarm info is: ', this.alarmInfo);
+      } catch (error) {
+        console.log(error);
+      }
     },
     // Eisenhower Matrix 라벨 반환
     getEisenhowerMatrixLabel(value) {
@@ -127,11 +196,36 @@ export default {
         Q4: '중요하지 않음 & 긴급하지 않음'
       };
       return labels[value] || '알 수 없음';
-    },
-    // 시간 단위 라벨 반환
-    getTimeTypeLabel(value) {
-      const found = this.timeTypes.find(type => type.value === value);
-      return found ? found.text : '알 수 없음';
+    },async deleteSingleEvent() {
+      this.isVisible = false;
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (token == null) {
+          alert("로그인이 필요합니다.");
+          this.$router.push({name: "Login"});
+          return;
+        }
+        const headers = {Authorization: `Bearer ${token}`};
+        const response = await axiosInstance.delete(`${process.env.VUE_APP_API_BASE_URL}/api/events/${this.id}`, {headers});
+        if (response.status === 200) {
+          Swal.fire({
+            title: '일정이 삭제되었습니다.',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              window.location.reload();
+            }
+          })
+        } else {
+          alert('단일 일정 삭제 실패');
+        }
+      } catch (error) {
+        console.log(error);
+        alert('단일 일정 삭제 실패');
+      }
     }
   }
 }

@@ -62,7 +62,7 @@
         <v-spacer/>
         <v-btn color="green darken-1" text @click="goToUpdateEvent">수정</v-btn>
         <v-btn color="green darken-1" text @click="showDeleteDialog" v-if="repeatParent != null">삭제</v-btn>
-        <v-btn color="green darken-1" text @click="deleteSingleEvent" v-else>단일 일정 삭제</v-btn>
+        <v-btn color="green darken-1" text @click="deleteSingleEvent" v-else>삭제</v-btn>
       </v-card-actions>
       <DeleteRepeatEvent
           ref="delRepeatDialog"
@@ -78,6 +78,7 @@ import {matrixToDescription} from "@/utils/common";
 import DeleteRepeatEvent from "@/pages/search/DeleteRepeatEvent.vue";
 import {useEventStore} from "@/stores/updateEventStore";
 import axiosInstance from "@/axios";
+import Swal from 'sweetalert2'
 
 export default {
   components: {DeleteRepeatEvent},
@@ -169,6 +170,7 @@ export default {
     },
 
     async deleteSingleEvent() {
+      this.dialog=false;
       try {
         const token = localStorage.getItem("accessToken");
         if (token == null) {
@@ -179,8 +181,17 @@ export default {
         const headers = {Authorization: `Bearer ${token}`};
         const response = await axiosInstance.delete(`${process.env.VUE_APP_API_BASE_URL}/api/events/${this.id}`, {headers});
         if (response.status === 200) {
-          alert('단일 일정 삭제 성공');
-          location.reload(); // or some other code you want to run after delete
+          Swal.fire({
+            title: '일정이 삭제되었습니다.',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              this.$router.push({ name: "fullCalendarComponent" });
+            }
+          })
         } else {
           alert('단일 일정 삭제 실패');
         }

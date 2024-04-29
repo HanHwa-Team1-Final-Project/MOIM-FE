@@ -15,10 +15,10 @@
         <v-btn color="primary" text @click="delRepeatDialog = false">취소</v-btn>
         <v-btn color="primary" text @click="deleteSchedule">확인</v-btn>
       </v-card-actions>
-      <v-card-text>
+      <!-- <v-card-text>
         <p>Event ID: {{ eventId }}</p>
         <p>Repeat Parent: {{ repeatParent }}</p>
-      </v-card-text>
+      </v-card-text> -->
     </v-card>
   </v-dialog>
   <v-bottom-sheet v-model="processingSheet" inset>
@@ -72,9 +72,12 @@ export default {
         this.processing = false;
         setTimeout(() => {
           this.processingSheet = false
-        }, 3000);
+        }, 1000);
 
         this.delRepeatDialog = false;
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
 
       } catch(error) {
         console.error("일정 삭제 중 오류가 발생했습니다. " + error);

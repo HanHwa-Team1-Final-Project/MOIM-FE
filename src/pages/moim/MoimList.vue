@@ -1,6 +1,14 @@
 <template>
   <v-container fluid class="search-results">
-    <v-container>
+    <v-container v-if="moims.length === 0" class="nonMoim">
+      <v-row>
+        <v-col cols="12">
+          <div class="no-moims-message">모임이 없습니다.</div>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-container v-else>
       <v-row>
         <v-col cols="12" md="4">
           <v-row v-if="moims.length > 0">
@@ -58,12 +66,11 @@
             </v-col>
           </v-row>
           <v-row>
-  <v-col>
-    <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
-    <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
-  </v-col>
-</v-row>
-
+            <v-col>
+              <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
+              <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
 
         <!-- 모임 상세 페이지 -->
@@ -376,26 +383,26 @@ export default {
       }
     },
     async checkNextPage(nextPage) {
-    const authToken = localStorage.getItem("accessToken");
-    const nextUrl = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups/${nextPage}`;
-    try {
-      const nextResponse = await axiosInstance.get(nextUrl, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      this.hasNextPage = nextResponse.data.data.length > 0;
-    } catch (error) {
-      console.error("Error checking next page:", error);
-      this.hasNextPage = false;
-    }
-  },
+      const authToken = localStorage.getItem("accessToken");
+      const nextUrl = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups/${nextPage}`;
+      try {
+        const nextResponse = await axiosInstance.get(nextUrl, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        this.hasNextPage = nextResponse.data.data.length > 0;
+      } catch (error) {
+        console.error("Error checking next page:", error);
+        this.hasNextPage = false;
+      }
+    },
 
-  nextPage() {
-    if (this.hasNextPage) {
-      this.fetchMoims(this.currentPage + 1);
-    }
-  },
+    nextPage() {
+      if (this.hasNextPage) {
+        this.fetchMoims(this.currentPage + 1);
+      }
+    },
 
     prevPage() {
       if (this.currentPage > 1) {
@@ -602,6 +609,14 @@ export default {
 <style>
 .search-results {
   margin-top: -250px;
+}
+.nonMoim{
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  height: 100vh;
+}
+.no-moims-message {
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 .circle-button {
   border-radius: 50%;

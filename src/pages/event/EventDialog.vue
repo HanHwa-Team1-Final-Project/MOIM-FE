@@ -10,6 +10,7 @@
           <v-col cols="12" sm="2"><h4>제목</h4></v-col>
           <v-col cols="12" sm="10">
             <v-text-field
+              variant="underlined"
               label="제목을 입력하세요"
               :rules="[(value) => !!value || '']"
               required
@@ -21,45 +22,9 @@
           <v-col cols="12" md="10">
             <input type="datetime-local" v-model="startDateTime" />
           </v-col>
-          <v-col cols="12" md="2"><h4>종료일</h4></v-col>
+          <v-col cols="12" md="2" class="mt-2 mb-3"><h4>종료일</h4></v-col>
           <v-col cols="12" md="10">
             <input type="datetime-local" v-model="endDateTime" />
-          </v-col>
-          <v-col cols="12" sm="2"><h4>장소</h4></v-col>
-          <v-col cols="12" sm="10">
-            <v-text-field
-              label="장소를 입력하세요"
-              :rules="[(value) => !!value || '']"
-              required
-              v-model="place"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" sm="2"><h4>메모</h4></v-col>
-          <v-col cols="12" md="10">
-            <v-textarea auto-grow label="메모를 입력하세요." v-model="memo">
-            </v-textarea>
-          </v-col>
-          <v-col cols="12" md="2"><h4>할 일</h4></v-col>
-          <v-col cols="12" sm="10">
-            <v-row dense v-for="(todo, index) in todos" :key="index">
-              <v-col cols="2" sm="1">
-                <v-checkbox v-model="todo.done"> </v-checkbox>
-              </v-col>
-              <v-col cols="9" sm="9">
-                <v-text-field
-                  variant="underlined"
-                  label="내용"
-                  v-model="todo.text"
-                  :rules="[rules.required]"
-                >
-                </v-text-field>
-              </v-col>
-              <v-col cols="12" sm="1">
-                <v-btn flat @click="removeTodo(index)">삭제</v-btn>
-              </v-col>
-            </v-row>
-            <v-btn flat @click="addTodo">할 일 추가</v-btn>
           </v-col>
           <v-col cols="12" md="2"><h4>중요도</h4></v-col>
           <v-col cols="12" sm="10">
@@ -95,23 +60,99 @@
               </v-radio-group>
             </v-container>
           </v-col>
+          <v-col cols="12" sm="2"><h4>장소</h4></v-col>
+          <v-col cols="12" sm="10">
+            <v-text-field
+              label="장소를 입력하세요"
+              variant="underlined"
+              :rules="[(value) => !!value || '']"
+              required
+              v-model="place"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="2"><h4>메모</h4></v-col>
+          <v-col cols="12" md="10">
+            <v-textarea auto-grow label="메모를 입력하세요." v-model="memo">
+            </v-textarea>
+          </v-col>
+          <!-- 할일  -->
+          <v-col cols="12" md="2"><h4>할 일</h4></v-col>
+          <v-col cols="12" sm="10">
+            <v-row dense v-for="(todo, index) in todos" :key="index">
+              <v-col cols="2" sm="1" class="mt-2 mr-3">
+                <v-checkbox v-model="todo.done"> </v-checkbox>
+              </v-col>
+              <v-col cols="9" sm="9">
+                <v-text-field
+                  variant="underlined"
+                  label="내용을 입력하세요."
+                  v-model="todo.text"
+                  :rules="[(value) => !!value || '']"
+                  required
+                >
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" sm="1" class="mt-4">
+                <v-btn flat @click="removeTodo(index)">삭제</v-btn>
+              </v-col>
+            </v-row>
+            <v-btn flat @click="addTodo">할 일 추가</v-btn>
+          </v-col>
+          <!-- 알림 -->
           <v-col cols="12" md="2"><h4>알림</h4></v-col>
-          <v-col cols="12" md="5">
+          <v-col cols="12" sm="10">
+            <v-row dense v-for="(noti, index) in notis" :key="index">
+              <v-col cols="12" md="5">
+                <v-text-field
+                  type="number"
+                  variant="underlined"
+                  v-model="noti.alertQuantity"
+                  label="알람 시간"
+                >
+                </v-text-field>
+              </v-col>
+              <v-col cols="12" md="5">
+                <v-select v-model="noti.timeType" variant="underlined" :items="timeTypes" label="시간 단위">
+                </v-select>
+              </v-col>
+              <!-- <v-col cols="2" sm="1" class="mt-2 mr-3">
+                <v-checkbox v-model="todo.done"> </v-checkbox>
+              </v-col>
+              <v-col cols="9" sm="9">
+                <v-text-field
+                  variant="underlined"
+                  label="내용을 입력하세요."
+                  v-model="todo.text"
+                  :rules="[(value) => !!value || '']"
+                  required
+                >
+                </v-text-field>
+              </v-col> -->
+              <v-col cols="12" sm="1" class="mt-4">
+                <v-btn flat @click="removeNoti(index)">삭제</v-btn>
+              </v-col>
+            </v-row>
+            <v-btn flat @click="addNoti">알림 추가</v-btn>
+          </v-col>
+          <!-- <v-col cols="12" md="5">
             <v-text-field
               type="number"
+              variant="underlined"
               v-model="alertQuantity"
               label="알람 시간"
             >
             </v-text-field>
           </v-col>
           <v-col cols="12" md="5">
-            <v-select v-model="timeType" :items="timeTypes" label="시간 단위">
+            <v-select v-model="timeType" variant="underlined" :items="timeTypes" label="시간 단위">
             </v-select>
-          </v-col>
+          </v-col> -->
           <v-col cols="12" md="2"><h4>반복</h4></v-col>
           <v-col cols="12" md="5">
             <v-select
               v-model="repeatType"
+              variant="underlined"
               :items="repeatTypes"
               label="반복 단위"
             >
@@ -125,6 +166,7 @@
             <v-file-input
               v-model="files"
               label="File input"
+              variant="underlined"
               placeholder="Upload your documents"
               prepend-icon="mdi-paperclip"
               show-size
@@ -165,16 +207,12 @@ export default {
       radios: "Q2",
       startDateTime: null,
       endDateTime: null,
-      alertQuantity: null,
-      timeType: "",
       timeTypes: ["분", "시간", "일"],
       repeatEndDate: null,
       repeatType: null,
       repeatTypes: ["매년", "매월", "매주", "매일"],
       todos: [],
-      rules: {
-        required: (value) => !!value || "내용을 입력해주세요.",
-      },
+      notis: [],
       files: [],
     };
   },
@@ -216,12 +254,11 @@ export default {
       this.title = "";
       this.memo = "";
       this.place = "";
-      this.timeType = "";
       this.startDateTime = "";
       this.endDateTime = "";
-      this.alertQuantity = null;
       this.todos = [];
       this.files = [];
+      this.notis = [];
       this.repeatEndDate = null;
       this.repeatType = null;
       this.isDialogOpen = false;
@@ -247,6 +284,12 @@ export default {
     removeTodo(index) {
       this.todos.splice(index, 1);
     },
+    addNoti() {
+      this.notis.push({ alertQuantity: null, timeType: "" });
+    },
+    removeNoti(index) {
+      this.notis.splice(index, 1);
+    },
     async createEvent() {
       if (!this.title) {
         alert("제목을 입력하세요.");
@@ -263,12 +306,35 @@ export default {
         return;
       }
 
-      // 알림 설정 관련
-      const alarmYn = this.alertQuantity ? "Y" : "N";
-      let alarmType;
-      if (this.timeType === "분") alarmType = "M";
-      if (this.timeType === "시간") alarmType = "H";
-      if (this.timeType === "일") alarmType = "D";
+      // alarmRequests 조립
+      const alarmList = [];
+      let alarmYn = "N";
+      if (this.notis.length > 0) {
+        alarmYn = "Y";
+        for (const noti of this.notis) {
+          if (!noti.alertQuantity) {
+            alert("알람 시간을 입력하세요.");
+            return;
+          }
+          if (!noti.timeType) {
+            alert("시간 단위를 입력하세요.");
+            return;
+          }
+
+          let alarmType;
+          if (noti.timeType === "분") alarmType = "M";
+          if (noti.timeType === "시간") alarmType = "H";
+          if (noti.timeType === "일") alarmType = "D";
+
+          alarmList.push({
+            setTime: noti.alertQuantity,
+            alarmType: alarmType,
+          });
+        }
+      }
+      const alarmBlob = new Blob([JSON.stringify(alarmList)], {
+        type: "application/json",
+      });
 
       // eventRequest 조립
       let eventRequest = {
@@ -284,17 +350,7 @@ export default {
         type: "application/json",
       });
 
-      // alarmRequests 조립
-      const alarmList = [];
-      if (this.alertQuantity) {
-        alarmList.push({
-          setTime: this.alertQuantity,
-          alarmType: alarmType,
-        });
-      }
-      const alarmBlob = new Blob([JSON.stringify(alarmList)], {
-        type: "application/json",
-      });
+      
 
       const formData = new FormData();
       formData.append("eventRequest", eventBlob);

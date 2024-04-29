@@ -30,6 +30,8 @@
                     class="circle-button"
                     :class="{
                       'cancelled-moim-card-button': moim.groupType === 'GROUP_CANCEL',
+                      'confirm-moim-card-button': moim.groupType === 'GROUP_CONFIRM',
+                      
                     }"
                   >
                     {{ getStatus(moim) }}
@@ -54,19 +56,19 @@
                       'cancelled-moim-card': moim.groupType === 'GROUP_CANCEL',
                     }"
                   >
-                    <v-list-item title="마감시간" :subtitle="moim.voteDeadline" />
                     <v-list-item
-                      v-if="moim.confirmedDate != null"
-                      title="확정시간"
-                      :subtitle="moim.confirmedDate"
+                      v-if="moim.groupType == 'GROUP_CONFIRM'"
+                      title="확정일"
+                      :subtitle="new Date(moim.confirmedDateTime).toLocaleDateString('ko-KR')"
                     />
+                    <v-list-item v-else title="마감일" :subtitle="new Date(moim.voteDeadline).toLocaleDateString('ko-KR')" />
                   </v-list>
                 </template>
               </v-card>
             </v-col>
           </v-row>
           <v-row>
-            <v-col>
+            <v-col class="page-button">
               <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
               <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
             </v-col>
@@ -74,26 +76,29 @@
         </v-col>
 
         <!-- 모임 상세 페이지 -->
-        <v-col cols="12" md="8">
+        <v-col cols="12" md="8" >
           <v-card class="pa-4">
-            <div v-if="selectedMoim">
+            <div v-if="selectedMoim" >
               <v-card-title
                 class="text-h5"
+                
                 style="width: 100%; display: flex; align-items: center"
               >
-                <div
+                <div 
+                
                   class="title-text"
+                  
                   style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap"
                 >
                   {{ selectedMoim.title }}
                 </div>
                 <v-spacer></v-spacer>
-                <v-btn
+                <!-- <v-btn
                   class="no-shadow"
                   density="comfortable"
                   icon="mdi-close"
-                  @click="dialog = false"
-                ></v-btn>
+                  @click="dialog = false" -->
+                <!-- ></v-btn> -->
               </v-card-title>
 
               <v-card-text class="mt-5">
@@ -229,8 +234,8 @@
 
               <v-card-text v-if="getStatus(selectedMoim) === 'new'">
                 <v-spacer />
-                <v-btn color="#3085d6" text @click="vote('Y')">수락</v-btn>
-                <v-btn color="#d33" text @click="vote('N')">거부</v-btn>
+                <v-btn class="vote-button" color="#3085d6" text @click="vote('Y')">수락</v-btn>
+                <v-btn class="vote-button" color="#d33" text @click="vote('N')">거부</v-btn>
               </v-card-text>
 
               <!-- 추천일정 선택 -->
@@ -286,7 +291,7 @@
 
               <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM'">
                 <v-spacer />
-                <v-btn color="#3085d6" text @click="addEvent(confirmGroupInfo)"
+                <v-btn color="#3085d6" text @click="addEvent(selectedMoim)"
                   >일정 등록</v-btn
                 >
               </v-card-actions>
@@ -324,7 +329,6 @@ export default {
       sortedAvailableDays: [],
       confirmEvent: "",
       confirmGroupInfo: "",
-
       currentPage: 1, // 현재 페이지
       totalPages: null, // 총 페이지 수
       hasNextPage: true,
@@ -579,7 +583,39 @@ export default {
       }
     },
     addEvent(GroupInfo) {
-      this.$refs.eventDialog.changeDialog(GroupInfo);
+      console.log('그룹 정보',GroupInfo);
+      const startDate = new Date(GroupInfo.confirmedDateTime);
+    const endDate = new Date(startDate.getTime() + GroupInfo.runningTime * 60000);
+    
+    // ISO 문자열에서 'Z' 제거하여 로컬 시간대로 변환
+    function formatLocalDateTime(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+    // delete GroupInfo.voteDeadline;
+    // delete GroupInfo.confirmedDateTime;
+    // delete GroupInfo.expectEndDate;
+    // delete GroupInfo.expectEndTime;
+    // delete GroupInfo.expectStartDate;
+    // delete GroupInfo.expectStartTime;
+    // delete GroupInfo.runningTime;
+    // delete GroupInfo.voteDeadline;
+
+
+    // GroupInfo 객체에 startDate와 endDate 추가
+    const updatedGroupInfo = {
+        ...GroupInfo,
+        startDate: formatLocalDateTime(startDate),
+        endDate: formatLocalDateTime(endDate),
+    };
+      console.log("startDate",startDate);
+      console.log("updatedGroupInfo", updatedGroupInfo);
+      this.$refs.eventDialog.changeDialog(updatedGroupInfo);
       this.dialog = false;
     },
 
@@ -597,12 +633,13 @@ export default {
         const hour12 = hour % 12 || 12; // 12시간제로 변환
         const ampm = hour < 12 ? "오전" : "오후";
 
-        return `${y}-${m}-${d}, ${ampm} ${hour12}:${minute.toString().padStart(2, "0")}`;
+        return `${y}-${m}-${d} ${ampm} ${hour12}:${minute.toString().padStart(2, "0")}`;
       };
 
       return `${formatDateTime(startDate)} ~ ${formatDateTime(endDate)}`;
     },
   },
+
 };
 </script>
 
@@ -610,13 +647,15 @@ export default {
 .search-results {
   margin-top: -250px;
 }
-.nonMoim{
+.nonMoim {
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
   height: 100vh;
 }
 .no-moims-message {
   text-align: center; /* 텍스트 중앙 정렬 */
+  color: #162a2c;
+  font-size: 20px;
 }
 .circle-button {
   border-radius: 50%;
@@ -637,12 +676,13 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 10px; /* 각 참여자 정보 사이의 간격 */
+  color: #162a2c;
 }
 .participant-info span {
   margin-left: 8px;
 }
 .result-card-time {
-  background-color: #fefcf6;
+  
 }
 .result-card[title="취소"] {
   background-color: #f8d7da;
@@ -652,13 +692,15 @@ export default {
 }
 
 .selected-moim-card {
-  background-color: #f0f0f0; /* 선택되면 바뀌는 색 */
+  background-color: #CDD0CB; /* 선택되면 바뀌는 색 */
 }
-.cancelled-moim-card {
-  background-color: #f7a4a4; /* 취소된 모임을 위한 배경색 */
-}
+
 .cancelled-moim-card-button {
   background-color: #dc8686;
+
+}
+.confirm-moim-card-button{
+  background-color: rgba(172, 198, 255, 1.0);
 }
 /* 모임리스트 위의 n */
 .action-required-indicator {
@@ -676,6 +718,18 @@ export default {
   font-size: 10px; /* 글자 크기 */
   transform: translate(50%, -50%); /* 원형 표시기가 버튼의 경계를 넘어서도록 조정 */
 }
+.page-button {
+  justify-content: center;
+  left: auto;
+}
+.moim-detail{
+  background-color: rgba(172, 198, 255, 1.0);
+}
+.vote-button{
+  margin-right: 2%;
+}
+
+
 
 </style>
 ``

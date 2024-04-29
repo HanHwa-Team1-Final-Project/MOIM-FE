@@ -39,11 +39,16 @@
             <v-textarea :value="memo" variant="solo-filled" readonly auto-grow></v-textarea>
           </v-col>
           <!-- 할일 조회 -->
-          <v-col cols="12" md="2" v-if="displayAlarmInfo">
-            <v-icon class="mr-2">mdi-bell-outline</v-icon>
-          </v-col>
-          <v-col cols="12" md="10" v-if="displayAlarmInfo">
-            <p v-html="displayAlarmInfo"></p>
+          <v-col cols="12" md="2" v-if="todos.length > 0"><h4>할 일</h4></v-col>
+          <v-col cols="12" md="10" v-if="todos.length > 0">
+            <v-row dense v-for="(todo, index) in todos" :key="index" class="ma-0 tight-row">
+              <v-col cols="12" md="1" class="mt-4 d-flex justify-start">
+                <v-checkbox v-model="todo.isChecked" @change="updateIsChecked(todo.id, todo.isChecked)"></v-checkbox>
+              </v-col>
+              <v-col cols="12" md="9" class="d-flex align-center">
+                <v-text-field variant="underlined" :value="todo.contents" readonly></v-text-field>
+              </v-col>
+            </v-row>
           </v-col>
           <!-- 알람 조회 -->
           <v-col cols="12" md="2" v-if="displayAlarmInfo">
@@ -102,9 +107,11 @@ export default {
       radios: '', // Eisenhower Matrix 선택 값
       alarmInfo: '',
       displayAlarmInfo: '',
+      displayTodoInfo: '',
       memo: '',
       fileUrl: '',
-      repeatParent: ''
+      repeatParent: '',
+      todos: [],
     };
   },
   methods: {
@@ -138,6 +145,7 @@ export default {
       this.id = eventId;
       this.getEventDetail(eventId);
       this.getAlarmInfo(eventId);
+      this.getTodoList(eventId);
     },
     closeDialog() {
       this.isVisible = false;
@@ -194,6 +202,48 @@ export default {
         console.log(error);
       }
     },
+    async getTodoList(eventId) {
+      const token = localStorage.getItem("accessToken");
+      if (token == null) {
+        alert("로그인이 필요합니다.");
+        this.$router.push({name: "Login"});
+        return;
+      }
+      const headers = {Authorization: `Bearer ${token}`};
+      try{
+        const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/events/${eventId}/todolist`, {headers});
+        const todoInfo = response.data.data;
+        const todos = [];
+        todoInfo.forEach(todo => {
+          console.log("foreach", todo)
+          let isChecked = todo.isChecked == "Y";
+          todos.push({
+            id: todo.id,
+            contents: todo.contents,
+            isChecked: isChecked
+          })
+        });
+        this.todos = todos;
+      } catch(e) {
+        console.log(e)
+      }
+    },
+    async updateIsChecked(id, isChecked) {
+      const token = localStorage.getItem("accessToken");
+      if (token == null) {
+        alert("로그인이 필요합니다.");
+        this.$router.push({name: "Login"});
+        return;
+      }
+      const headers = {Authorization: `Bearer ${token}`};
+      let checked = isChecked == true ? "Y" : "N";
+      try {
+        const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/events/todolist/${id}?isChecked=${checked}`, {headers})
+        console.log(response.data.data);
+      }catch(e) {
+        console.log(e)
+      }
+    },
     // Eisenhower Matrix 라벨 반환
     getEisenhowerMatrixLabel(value) {
       const labels = {
@@ -237,3 +287,6 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+</style>

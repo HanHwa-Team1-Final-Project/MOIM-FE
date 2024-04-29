@@ -7,8 +7,10 @@
             <v-col cols="12" v-for="moim in moims" :key="moim.id">
               <v-card
                 class="mx-auto result-card"
-                :class="{ 'selected-moim-card': selectedMoim && moim.id === selectedMoim.id , 
-                 'cancelled-moim-card': moim.groupType === 'GROUP_CANCEL'}"
+                :class="{
+                  'selected-moim-card': selectedMoim && moim.id === selectedMoim.id,
+                  'cancelled-moim-card': moim.groupType === 'GROUP_CANCEL',
+                }"
                 :title="moim.title"
                 :subtitle="moim.hostNickname"
                 max-width="800"
@@ -16,20 +18,34 @@
                 link
               >
                 <template v-slot:prepend>
-                  <v-btn class="circle-button"
-                  :class="{ 'cancelled-moim-card-button': moim.groupType === 'GROUP_CANCEL'
-                  }">
+                  <v-btn
+                    class="circle-button"
+                    :class="{
+                      'cancelled-moim-card-button': moim.groupType === 'GROUP_CANCEL',
+                    }"
+                  >
                     {{ getStatus(moim) }}
-                    <div v-if="moim.groupType === 'GROUP_CHOICE' && moim.hostEmail === this.userEmail || getStatus(moim) === 'new'"
-       class="action-required-indicator">
-    N
-  </div>
+                    <div
+                      v-if="
+                        (moim.groupType === 'GROUP_CHOICE' &&
+                          moim.hostEmail === this.userEmail) ||
+                        getStatus(moim) === 'new'
+                      "
+                      class="action-required-indicator"
+                    >
+                      N
+                    </div>
                   </v-btn>
                 </template>
                 <template v-slot:append>
-                  <v-list lines="one" class="result-card-time" 
-                  :class="{ 'selected-moim-card': selectedMoim && moim.id === selectedMoim.id,
-                   'cancelled-moim-card': moim.groupType === 'GROUP_CANCEL' }">
+                  <v-list
+                    lines="one"
+                    class="result-card-time"
+                    :class="{
+                      'selected-moim-card': selectedMoim && moim.id === selectedMoim.id,
+                      'cancelled-moim-card': moim.groupType === 'GROUP_CANCEL',
+                    }"
+                  >
                     <v-list-item title="마감시간" :subtitle="moim.voteDeadline" />
                     <v-list-item
                       v-if="moim.confirmedDate != null"
@@ -41,6 +57,13 @@
               </v-card>
             </v-col>
           </v-row>
+          <v-row>
+  <v-col>
+    <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
+    <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
+  </v-col>
+</v-row>
+
         </v-col>
 
         <!-- 모임 상세 페이지 -->
@@ -83,46 +106,85 @@
                     </div>
                   </v-col>
 
-                    <v-col cols="12" md="2" v-if="selectedMoim.groupType == 'GROUP_CONFIRM'"><h4>최종 확정일</h4></v-col>
-                    <v-col cols="12" md="12" v-if="selectedMoim.groupType == 'GROUP_CONFIRM'">
-                      <input 
-                        type="text"
-                        :value="confirmedDate(selectedMoim)"
-                        readonly
-                        class="full-width-input"
-                      />
-
-
-                    </v-col>
-                  
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType == 'GROUP_CONFIRM'"
+                    ><h4>최종 확정일</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="12"
+                    v-if="selectedMoim.groupType == 'GROUP_CONFIRM'"
+                  >
+                    <input
+                      type="text"
+                      :value="confirmedDate(selectedMoim)"
+                      readonly
+                      class="full-width-input"
+                    />
+                  </v-col>
 
                   <!-- <v-col v-else> -->
-                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"><h4>시작일</h4></v-col>
-                  <v-col cols="12" md="10" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'">
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                    ><h4>시작일</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="10"
+                    v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                  >
                     <input type="text" :value="selectedMoim.expectStartDate" readonly />
                   </v-col>
-                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"><h4>종료일</h4></v-col>
-                  <v-col cols="12" md="10" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'">
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                    ><h4>종료일</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="10"
+                    v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                  >
                     <input type="text" :value="selectedMoim.expectEndDate" readonly />
                   </v-col>
-                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"><h4>시작 시간</h4></v-col>
-                  <v-col cols="12" md="10" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'">
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                    ><h4>시작 시간</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="10"
+                    v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                  >
                     <input type="text" :value="selectedMoim.expectStartTime" readonly />
                   </v-col>
-                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"><h4>종료 시간</h4></v-col>
-                  <v-col cols="12" md="10" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'">
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                    ><h4>종료 시간</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="10"
+                    v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                  >
                     <input type="text" :value="selectedMoim.expectEndTime" readonly />
                   </v-col>
-                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"><h4>모임 예상 시간</h4></v-col>
-                  <v-col cols="12" md="10" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'">
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                    ><h4>모임 예상 시간</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="10"
+                    v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                  >
                     <input
                       type="text"
                       :value="selectedMoim.runningTime + ' 분'"
                       readonly
                     />
                   </v-col>
-                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"><h4>투표 마감일</h4></v-col>
-                  <v-col cols="12" md="10" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'">
+                  <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                    ><h4>투표 마감일</h4></v-col
+                  >
+                  <v-col
+                    cols="12"
+                    md="10"
+                    v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
+                  >
                     <input
                       type="datetime-local"
                       :value="selectedMoim.voteDeadline"
@@ -255,6 +317,10 @@ export default {
       sortedAvailableDays: [],
       confirmEvent: "",
       confirmGroupInfo: "",
+
+      currentPage: 1, // 현재 페이지
+      totalPages: null, // 총 페이지 수
+      hasNextPage: true,
     };
   },
   watch: {
@@ -280,9 +346,9 @@ export default {
       console.log("모든 데이터", this.selectedMoim);
     },
 
-    async fetchMoims() {
+    async fetchMoims(page = 1) {
       const authToken = localStorage.getItem("accessToken");
-      const url = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups`;
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups/${page}`;
       if (!authToken) {
         console.error("인증 토큰이 없습니다.");
         return;
@@ -299,10 +365,41 @@ export default {
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           );
           this.selectedMoim = this.moims[0] || null;
+          this.currentPage = page;
+          // this.hasNextPage = response.data.data.length  > 0; // 다음 페이지 존재 여부 업데이트
+          await this.checkNextPage(page + 1);
         }
       } catch (error) {
         console.error("Error fetching moims:", error);
         this.moims = [];
+        this.hasNextPage = false;
+      }
+    },
+    async checkNextPage(nextPage) {
+    const authToken = localStorage.getItem("accessToken");
+    const nextUrl = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups/${nextPage}`;
+    try {
+      const nextResponse = await axiosInstance.get(nextUrl, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      this.hasNextPage = nextResponse.data.data.length > 0;
+    } catch (error) {
+      console.error("Error checking next page:", error);
+      this.hasNextPage = false;
+    }
+  },
+
+  nextPage() {
+    if (this.hasNextPage) {
+      this.fetchMoims(this.currentPage + 1);
+    }
+  },
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.fetchMoims(this.currentPage - 1);
       }
     },
     async getUserData() {
@@ -480,24 +577,24 @@ export default {
     },
 
     confirmedDate(moim) {
-    const startDate = new Date(moim.confirmedDateTime);
-    const endDate = new Date(startDate.getTime() + moim.runningTime * 60000); // 60000ms = 1분
+      const startDate = new Date(moim.confirmedDateTime);
+      const endDate = new Date(startDate.getTime() + moim.runningTime * 60000); // 60000ms = 1분
 
-    const formatDateTime = (date) => {
-      const y = date.getFullYear();
-      const m = date.getMonth() + 1;
-      const d = date.getDate();
-      const hour = date.getHours();
-      const minute = date.getMinutes();
+      const formatDateTime = (date) => {
+        const y = date.getFullYear();
+        const m = date.getMonth() + 1;
+        const d = date.getDate();
+        const hour = date.getHours();
+        const minute = date.getMinutes();
 
-      const hour12 = hour % 12 || 12; // 12시간제로 변환
-      const ampm = hour < 12 ? '오전' : '오후';
+        const hour12 = hour % 12 || 12; // 12시간제로 변환
+        const ampm = hour < 12 ? "오전" : "오후";
 
-      return `${y}-${m}-${d}, ${ampm} ${hour12}:${minute.toString().padStart(2, '0')}`;
-    };
+        return `${y}-${m}-${d}, ${ampm} ${hour12}:${minute.toString().padStart(2, "0")}`;
+      };
 
-    return `${formatDateTime(startDate)} ~ ${formatDateTime(endDate)}`;
-  }
+      return `${formatDateTime(startDate)} ~ ${formatDateTime(endDate)}`;
+    },
   },
 };
 </script>
@@ -523,11 +620,11 @@ export default {
 }
 .participant-info {
   display: flex;
-  align-items: center; 
+  align-items: center;
   margin-bottom: 10px; /* 각 참여자 정보 사이의 간격 */
 }
 .participant-info span {
-  margin-left: 8px; 
+  margin-left: 8px;
 }
 .result-card-time {
   background-color: #fefcf6;
@@ -543,18 +640,18 @@ export default {
   background-color: #f0f0f0; /* 선택되면 바뀌는 색 */
 }
 .cancelled-moim-card {
-  background-color: #F7A4A4; /* 취소된 모임을 위한 배경색 */
+  background-color: #f7a4a4; /* 취소된 모임을 위한 배경색 */
 }
-.cancelled-moim-card-button{
-  background-color: #DC8686;
+.cancelled-moim-card-button {
+  background-color: #dc8686;
 }
 /* 모임리스트 위의 n */
 .action-required-indicator {
   position: absolute;
-  top: 3px; 
-  left: -10px; 
-  background-color: #D35D6E; /* 빨간색 배경 */
-  color: white; 
+  top: 3px;
+  left: -10px;
+  background-color: #d35d6e; /* 빨간색 배경 */
+  color: white;
   width: 35%; /* 작은 원형 표시기 크기 */
   height: 35%; /* 작은 원형 표시기 크기 */
   border-radius: 50%; /* 원형으로 만듬 */
@@ -564,8 +661,5 @@ export default {
   font-size: 10px; /* 글자 크기 */
   transform: translate(50%, -50%); /* 원형 표시기가 버튼의 경계를 넘어서도록 조정 */
 }
-
-
-
 </style>
 ``

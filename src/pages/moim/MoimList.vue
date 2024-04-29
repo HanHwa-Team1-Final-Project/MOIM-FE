@@ -2,7 +2,7 @@
   <v-container fluid class="search-results">
     <v-container v-if="moims.length === 0" class="nonMoim">
       <v-row>
-        <v-col cols="12">
+        <v-col cols="12" justify="center" class="none-result">
           <div class="no-moims-message">모임이 없습니다.</div>
         </v-col>
       </v-row>
@@ -676,5 +676,6 @@ export default {
   font-size: 10px; /* 글자 크기 */
   transform: translate(50%, -50%); /* 원형 표시기가 버튼의 경계를 넘어서도록 조정 */
 }
+
 </style>
 ``

@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="dialog" max-width="600">
     <v-card class="pa-4">
-      <v-card-title class="text-h5" style="width: 100%; display: flex; align-items: center;">
-        <v-icon class="mr-2" style="font-size: 25px;">mdi-calendar-check-outline</v-icon>
+      <v-card-title style="width: 100%; display: flex; align-items: center;">
+        <v-icon class="mr-4" style="font-size: 25px;">mdi-calendar-check-outline</v-icon>
         <div
             class="title-text"
             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"

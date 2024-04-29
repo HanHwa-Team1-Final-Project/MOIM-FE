@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="isVisible" max-width="600">
     <v-card class="pa-4">
-      <v-card-title class="text-h5" style="width: 100%; display: flex; align-items: center;">
-        <v-icon class="mr-2" style="font-size: 25px;">mdi-calendar-check</v-icon>
+      <v-card-title style="width: 100%; display: flex; align-items: center;">
+        <v-icon class="mr-4" style="font-size: 25px;">mdi-calendar-check</v-icon>
         <div
             class="title-text"
             style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
@@ -41,7 +41,7 @@
           <!-- 할일 조회 -->
           <v-col cols="12" md="2" v-if="todos.length > 0"><h4>할 일</h4></v-col>
           <v-col cols="12" md="10" v-if="todos.length > 0">
-            <v-row dense v-for="(todo, index) in todos" :key="index" class="ma-0 tight-row">
+            <v-row dense v-for="(todo, index) in todos" :key="index" class="ma-0">
               <v-col cols="12" md="1" class="mt-4 d-flex justify-start">
                 <v-checkbox v-model="todo.isChecked" @change="updateIsChecked(todo.id, todo.isChecked)"></v-checkbox>
               </v-col>

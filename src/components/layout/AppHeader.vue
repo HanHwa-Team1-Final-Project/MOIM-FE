@@ -46,6 +46,8 @@
           @click="fromNoti(item, $event)"
           :data-notificationType="item.notificationType"
           :data-id="item.id"
+          :data-nickname="item.nickname"
+          :data-message="item.message"
         >
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -117,8 +119,7 @@ export default {
         const { data: receivedConnectData } = e;
         console.log('connect event data: ',receivedConnectData);
       });
-    }
-    sse.addEventListener('sendEventAlarm', (e) => {
+      sse.addEventListener('sendEventAlarm', (e) => {
         const obj = JSON.parse(e.data);
         this.Toast.fire({
           icon: 'info',
@@ -156,6 +157,7 @@ export default {
         })
       });
       this.getNotification();
+    }
   },
   methods: {
     logout() {
@@ -174,18 +176,14 @@ export default {
       }
     },
     fromNoti(noti, event) {
-      console.log(noti)
+      console.log("noti", noti)
       const notificationType = event.currentTarget.getAttribute('data-notificationType')
       const id = event.currentTarget.getAttribute('data-id')
-      if(notificationType.substring(0, 5) == "GROUP") {
-        window.location.href = `MoimList?groupId=${id}`;
-      }
-      if(notificationType.substring(0, 5) == "EVENT") {
+      if(notificationType == "EVENT") {
         this.$refs.EventDetail.openDialog(id);
       }
-      else {
-        console.log("채팅방 관련 알림")
-
+      if(notificationType.substring(0, 5) == "GROUP") {
+        console.log("그룹...")
       }
       
     },
@@ -239,7 +237,6 @@ export default {
         const headers = { Authorization: `Bearer ${token}` };
         console.log(token)
         if (token == null) {
-          alert("로그인이 필요합니다.");
           this.$router.push({ name: "Login" });
           return;
         }

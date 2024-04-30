@@ -26,6 +26,8 @@
       <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
       <MoimDialog ref="MoimCreate"></MoimDialog>
       <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="list" @click="goToMoimList"></v-list-item>
+      <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
+      <ChatDialog ref="ChatCreate"></ChatDialog>
     </v-list>
   </v-navigation-drawer>
 
@@ -36,6 +38,7 @@
 import EventDialog from '@/pages/event/EventDialog.vue';
 import MoimDialog from '@/pages/moim/MoimDialog.vue';
 import MyPageDialog from '@/pages/myPage/MyPageDialog.vue';
+import ChatDialog from '@/pages/chat/ChatDialog.vue';
 
 // import {useMainStore} from "@/stores";
 import axiosInstance from "@/axios";
@@ -52,6 +55,7 @@ export default {
     EventDialog,
     MoimDialog,
     MyPageDialog,
+    ChatDialog
 
   },
   data() {
@@ -100,6 +104,10 @@ export default {
     createMoimClicked() {
       console.log("모임 생성 클릭");
       this.$refs.MoimCreate.openDialog();
+    },
+    createChatClicked() {
+      console.log("채팅방 생성 클릭");
+      this.$refs.ChatCreate.openDialog();
     },
     goTo(route) {
       this.$router.push({ name: route });

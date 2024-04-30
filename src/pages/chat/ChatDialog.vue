@@ -158,8 +158,6 @@ export default {
       }
     },
 
-    // onMounted(fetchPeople);
-
     removeFriend(id) {
       this.friends = this.friends.filter((p) => p.id !== id);
     },
@@ -186,7 +184,7 @@ export default {
       formData.append('deleteDate', this.deadline);
       formData.append('memo', this.contents);
 
-      //groupInfoRequests 조립
+      // memberRoomRequests 조립
       const roomMembers = this.friends.map((friend) => ({ memberEmail: friend }));
       console.log("roommembers", roomMembers)
       const memberBlob = new Blob([JSON.stringify(roomMembers)], {

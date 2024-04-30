@@ -83,7 +83,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" @click="createMoim">생성</v-btn>
+        <v-btn color="blue darken-1" @click="createRoom">생성</v-btn>
         <v-btn color="blue darken-1" @click="closeDialog">취소</v-btn>
       </v-card-actions>
     </v-card>
@@ -118,17 +118,8 @@ export default {
       this.title = "";
       this.friends = [];
       this.people = [];
-      this.place = "";
-      this.runningTime= null;
       this.deadline= "";
-      this.expectStartDate= "";
-      this.expectEndDate= "";
-      this.expectStartTime= "";
-      this.expectEndTime= "";
       this.contents= "";
-      this.files= [];
-      this.alertQuantity= null;
-      this.alertType= "";
     },
 
     async fetchPeople() {
@@ -167,172 +158,46 @@ export default {
       }
     },
 
-    // onMounted(fetchPeople);
-
     removeFriend(id) {
       this.friends = this.friends.filter((p) => p.id !== id);
     },
-
-    // async createMoim() {
-    //   const formData = new FormData();
-    //   formData.append("title", this.title);
-    //   formData.append("memo", this.memo);
-    //   formData.append("place", this.place);
-    //   formData.append("startDate", this.startDate);
-    //   formData.append("endDate", this.endDate);
-    //   formData.append("startTime", this.startTime);
-    //   formData.append("endTime", this.endTime);
-    //   formData.append("people", JSON.stringify(this.friends.map((p) => p.id)));
-
-    //   try {
-    //     await axios.post("http://localhost:8080/api/events", formData, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     });
-    //     this.isDialogOpen = false;
-    //   } catch (error) {
-    //     console.error("이벤트 생성 실패:", error);
-    //   }
-    // },
-    async createMoim() {
+    async createRoom() {
       if (!this.title) {
         alert("제목을 입력하세요.");
         return;
       }
-      if (!this.runningTime) {
-        alert("모임 예상시간을 입력하세요.");
+      
+      if (!this.deadline) {
+        alert("채팅 종료일을 입력하세요.");
         return;
       }
 
-      if (!this.expectStartDate) {
-        alert("시작일을 입력하세요.");
+      if (new Date() > new Date(this.deadline)) {
+        alert("종료일은 현재보다 전이어야 합니다.");
+        console.log(new Date())
         return;
       }
-      if (!this.expectEndDate) {
-        alert("종료일을 입력하세요.");
-        return;
-      }
-      if (!this.expectStartTime) {
-        alert("시작시간을 입력하세요.");
-        return;
-      }
-      if (!this.expectEndTime) {
-        alert("종료시간을 입력하세요.");
-        return;
-      }
-      if (!this.voteDeadline) {
-        alert("투표마감일을 입력하세요.");
-        return;
-      }
-
-      if (new Date(this.expectStartDate) > new Date(this.expectEndDate)) {
-        alert("시작일은 종료일보다 전이어야 합니다.");
-        return;
-      }
-
-      // 시간 비교
-      let startDateTime = new Date("1970-01-01T" + this.expectStartTime + ":00");
-      let endDateTime = new Date("1970-01-01T" + this.expectEndTime + ":00");
-      let durationMinutes = (endDateTime - startDateTime) / 60000; 
-
-      if (startDateTime >= endDateTime) {
-        alert("시작시간은 종료시간보다 전이어야 합니다.");
-        return;
-      }
-
-      // 알림 설정 관련
-      const alarmYn = this.alertQuantity ? "Y" : "N";
-      let alarmType;
-      if (this.timeType === "분") alarmType = "MIN";
-      if (this.timeType === "시간") alarmType = "HOUR";
-      if (this.timeType === "일") alarmType = "DAY";
-
-      //러닝타임
-      let runningTime;
-      if (this.runningTimeType === "분") runningTime = this.runningTime
-      if (this.runningTimeType === "시간") runningTime = this.runningTime * 60;
-      // if (this.runningTimeType === "일") runningTime = this.runningTime * 1440;
-
-      if (durationMinutes < runningTime) {
-        alert("예상 모임 시간보다 짧은 시간을 설정하였습니다. 시간 설정을 확인해 주세요.");
-        return;
-      }
-
 
       const formData = new FormData();
       formData.append('title', this.title);
-      formData.append('place', this.place);
-      formData.append('runningTime', runningTime);
-      formData.append('expectStartDate', this.expectStartDate);
-      formData.append('expectEndDate', this.expectEndDate);
-      formData.append('expectStartTime', this.expectStartTime);
-      formData.append('expectEndTime', this.expectEndTime);
-      formData.append('voteDeadline', this.voteDeadline.replace('T', ' '));
-      formData.append('contents', this.contents);
-      formData.append('alarmYn', alarmYn);
-      console.log(this.title)
-      console.log(runningTime)
-      console.log(this.expectStartDate)
-      console.log(this.expectStartTime)
-      console.log(this.voteDeadline)
+      console.log("T가 있냐 없냐", this.deadline)
+      formData.append('deleteDate', this.deadline);
+      formData.append('memo', this.contents);
 
-      // // groupRequest 조립
-      // let groupRequest = {
-      //   title: this.title,
-      //   place: this.place,
-      //   runningTime: runningTime,
-      //   expectStartDate: this.expectStartDate,
-      //   expectEndDate: this.expectEndDate,
-      //   expectStartTime: this.expectStartTime,
-      //   expectEndTime: this.expectEndTime,
-      //   voteDeadline: this.voteDeadline,
-      //   contents: this.contents,
-      //   alarmYn: alarmYn,
-      // };
-
-      // Blob 객체로 변환
-      // const groupRequestBlob = new Blob([JSON.stringify(groupRequest)], {
-      //   type: "application/json",
-      // });
-
-      // alarmRequests 조립
-      const alarmList = [];
-      if (this.alertQuantity) {
-        alarmList.push({
-          deadlineAlarm: this.alertQuantity,
-          alarmTimeType: alarmType,
-        });
-      }
-      const alarmBlob = new Blob([JSON.stringify(alarmList)], {
-        type: "application/json",
-      });
-
-      //groupInfoRequests 조립
-      const groupInfoList = this.friends.map((friend) => ({ memberEmail: friend }));
-      console.log(groupInfoList)
-      const groupInfoBlob = new Blob([JSON.stringify(groupInfoList)], {
+      // memberRoomRequests 조립
+      const roomMembers = this.friends.map((friend) => ({ memberEmail: friend }));
+      console.log("roommembers", roomMembers)
+      const memberBlob = new Blob([JSON.stringify(roomMembers)], {
         type: "application/json",
       });
       console.log("??", this.friends[0])
-      console.log("추가된 참가자", groupInfoList);
+      console.log("추가된 참가자", roomMembers);
 
-      // formData.append("groupRequest", groupRequestBlob);
-      formData.append("groupInfoRequests", groupInfoBlob);
-      formData.append("groupAlarmRequests", alarmBlob);
-
-      
-      if (this.files.length > 0) {
-        this.files.forEach(file => {
-          formData.append("files", file);
-        });
-      }
-
-      console.log(formData)
+      formData.append("memberRoomRequests", memberBlob);
 
       // const TOKEN = localStorage.getItem("accessToken");
       const authToken = localStorage.getItem("accessToken");
-      const url = `${process.env.VUE_APP_API_BASE_URL}/api/groups/create`;
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/room/create`;
 
       if (!authToken) {
         console.error("인증 토큰이 없습니다.");
@@ -346,12 +211,12 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log("모임 등록완료");
+        console.log("채팅 생성완료");
         this.closeDialog();
         
         Swal.fire({
-            title: '모임이 등록되었습니다.',
-            text: '모든 참여자가 확인하면 알려드릴게요.',
+            title: '채팅방이 생성되었습니다.',
+            text: '채팅에 참여해주세요.',
             icon: 'success',
             showConfirmButton: true,
             confirmButtonColor: '#3085d6',

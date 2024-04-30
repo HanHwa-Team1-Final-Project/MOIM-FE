@@ -121,7 +121,6 @@ export default {
         const headers = { Authorization: `Bearer ${token}` };
         console.log(token)
         if (token == null) {
-          alert("로그인이 필요합니다.");
           this.$router.push({ name: "Login" });
           return;
         }
@@ -172,7 +171,6 @@ export default {
       try {
         const token = localStorage.getItem("accessToken");
         if (token == null) {
-          alert("로그인이 필요합니다.");
           this.$router.push({name: "Login"});
           return;
         }
@@ -205,7 +203,6 @@ export default {
     async getTodoList(eventId) {
       const token = localStorage.getItem("accessToken");
       if (token == null) {
-        alert("로그인이 필요합니다.");
         this.$router.push({name: "Login"});
         return;
       }
@@ -231,7 +228,6 @@ export default {
     async updateIsChecked(id, isChecked) {
       const token = localStorage.getItem("accessToken");
       if (token == null) {
-        alert("로그인이 필요합니다.");
         this.$router.push({name: "Login"});
         return;
       }
@@ -258,7 +254,6 @@ export default {
       try {
         const token = localStorage.getItem("accessToken");
         if (token == null) {
-          alert("로그인이 필요합니다.");
           this.$router.push({name: "Login"});
           return;
         }

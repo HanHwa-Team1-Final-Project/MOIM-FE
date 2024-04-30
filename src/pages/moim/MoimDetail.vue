@@ -192,7 +192,6 @@ export default {
       try {
         const token = localStorage.getItem("accessToken");
         if (token == null) {
-          alert("로그인이 필요합니다.");
           this.$router.push({name: "Login"});
           return;
         }

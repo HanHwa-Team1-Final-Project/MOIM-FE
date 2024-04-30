@@ -13,7 +13,7 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-      
+
       <v-list-item prepend-icon="mdi-calendar" title="Calendar" value="calendar" @click="goTo('fullCalendarComponent')"></v-list-item>
       <v-list-item prepend-icon="mdi-trello" title="Eisenhower Matrix" value="matrix" @click="goToEisenhowerMatrix"></v-list-item>
       <v-list-item
@@ -26,6 +26,7 @@
       <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
       <MoimDialog ref="MoimCreate"></MoimDialog>
       <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="list" @click="goToMoimList"></v-list-item>
+      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 테스트" value="list" @click="goToChat"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 
@@ -112,9 +113,11 @@ export default {
       this.$router.push({ path: '/MoimList' });
     },
     MyPageClicked(){
-
       this.$refs.MyPageDialog.openDialog();
-    }
+    },
+    goToChat() {
+      this.$router.push({path: '/chatTest'})
+    },
 
   }
 }

@@ -10,6 +10,7 @@ import SearchResults from "@/pages/search/SearchResults.vue";
 import EventDetailDialog from "@/pages/event/EventDetailDialog.vue";
 import UpdateEvent from "@/components/UpdateEvent.vue";
 import MoimList from "@/pages/moim/MoimList.vue"
+import ChatTest from "@/views/ChatTest.vue"
 
 const routes = [
     {
@@ -82,7 +83,13 @@ const routes = [
                 path: "MoimList",
                 name: "MoimList",
                 component: MoimList
-            }
+            },
+
+            {
+                path: "chatTest",
+                name: "chatTest",
+                component: ChatTest
+            },
         ]
     },
 ];

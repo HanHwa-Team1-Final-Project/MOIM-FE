@@ -112,20 +112,10 @@ export default {
       sse.addEventListener('connect', (e) => {
         const { data: receivedConnectData } = e;
         console.log('connect event data: ',receivedConnectData);
-
-        // this.Toast.fire({
-        //   icon: 'success',
-        //   title: e.data
-        // })
       });
     }
     sse.addEventListener('sendEventAlarm', (e) => {
         const obj = JSON.parse(e.data);
-        // let timeAgo = this.calculateTimeAgo(obj.sendTime)
-        // this.items.push({
-        //   title: obj.message,
-        //   subtitle: timeAgo
-        // })
         this.Toast.fire({
           icon: 'info',
           title: obj.message
@@ -133,11 +123,21 @@ export default {
       });
       sse.addEventListener('sendToParticipant', (e) => {
         const obj = JSON.parse(e.data);
-        // let timeAgo = this.calculateTimeAgo(obj.sendTime)
-        // this.items.push({
-        //   title: obj.message,
-        //   subtitle: timeAgo
-        // })
+        console.log("sse 정보", obj)
+        this.Toast.fire({
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
+          icon: 'info',
+          title: obj.message,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.onNotiClick(obj)
+          }
+        })
+      });
+      sse.addEventListener('sendRoomAlarm', (e) => {
+        const obj = JSON.parse(e.data);
         console.log("sse 정보", obj)
         this.Toast.fire({
           showConfirmButton: true,

@@ -253,21 +253,7 @@ export default {
   color: #162a2c;
   font-size: 20px;
 }
-.circle-button {
-  border-radius: 50%;
-  min-width: 50px;
-  min-height: 50px;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  background-color: #e0bb76;
-  color: #162a2c;
-  margin-right: 20px;
-  margin-left: 10px;
-}
+
 .participant-info {
   display: flex;
   align-items: center;

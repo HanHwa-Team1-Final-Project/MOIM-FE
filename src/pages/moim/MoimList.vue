@@ -308,10 +308,6 @@
 import axiosInstance from "@/axios";
 import Swal from "sweetalert2";
 import EventDialog from "../event/EventDialog.vue";
-// 1. 선택된 모임 표시되게,
-// 참가자의 일정등록에는 데이터가 안나왕
-// 3. 가장 최근의 모임으로 정렬하기
-// 4. 취소된 모임은 색 다르게
 
 export default {
   components: {

@@ -11,7 +11,7 @@ import EventDetailDialog from "@/pages/event/EventDetailDialog.vue";
 import UpdateEvent from "@/components/UpdateEvent.vue";
 import MoimList from "@/pages/moim/MoimList.vue"
 import ChatDialog from "@/pages/chat/ChatDialog.vue"
-import ChatingList from "@/pages/chating/ChatingList.vue"
+import ChatingList from "@/pages/chat/ChatingList.vue"
 
 const routes = [
     {

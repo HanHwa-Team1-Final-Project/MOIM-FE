@@ -43,9 +43,11 @@
           v-for="(item, i) in items"
           :key="i"
           :value="i"
-          @click="notiToMoim(item, $event)"
+          @click="fromNoti(item, $event)"
           :data-notificationType="item.notificationType"
           :data-id="item.id"
+          :data-nickname="item.nickname"
+          :data-message="item.message"
         >
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -62,6 +64,8 @@
   </v-app-bar>
 
   <MoimDetail ref="moimDetail"></MoimDetail>
+  <EventDetailDialog ref="EventDetail"></EventDetailDialog>
+
 </template>
 
 <script>
@@ -70,11 +74,13 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import Swal from 'sweetalert2'
 import axiosInstance from "@/axios";
 import MoimDetail from "@/pages/moim/MoimDetail.vue";
+import EventDetailDialog from '@/pages/event/EventDetailDialog.vue'
 
 export default {
   name: "AppHeader",
   components: {
     MoimDetail,
+    EventDetailDialog,
   },
   setup() {
     const Toast = Swal.mixin({
@@ -112,20 +118,9 @@ export default {
       sse.addEventListener('connect', (e) => {
         const { data: receivedConnectData } = e;
         console.log('connect event data: ',receivedConnectData);
-
-        // this.Toast.fire({
-        //   icon: 'success',
-        //   title: e.data
-        // })
       });
-    }
-    sse.addEventListener('sendEventAlarm', (e) => {
+      sse.addEventListener('sendEventAlarm', (e) => {
         const obj = JSON.parse(e.data);
-        // let timeAgo = this.calculateTimeAgo(obj.sendTime)
-        // this.items.push({
-        //   title: obj.message,
-        //   subtitle: timeAgo
-        // })
         this.Toast.fire({
           icon: 'info',
           title: obj.message
@@ -133,11 +128,21 @@ export default {
       });
       sse.addEventListener('sendToParticipant', (e) => {
         const obj = JSON.parse(e.data);
-        // let timeAgo = this.calculateTimeAgo(obj.sendTime)
-        // this.items.push({
-        //   title: obj.message,
-        //   subtitle: timeAgo
-        // })
+        console.log("sse 정보", obj)
+        this.Toast.fire({
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
+          icon: 'info',
+          title: obj.message,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.onNotiClick(obj)
+          }
+        })
+      });
+      sse.addEventListener('sendRoomAlarm', (e) => {
+        const obj = JSON.parse(e.data);
         console.log("sse 정보", obj)
         this.Toast.fire({
           showConfirmButton: true,
@@ -152,6 +157,7 @@ export default {
         })
       });
       this.getNotification();
+    }
   },
   methods: {
     logout() {
@@ -169,12 +175,15 @@ export default {
         this.$refs.moimDetail.confirmDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.notificationType);
       }
     },
-    notiToMoim(noti, event) {
-      console.log(noti)
+    fromNoti(noti, event) {
+      console.log("noti", noti)
       const notificationType = event.currentTarget.getAttribute('data-notificationType')
       const id = event.currentTarget.getAttribute('data-id')
+      if(notificationType == "EVENT") {
+        this.$refs.EventDetail.openDialog(id);
+      }
       if(notificationType.substring(0, 5) == "GROUP") {
-        window.location.href = `MoimList?groupId=${id}`;
+        console.log("그룹...")
       }
       
     },
@@ -228,7 +237,6 @@ export default {
         const headers = { Authorization: `Bearer ${token}` };
         console.log(token)
         if (token == null) {
-          alert("로그인이 필요합니다.");
           this.$router.push({ name: "Login" });
           return;
         }

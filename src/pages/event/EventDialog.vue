@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="true">
+  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false">
     <v-card class="pa-4">
       <v-card-title>
         <v-icon class="mr-2">mdi-calendar-plus</v-icon>
@@ -46,7 +46,7 @@
                     <div>중요 & 긴급하지 않음</div>
                   </template>
                 </v-radio>
-                
+
                 <v-radio value="Q3">
                   <template v-slot:label>
                     <div>중요하지 않음 & 긴급</div>
@@ -276,7 +276,7 @@ export default {
       const day = date.getDate().toString().padStart(2, '0');
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
-      
+
       return `${year}-${month}-${day}T${hours}:${minutes}:00`;
     },
     addTodo() {
@@ -351,7 +351,7 @@ export default {
         type: "application/json",
       });
 
-      
+
 
       const formData = new FormData();
       formData.append("eventRequest", eventBlob);

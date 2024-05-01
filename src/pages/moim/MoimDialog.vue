@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="true">
+  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false">
     <v-card class="pa-4">
       <v-card-title>
         <v-icon class="mr-2">mdi-calendar-plus</v-icon>
@@ -287,7 +287,7 @@ export default {
             nickname: user.nickname,
             email: user.email,
           }));
-        
+
         } else {
           console.error("사람들을 불러오는데 실패했습니다: API 에러 반환", response.data);
           this.people = [];
@@ -365,7 +365,7 @@ export default {
       // 시간 비교
       let startDateTime = new Date("1970-01-01T" + this.expectStartTime + ":00");
       let endDateTime = new Date("1970-01-01T" + this.expectEndTime + ":00");
-      let durationMinutes = (endDateTime - startDateTime) / 60000; 
+      let durationMinutes = (endDateTime - startDateTime) / 60000;
 
       if (startDateTime >= endDateTime) {
         alert("시작시간은 종료시간보다 전이어야 합니다.");
@@ -452,7 +452,7 @@ export default {
       formData.append("groupInfoRequests", groupInfoBlob);
       formData.append("groupAlarmRequests", alarmBlob);
 
-      
+
       if (this.files.length > 0) {
         this.files.forEach(file => {
           formData.append("files", file);
@@ -479,7 +479,7 @@ export default {
         });
         console.log("모임 등록완료");
         this.closeDialog();
-        
+
         Swal.fire({
             title: '모임이 등록되었습니다.',
             text: '모든 참여자가 확인하면 알려드릴게요.',
@@ -492,8 +492,8 @@ export default {
               window.location.reload();
             }
           })
-          
-        
+
+
       } catch (error) {
         console.log(error);
       }

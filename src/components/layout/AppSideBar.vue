@@ -25,9 +25,10 @@
       <EventDialog ref="EventCreate"></EventDialog>
       <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
       <MoimDialog ref="MoimCreate"></MoimDialog>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="list" @click="goToMoimList"></v-list-item>
+      <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="moim-list" @click="goToMoimList"></v-list-item>
       <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
       <ChatDialog ref="ChatCreate"></ChatDialog>
+      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChatingList"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 
@@ -122,7 +123,10 @@ export default {
     MyPageClicked(){
 
       this.$refs.MyPageDialog.openDialog();
-    }
+    },
+    goToChatingList() {
+      this.$router.push({ path: '/ChatingList' });
+    },
 
   }
 }

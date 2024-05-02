@@ -12,6 +12,7 @@ import UpdateEvent from "@/components/UpdateEvent.vue";
 import MoimList from "@/pages/moim/MoimList.vue"
 import ChatTest from "@/views/ChatTest.vue"
 import ChatDialog from "@/pages/chat/ChatDialog.vue"
+import ChatingList from "@/pages/chat/ChatingList.vue"
 
 const routes = [
     {
@@ -95,7 +96,12 @@ const routes = [
                 path: "ChatDialog",
                 name: "ChatDialog",
                 component: ChatDialog
-            }
+            },
+            {
+                path: "ChatingList",
+                name: "ChatingList",
+                component: ChatingList
+            },
         ]
     },
 ];

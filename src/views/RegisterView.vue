@@ -1,84 +1,121 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12" md="5">
+    <v-row justify="center" align="center" style="height: 100vh">
+      <v-col cols="12" sm="8" md="7" lg="5" xl="3">
         <div class="left-panel">
           <!-- 회원가입 폼 -->
-          <v-card class="register-form">
-            <v-form>
-              <!-- 이메일 입력 칸 -->
-              <v-text-field label="이메일" prepend-inner-icon="mdi-email" v-model="email"
-                            :rules="[rules.required, rules.email]" :disabled="emailCodeSent" outlined>
-                <template v-slot:append>
-                  <!-- 중복 체크 버튼이 emailDuplicated가 true일 때만 표시되도록 함 -->
-                  <v-btn text @click="checkEmail" v-if="emailDuplicated">중복 체크</v-btn>
-                  <!-- 인증 코드 전송 버튼이 emailDuplicated가 false일 때만 표시되도록 함 -->
-                  <v-btn text @click="sendEmailCode" v-else :disabled="emailCodeSent">인증 코드 전송</v-btn>
-                </template>
-              </v-text-field>
-
-              <span v-show="emailCodeSent" class="text-red-800 p-2 rounded-md mt-2" disabled>유효시간: {{ timer }}초</span>
-              <!-- 인증코드 입력 칸 -->
-              <v-text-field label="인증 코드 입력" prepend-inner-icon="mdi-lock" v-model="authCode"
-                            :disabled="emailCodeVerified"
-                            outlined>
-                <template v-slot:append>
-                  <!-- 여기에 인증 코드 검증 버튼 추가 -->
-                  <v-btn text @click="verifyCode" :disabled="emailCodeVerified">인증 코드 검증</v-btn>
-                </template>
-
-              </v-text-field>
-
-              <!-- 닉네임 입력 칸 -->
-              <v-text-field label="닉네임" prepend-inner-icon="mdi-account" v-model="nickname"
-                            :rules="[rules.required]" :disabled="!nicknameDuplicated" outlined>
-                <template v-slot:append>
-                  <!-- 닉네임 중복 체크 버튼 -->
-                  <v-btn text @click="checkNickname" :disabled="!nicknameDuplicated">중복 체크</v-btn>
-                </template>
-              </v-text-field>
-
-              <!-- 비밀번호 입력 칸 -->
-              <v-text-field label="비밀번호" prepend-inner-icon="mdi-lock" v-model="password"
-                            :type="showPassword ? 'text' : 'password'"
-                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="showPassword = !showPassword" :rules="[rules.required]"
-                            outlined></v-text-field>
-
-              <!-- 비밀번호 확인 입력 칸 -->
-              <v-text-field label="비밀번호 확인" prepend-inner-icon="mdi-lock" v-model="passwordConfirm"
-                            :type="showPasswordConfirm ? 'text' : 'password'"
-                            :append-icon="showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="showPasswordConfirm = !showPasswordConfirm"
-                            :rules="[rules.required, rules.passwordMatch]" outlined></v-text-field>
-
-              <v-file-input
-                  label="프로필 이미지 선택"
-                  prepend-icon="mdi-camera"
-                  @change="previewImage"
+          <v-card class="elevation-5 pt-5 rounded-card" style="width: 30vw;">
+            <v-toolbar class="custom-toolbar justify-center">
+              <v-row>
+                <v-col class="d-flex justify-center">
+                  <div class="text-block">
+                    <div class="title-padding-toolbar">모임? MOIM!</div>
+                    <div class="catchphrase">효율적인 일정 관리의 시작</div>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-toolbar>
+            <v-card-text>
+              <v-form class="padded-form">
+                <!-- 이메일 입력 칸 -->
+                <v-text-field 
+                  label="이메일" 
+                  prepend-inner-icon="mdi-email" 
+                  v-model="email"
+                  color="#0aca08"
+                  clearable
+                  variant="underlined"            
+                  :rules="[rules.required, rules.email]" 
+                  :disabled="emailCodeSent" 
                   outlined
-              ></v-file-input>
-              <!-- 이미지 미리보기 -->
-              <v-img
-                  v-if="profileImage"
-                  :src="imageUrl"
-                  aspect-ratio="1"
-                  class="mt-3"
-                  style="max-width: 200px; max-height: 200px"
-              ></v-img>
+                  density="comfortable">
+                  <template v-slot:append>
+                    <!-- 중복 체크 버튼이 emailDuplicated가 true일 때만 표시되도록 함 -->
+                    <v-btn text @click="checkEmail" v-if="emailDuplicated">중복 체크</v-btn>
+                    <!-- 인증 코드 전송 버튼이 emailDuplicated가 false일 때만 표시되도록 함 -->
+                    <v-btn text @click="sendEmailCode" v-else :disabled="emailCodeSent">인증 코드 전송</v-btn>
+                  </template>
+                </v-text-field>
 
-              <!-- 회원가입 버튼 -->
-              <v-btn color="primary" @click="register">회원가입</v-btn>
-            </v-form>
+                <span v-show="emailCodeSent" class="text-red-800 p-2 rounded-md mt-2" disabled>유효시간: {{ timer }}초</span>
+                <!-- 인증코드 입력 칸 -->
+                <v-text-field 
+                  label="인증 코드 입력" 
+                  prepend-inner-icon="mdi-lock" 
+                  v-model="authCode"
+                  color="#0aca08"
+                  clearable            
+                  :disabled="emailCodeVerified"
+                  variant="underlined"
+                  density="comfortable"            
+                  outlined>
+                  <template v-slot:append>
+                    <!-- 여기에 인증 코드 검증 버튼 추가 -->
+                    <v-btn text @click="verifyCode" :disabled="emailCodeVerified">인증 코드 검증</v-btn>
+                  </template>
+
+                </v-text-field>
+
+                <!-- 닉네임 입력 칸 -->
+                <v-text-field label="닉네임" variant="underlined"
+                density="comfortable" color="#0aca08"
+                clearable prepend-inner-icon="mdi-account" v-model="nickname"
+                              :rules="[rules.required]" :disabled="!nicknameDuplicated" outlined>
+                  <template v-slot:append>
+                    <!-- 닉네임 중복 체크 버튼 -->
+                    <v-btn text @click="checkNickname" :disabled="!nicknameDuplicated">중복 체크</v-btn>
+                  </template>
+                </v-text-field>
+
+                <!-- 비밀번호 입력 칸 -->
+                <v-text-field label="비밀번호" color="#0aca08"
+                              clearable prepend-inner-icon="mdi-lock" v-model="password"
+                              variant="underlined"
+                              density="comfortable"
+                              :type="showPassword ? 'text' : 'password'"
+                              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append="showPassword = !showPassword" :rules="[rules.required]"
+                              outlined></v-text-field>
+
+                <!-- 비밀번호 확인 입력 칸 -->
+                <v-text-field label="비밀번호 확인" prepend-inner-icon="mdi-lock" v-model="passwordConfirm"
+                              color="#0aca08"
+                              clearable
+                              :type="showPasswordConfirm ? 'text' : 'password'"
+                              :append-icon="showPasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+                              @click:append="showPasswordConfirm = !showPasswordConfirm"
+                              :rules="[rules.required, rules.passwordMatch]" variant="underlined"
+                              density="comfortable" outlined></v-text-field>
+
+                <v-file-input
+                    label="프로필 이미지 선택"
+                    prepend-icon="mdi-camera"
+                    variant="underlined"
+                    density="comfortable"
+                    @change="previewImage"
+                    outlined
+                ></v-file-input>
+                <!-- 이미지 미리보기 -->
+                <v-img
+                    v-if="profileImage"
+                    :src="imageUrl"
+                    aspect-ratio="1"
+                    class="mt-3"
+                    style="max-width: 200px; max-height: 200px"
+                ></v-img>
+
+                <!-- 회원가입 버튼 -->
+                <v-btn 
+                class="my-6 login-btn" 
+                block
+                variant="elevated"
+                color="#0f2a14"
+                size="large"
+                @click="register">회원가입</v-btn>
+              </v-form>
+            </v-card-text>
           </v-card>
 
-        </div>
-      </v-col>
-
-      <!-- 오른쪽 컬럼 -->
-      <v-col cols="12" md="7">
-        <div class="right-panel" style="background-color: #6F8A6B; ">
-          <v-img src="../assets/image_1.png" style="max-height: 100%; max-width: 100%;"/>
         </div>
       </v-col>
     </v-row>
@@ -277,7 +314,6 @@ export default {
 
 <style scoped>
 .left-panel {
-  padding-top: 20%;
   height: 95vh;
   background-color: #FFFFFF;
 }
@@ -295,4 +331,14 @@ export default {
   border: 1px solid #000; /* 로그인 폼 테두리 추가 */
   max-width: 70vh; /* 적절한 최대 너비 설정 */
 }
+
+.catchphrase {
+  line-height: 1.2;
+  text-align: center; /* 가운데 정렬 */
+  font-size: 18px; /* 폰트 크기 변경 */
+  color: #666; /* 텍스트 색상 변경 */
+  margin-top: 10px; /* "모임? MOIM!" 텍스트와의 간격 설정 */
+  padding-bottom: 10px; /* 이 부분을 추가해보세요. */
+}
+
 </style>

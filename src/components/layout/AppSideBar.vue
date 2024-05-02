@@ -28,7 +28,7 @@
       <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="moim-list" @click="goToMoimList"></v-list-item>
       <v-list-item prepend-icon="mdi-snapchat" title="채팅 테스트" value="chat" @click="goToChat"></v-list-item>
       <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
-      <ChatDialog ref="ChatCreate"></ChatDialog>
+      <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
       <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -36,13 +36,11 @@
 </template>
 
 <script>
+import axiosInstance from "@/axios";
 import EventDialog from '@/pages/event/EventDialog.vue';
 import MoimDialog from '@/pages/moim/MoimDialog.vue';
 import MyPageDialog from '@/pages/myPage/MyPageDialog.vue';
-import ChatDialog from '@/pages/chat/ChatDialog.vue';
-
-// import {useMainStore} from "@/stores";
-import axiosInstance from "@/axios";
+import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 
 export default {
   name: "AppSidebar",
@@ -50,7 +48,7 @@ export default {
     EventDialog,
     MoimDialog,
     MyPageDialog,
-    ChatDialog
+    RoomCreateDialog
   },
   data() {
     return {
@@ -100,7 +98,7 @@ export default {
     },
     createChatClicked() {
       console.log("채팅방 생성 클릭");
-      this.$refs.ChatCreate.openDialog();
+      this.$refs.RoomCreate.openDialog();
     },
     goTo(route) {
       this.$router.push({ name: route });

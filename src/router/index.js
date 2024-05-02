@@ -10,9 +10,9 @@ import SearchResults from "@/pages/search/SearchResults.vue";
 import EventDetailDialog from "@/pages/event/EventDetailDialog.vue";
 import UpdateEvent from "@/components/UpdateEvent.vue";
 import MoimList from "@/pages/moim/MoimList.vue"
-import ChatDialog from "@/pages/chat/ChatDialog.vue"
 import ChattingList from "@/pages/chat/ChattingList.vue";
 import ChatPage from "@/pages/chat/ChatPage.vue";
+import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 
 const routes = [
     {
@@ -93,9 +93,9 @@ const routes = [
                 component: ChatPage
             },
             {
-                path: "ChatDialog",
-                name: "ChatDialog",
-                component: ChatDialog
+                path: "roomCreate",
+                name: "roomCreateDialog",
+                component: RoomCreateDialog
             },
             {
                 path: "ChattingList",

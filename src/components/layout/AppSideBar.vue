@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer permanent>
+  <v-navigation-drawer class="sidebar-navigation-drawer" permanent>
     <v-list>
       <v-list-item
         :prepend-avatar="profileImage"
@@ -29,6 +29,23 @@
       <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
       <ChatDialog ref="ChatCreate"></ChatDialog>
     </v-list>
+
+    <v-divider></v-divider>
+    <v-list class="today-list">
+      <v-subheader>오늘의 일정</v-subheader>
+      <v-list-item-group>
+        <v-list-item class="schedule-item">
+          <v-list-item-icon>
+            <v-icon>mdi-calendar-today</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>일정 1</v-list-item-title>
+            <v-list-item-subtitle>10:00 AM</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+
   </v-navigation-drawer>
 
   <v-main style="height: 250px"></v-main>
@@ -131,5 +148,24 @@ export default {
 <style>
 .active-menu-item {
   background-color: #eee; /* 활성 메뉴 항목의 배경색 */
+}
+
+.sidebar-navigation-drawer .today-list v-subheader {
+  color: #1976D2;
+  font-weight: bold;
+  padding-left: 16px;
+}
+
+.today-list .schedule-item {
+  margin-top: 5px;
+}
+
+.today-list .schedule-item .v-icon {
+  color: #1976D2;
+}
+
+.today-list .schedule-item v-list-item-title,
+.today-list .schedule-item v-list-item-subtitle {
+  color: #424242;
 }
 </style>

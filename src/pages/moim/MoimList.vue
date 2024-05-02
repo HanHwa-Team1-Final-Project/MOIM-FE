@@ -291,7 +291,7 @@
 
               <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM'">
                 <v-spacer />
-                <v-btn color="#3085d6" text @click="addEvent(selectedMoim)"
+                <v-btn color="#3085d6" text @click="addEvent(selectedMoim , startDate, endDate)"
                   >일정 등록</v-btn
                 >
               </v-card-actions>
@@ -308,10 +308,6 @@
 import axiosInstance from "@/axios";
 import Swal from "sweetalert2";
 import EventDialog from "../event/EventDialog.vue";
-// 1. 선택된 모임 표시되게,
-// 참가자의 일정등록에는 데이터가 안나왕
-// 3. 가장 최근의 모임으로 정렬하기
-// 4. 취소된 모임은 색 다르게
 
 export default {
   components: {
@@ -329,6 +325,8 @@ export default {
       sortedAvailableDays: [],
       confirmEvent: "",
       confirmGroupInfo: "",
+      startDate: "",
+      endDate: "",
       currentPage: 1, // 현재 페이지
       totalPages: null, // 총 페이지 수
       hasNextPage: true,
@@ -585,10 +583,10 @@ export default {
     addEvent(GroupInfo) {
       console.log('그룹 정보',GroupInfo);
       const startDate = new Date(GroupInfo.confirmedDateTime);
-    const endDate = new Date(startDate.getTime() + GroupInfo.runningTime * 60000);
-    
-    // ISO 문자열에서 'Z' 제거하여 로컬 시간대로 변환
-    function formatLocalDateTime(date) {
+      const endDate = new Date(startDate.getTime() + GroupInfo.runningTime * 60000);
+      
+      // ISO 문자열에서 'Z' 제거하여 로컬 시간대로 변환
+      function formatLocalDateTime(date) {
         const year = date.getFullYear();
         const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
         const day = date.getDate();
@@ -597,15 +595,6 @@ export default {
 
         return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     }
-    // delete GroupInfo.voteDeadline;
-    // delete GroupInfo.confirmedDateTime;
-    // delete GroupInfo.expectEndDate;
-    // delete GroupInfo.expectEndTime;
-    // delete GroupInfo.expectStartDate;
-    // delete GroupInfo.expectStartTime;
-    // delete GroupInfo.runningTime;
-    // delete GroupInfo.voteDeadline;
-
 
     // GroupInfo 객체에 startDate와 endDate 추가
     const updatedGroupInfo = {
@@ -614,8 +603,10 @@ export default {
         endDate: formatLocalDateTime(endDate),
     };
       console.log("startDate",startDate);
+      this.startDate = startDate;
+      this.endDate = endDate
       console.log("updatedGroupInfo", updatedGroupInfo);
-      this.$refs.eventDialog.changeDialog(updatedGroupInfo);
+      this.$refs.eventDialog.changeDialog(GroupInfo, startDate, endDate);
       this.dialog = false;
     },
 

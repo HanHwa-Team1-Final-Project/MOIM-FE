@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="true">
+  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false">
     <v-card class="pa-4">
       <v-card-title>
         <v-icon class="mr-2">mdi-chat-plus-outline</v-icon>
@@ -147,7 +147,7 @@ export default {
             nickname: user.nickname,
             email: user.email,
           }));
-        
+
         } else {
           console.error("사람들을 불러오는데 실패했습니다: API 에러 반환", response.data);
           this.people = [];
@@ -166,7 +166,7 @@ export default {
         alert("제목을 입력하세요.");
         return;
       }
-      
+
       if (!this.deadline) {
         alert("채팅 종료일을 입력하세요.");
         return;
@@ -213,7 +213,7 @@ export default {
         });
         console.log("채팅 생성완료");
         this.closeDialog();
-        
+
         Swal.fire({
             title: '채팅방이 생성되었습니다.',
             text: '채팅에 참여해주세요.',
@@ -226,8 +226,8 @@ export default {
               window.location.reload();
             }
           })
-          
-        
+
+
       } catch (error) {
         console.log(error);
       }

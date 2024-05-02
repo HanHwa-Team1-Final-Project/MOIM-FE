@@ -13,7 +13,7 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-      
+
       <v-list-item prepend-icon="mdi-calendar" title="Calendar" value="calendar" @click="goTo('fullCalendarComponent')"></v-list-item>
       <v-list-item prepend-icon="mdi-trello" title="Eisenhower Matrix" value="matrix" @click="goToEisenhowerMatrix"></v-list-item>
       <v-list-item
@@ -26,9 +26,10 @@
       <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
       <MoimDialog ref="MoimCreate"></MoimDialog>
       <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="moim-list" @click="goToMoimList"></v-list-item>
+      <v-list-item prepend-icon="mdi-snapchat" title="채팅 테스트" value="chatTest" @click="goToChat"></v-list-item>
       <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
       <ChatDialog ref="ChatCreate"></ChatDialog>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChatingList"></v-list-item>
+      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>
     </v-list>
 
     <v-divider></v-divider>
@@ -49,7 +50,6 @@
 
   </v-navigation-drawer>
 
-  <v-main style="height: 250px"></v-main>
 </template>
 
 <script>
@@ -138,13 +138,14 @@ export default {
       this.$router.push({ path: '/MoimList' });
     },
     MyPageClicked(){
-
       this.$refs.MyPageDialog.openDialog();
     },
-    goToChatingList() {
-      this.$router.push({ path: '/ChatingList' });
+    goToChat() {
+      this.$router.push({path: '/chatTest'})
     },
-
+    goToChattingList() {
+      this.$router.push({ path: '/ChattingList' });
+    }
   }
 }
 </script>

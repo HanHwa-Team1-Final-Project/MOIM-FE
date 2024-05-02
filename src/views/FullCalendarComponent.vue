@@ -80,8 +80,8 @@ export default {
         console.log("월간 일정: ", getEvents);
         const events = [];
         getEvents.forEach(event => {
-          const color = event.matrix === 'Q2' ? '#FF7A85' : 
-                  event.matrix === 'Q1' ? '#FFEB5A' : 
+          const color = event.matrix === 'Q2' ? '#FF7A85' :
+                  event.matrix === 'Q1' ? '#FFEB5A' :
                   event.matrix === 'Q3' ? '#5BFFB0' : '#1EDDFF'; // 'defaultColor'는 event.matrix가 q1, q2, q3 중 어느 것에도 해당하지 않을 때 사용할 색상입니다.
 
             events.push({
@@ -95,7 +95,7 @@ export default {
               }
             });
         });
-          
+
         this.events = events;
 
         // FullCalendar에 일정이 이미 로드되어 있는지 확인한다.

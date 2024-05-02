@@ -13,33 +13,62 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-
-      <v-list-item prepend-icon="mdi-calendar" title="Calendar" value="calendar" @click="goTo('fullCalendarComponent')"></v-list-item>
-      <v-list-item prepend-icon="mdi-trello" title="Eisenhower Matrix" value="matrix" @click="goToEisenhowerMatrix"></v-list-item>
       <v-list-item
-        prepend-icon="mdi-widgets"
+        prepend-icon="mdi-calendar"
+        title="캘린더"
+        value="calendar"
+        @click="goTo('fullCalendarComponent')"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-trello"
+        title="아이젠하워 메트릭스"
+        value="matrix"
+        @click="goToEisenhowerMatrix"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-calendar-plus"
         title="일정 생성"
         value="createEvent"
         @click="createEventClicked"
       ></v-list-item>
       <EventDialog ref="EventCreate"></EventDialog>
-      <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
-      <MoimDialog ref="MoimCreate"></MoimDialog>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="moim-list" @click="goToMoimList"></v-list-item>
-      <v-list-item prepend-icon="mdi-snapchat" title="채팅 테스트" value="chatTest" @click="goToChat"></v-list-item>
-      <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-account-details"
+        title="모임 리스트"
+        value="moim-list"
+        @click="goToMoimList"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-snapchat"
+        title="채팅 테스트"
+        value="chatTest"
+        @click="goToChat"
+      ></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-widgets"
+        title="채팅방 생성"
+        value="createChat"
+        @click="createChatClicked"
+      ></v-list-item>
       <ChatDialog ref="ChatCreate"></ChatDialog>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>
+      <v-list-item
+        prepend-icon="mdi-message-text"
+        title="채팅 리스트"
+        value="chating-list"
+        @click="goToChattingList"
+      ></v-list-item>
     </v-list>
 
     <v-divider></v-divider>
     <v-list class="today-list">
-      <v-subheader>오늘의 일정</v-subheader>
+      <v-subheader>
+        <v-list-item-icon>
+          <v-icon>mdi-calendar-today</v-icon>
+        </v-list-item-icon>
+        오늘의 일정
+        </v-subheader>
       <v-list-item-group>
         <v-list-item class="schedule-item">
-          <v-list-item-icon>
-            <v-icon>mdi-calendar-today</v-icon>
-          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>일정 1</v-list-item-title>
             <v-list-item-subtitle>10:00 AM</v-list-item-subtitle>
@@ -47,16 +76,13 @@
         </v-list-item>
       </v-list-item-group>
     </v-list>
-
   </v-navigation-drawer>
-
 </template>
 
 <script>
-import EventDialog from '@/pages/event/EventDialog.vue';
-import MoimDialog from '@/pages/moim/MoimDialog.vue';
-import MyPageDialog from '@/pages/myPage/MyPageDialog.vue';
-import ChatDialog from '@/pages/chat/ChatDialog.vue';
+import EventDialog from "@/pages/event/EventDialog.vue";
+import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
+import ChatDialog from "@/pages/chat/ChatDialog.vue";
 
 // import {useMainStore} from "@/stores";
 import axiosInstance from "@/axios";
@@ -71,10 +97,8 @@ export default {
   // },
   components: {
     EventDialog,
-    MoimDialog,
     MyPageDialog,
-    ChatDialog
-
+    ChatDialog,
   },
   data() {
     return {
@@ -119,10 +143,6 @@ export default {
       console.log("일정 생성 클릭");
       this.$refs.EventCreate.openDialog();
     },
-    createMoimClicked() {
-      console.log("모임 생성 클릭");
-      this.$refs.MoimCreate.openDialog();
-    },
     createChatClicked() {
       console.log("채팅방 생성 클릭");
       this.$refs.ChatCreate.openDialog();
@@ -131,23 +151,23 @@ export default {
       this.$router.push({ name: route });
     },
     goToEisenhowerMatrix() {
-      this.$router.push({ path: '/EisenhowerMatrix' });
+      this.$router.push({ path: "/EisenhowerMatrix" });
     },
 
     goToMoimList() {
-      this.$router.push({ path: '/MoimList' });
+      this.$router.push({ path: "/MoimList" });
     },
-    MyPageClicked(){
+    MyPageClicked() {
       this.$refs.MyPageDialog.openDialog();
     },
     goToChat() {
-      this.$router.push({path: '/chatTest'})
+      this.$router.push({ path: "/chatTest" });
     },
     goToChattingList() {
-      this.$router.push({ path: '/ChattingList' });
-    }
-  }
-}
+      this.$router.push({ path: "/ChattingList" });
+    },
+  },
+};
 </script>
 
 <style>
@@ -156,7 +176,7 @@ export default {
 }
 
 .sidebar-navigation-drawer .today-list v-subheader {
-  color: #1976D2;
+  color: #1976d2;
   font-weight: bold;
   padding-left: 16px;
 }
@@ -166,7 +186,7 @@ export default {
 }
 
 .today-list .schedule-item .v-icon {
-  color: #1976D2;
+  color: #1976d2;
 }
 
 .today-list .schedule-item v-list-item-title,

@@ -31,7 +31,6 @@
                     :class="{
                       'cancelled-moim-card-button': moim.groupType === 'GROUP_CANCEL',
                       'confirm-moim-card-button': moim.groupType === 'GROUP_CONFIRM',
-                      
                     }"
                   >
                     {{ getStatus(moim) }}
@@ -59,9 +58,15 @@
                     <v-list-item
                       v-if="moim.groupType == 'GROUP_CONFIRM'"
                       title="확정일"
-                      :subtitle="new Date(moim.confirmedDateTime).toLocaleDateString('ko-KR')"
+                      :subtitle="
+                        new Date(moim.confirmedDateTime).toLocaleDateString('ko-KR')
+                      "
                     />
-                    <v-list-item v-else title="마감일" :subtitle="new Date(moim.voteDeadline).toLocaleDateString('ko-KR')" />
+                    <v-list-item
+                      v-else
+                      title="마감일"
+                      :subtitle="new Date(moim.voteDeadline).toLocaleDateString('ko-KR')"
+                    />
                   </v-list>
                 </template>
               </v-card>
@@ -76,29 +81,24 @@
         </v-col>
 
         <!-- 모임 상세 페이지 -->
-        <v-col cols="12" md="8" >
+        <v-col cols="12" md="8">
           <v-card class="pa-4">
-            <div v-if="selectedMoim" >
+            <div v-if="selectedMoim">
               <v-card-title
                 class="text-h5"
-                
                 style="width: 100%; display: flex; align-items: center"
               >
-                <div 
-                
+                <div
                   class="title-text"
-                  
                   style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap"
                 >
                   {{ selectedMoim.title }}
                 </div>
                 <v-spacer></v-spacer>
-                <!-- <v-btn
-                  class="no-shadow"
-                  density="comfortable"
-                  icon="mdi-close"
-                  @click="dialog = false" -->
-                <!-- ></v-btn> -->
+                <v-btn fab icon fixed bottom right @click="createMoim" class="fab-fixed">
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <MoimDialog ref="MoimCreate"></MoimDialog>
               </v-card-title>
 
               <v-card-text class="mt-5">
@@ -234,8 +234,12 @@
 
               <v-card-text v-if="getStatus(selectedMoim) === 'new'">
                 <v-spacer />
-                <v-btn class="vote-button" color="#3085d6" text @click="vote('Y')">수락</v-btn>
-                <v-btn class="vote-button" color="#d33" text @click="vote('N')">거부</v-btn>
+                <v-btn class="vote-button" color="#3085d6" text @click="vote('Y')"
+                  >수락</v-btn
+                >
+                <v-btn class="vote-button" color="#d33" text @click="vote('N')"
+                  >거부</v-btn
+                >
               </v-card-text>
 
               <!-- 추천일정 선택 -->
@@ -284,14 +288,17 @@
                   selectedMoim.hostEmail === this.userEmail
                 "
               >
-                <v-spacer />
+                <!-- <v-spacer /> -->
                 <v-btn color="#3085d6" text @click="confirm(selectedOption)">확정</v-btn>
               </v-card-actions>
               <!-- 확정 후 -->
 
               <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM'">
-                <v-spacer />
-                <v-btn color="#3085d6" text @click="addEvent(selectedMoim , startDate, endDate)"
+                <!-- <v-spacer /> -->
+                <v-btn
+                  color="#3085d6"
+                  text
+                  @click="addEvent(selectedMoim, startDate, endDate)"
                   >일정 등록</v-btn
                 >
               </v-card-actions>
@@ -308,10 +315,12 @@
 import axiosInstance from "@/axios";
 import Swal from "sweetalert2";
 import EventDialog from "../event/EventDialog.vue";
+import MoimDialog from "../moim/MoimDialog.vue";
 
 export default {
   components: {
     EventDialog,
+    MoimDialog,
   },
   data() {
     return {
@@ -345,6 +354,14 @@ export default {
     this.getUserData();
   },
   methods: {
+    createMoim() {
+      // 여기에 모임 생성 로직을 추가
+      console.log("Creating a new moim...");
+      // 예를 들어, 모임 생성 폼으로 라우팅하거나 대화상자를 열 수 있음
+      // this.$router.push({ name: 'CreateMoimForm' });
+      // 또는 대화상자를 사용하는 경우
+      this.$refs.MoimCreate.openDialog();
+    },
     onMoimClick(moim) {
       // alert(`Moim with ID ${moim.id} clicked`);
       this.selectedMoim = moim;
@@ -441,13 +458,13 @@ export default {
       } else {
         // 호스트인 모임일때
         if (moim.hostEmail === this.userEmail) {
-          return moim.isConfirmed === "N" ? "대기" : "확정";
+          return moim.groupType === "ROUP_CONFIRM" ? "확정" : "대기";
         } else {
           // 호스트가 아닌 모임일때
           const guest = moim.guestEmailNicknameIsAgreed.find(
             (g) => g[0] === this.userEmail
           );
-          if (moim.isConfirmed === "N") {
+          if (moim.groupType != "GROUP_CONFIRM") {
             if (guest && guest[2] === "P") {
               return "new";
             } else {
@@ -581,10 +598,10 @@ export default {
       }
     },
     addEvent(GroupInfo) {
-      console.log('그룹 정보',GroupInfo);
+      console.log("그룹 정보", GroupInfo);
       const startDate = new Date(GroupInfo.confirmedDateTime);
       const endDate = new Date(startDate.getTime() + GroupInfo.runningTime * 60000);
-      
+
       // ISO 문자열에서 'Z' 제거하여 로컬 시간대로 변환
       function formatLocalDateTime(date) {
         const year = date.getFullYear();
@@ -593,18 +610,22 @@ export default {
         const hours = date.getHours();
         const minutes = date.getMinutes();
 
-        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-    }
+        return `${year}-${month.toString().padStart(2, "0")}-${day
+          .toString()
+          .padStart(2, "0")}T${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+      }
 
-    // GroupInfo 객체에 startDate와 endDate 추가
-    const updatedGroupInfo = {
+      // GroupInfo 객체에 startDate와 endDate 추가
+      const updatedGroupInfo = {
         ...GroupInfo,
         startDate: formatLocalDateTime(startDate),
         endDate: formatLocalDateTime(endDate),
-    };
-      console.log("startDate",startDate);
+      };
+      console.log("startDate", startDate);
       this.startDate = startDate;
-      this.endDate = endDate
+      this.endDate = endDate;
       console.log("updatedGroupInfo", updatedGroupInfo);
       this.$refs.eventDialog.changeDialog(GroupInfo, startDate, endDate);
       this.dialog = false;
@@ -630,7 +651,6 @@ export default {
       return `${formatDateTime(startDate)} ~ ${formatDateTime(endDate)}`;
     },
   },
-
 };
 </script>
 
@@ -673,7 +693,6 @@ export default {
   margin-left: 8px;
 }
 .result-card-time {
-  
 }
 .result-card[title="취소"] {
   background-color: #f8d7da;
@@ -683,15 +702,14 @@ export default {
 }
 
 .selected-moim-card {
-  background-color: #CDD0CB; /* 선택되면 바뀌는 색 */
+  background-color: #cdd0cb; /* 선택되면 바뀌는 색 */
 }
 
 .cancelled-moim-card-button {
   background-color: #dc8686;
-
 }
-.confirm-moim-card-button{
-  background-color: rgba(172, 198, 255, 1.0);
+.confirm-moim-card-button {
+  background-color: rgba(172, 198, 255, 1);
 }
 /* 모임리스트 위의 n */
 .action-required-indicator {
@@ -713,14 +731,17 @@ export default {
   justify-content: center;
   left: auto;
 }
-.moim-detail{
-  background-color: rgba(172, 198, 255, 1.0);
+.moim-detail {
+  background-color: rgba(172, 198, 255, 1);
 }
-.vote-button{
+.vote-button {
   margin-right: 2%;
 }
-
-
-
+.fab-fixed {
+  position: fixed; /* 고정 위치 */
+  right: 5%; /* 오른쪽에서 20px 떨어진 위치 */
+  bottom: 5%; /* 하단에서 20px 떨어진 위치 */
+  z-index: 100; /* 다른 요소 위에 표시 */
+}
 </style>
 ``

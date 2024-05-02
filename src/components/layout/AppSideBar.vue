@@ -29,7 +29,7 @@
       <v-list-item prepend-icon="mdi-snapchat" title="채팅 테스트" value="chatTest" @click="goToChat"></v-list-item>
       <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
       <ChatDialog ref="ChatCreate"></ChatDialog>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChatingList"></v-list-item>
+      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 
@@ -126,8 +126,8 @@ export default {
     goToChat() {
       this.$router.push({path: '/chatTest'})
     },
-    goToChatingList() {
-      this.$router.push({ path: '/ChatingList' });
+    goToChattingList() {
+      this.$router.push({ path: '/ChattingList' });
     }
   }
 }

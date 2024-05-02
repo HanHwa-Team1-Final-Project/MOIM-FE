@@ -76,8 +76,8 @@ export default {
       membersNickname: "",
       chatingDeleteDateTime: "",
       selectedChating: null,
-      currentPage: 1, 
-      totalPages: null, 
+      currentPage: 1,
+      totalPages: null,
       hasNextPage: true,
     };
   },
@@ -124,9 +124,9 @@ export default {
           };
           this.chatingDeleteDateTime = date.toLocaleString("ko-KR", options);
           this.membersNickname = this.selectedChating.memberRooms.map(memberRooms => memberRooms[1]).join(', ');
-          
 
-          // this.membersNickname = 
+
+          // this.membersNickname =
           // this.hasNextPage = response.data.data.length  > 0; // 다음 페이지 존재 여부 업데이트
           await this.checkNextPage(page + 1);
         }
@@ -136,7 +136,7 @@ export default {
         this.hasNextPage = false;
       }
     },
-  
+
     async checkNextPage(nextPage) {
       const authToken = localStorage.getItem("accessToken");
       const nextUrl = `${process.env.VUE_APP_API_BASE_URL}/api/room/rooms/${nextPage}`;
@@ -194,7 +194,7 @@ export default {
 
 <style>
 .search-results {
-  margin-top: -250px;
+  margin-top: 1vh;
 }
 .nonChating {
   display: flex;

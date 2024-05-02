@@ -1,21 +1,36 @@
 <template>
-  <div class="d-flex flex-column">
-    <div v-for="(responseObject, id) in messages" :key="id" class="mb-3 mx-auto text-start">
-      <v-card color="blue lighten-5" class="py-2 px-3" style="width: fit-content; max-width: 400px" outlined>
-        {{ responseObject.content }}
-      </v-card>
-    </div>
-  </div>
-  <div class="d-flex justify-end my-3">
-    <v-text-field v-model="message" @keyup.enter="sendMessage" placeholder="Type a message..." outlined hide-details></v-text-field>
-    <v-btn color="blue" @click="sendMessage" class="ms-3" text>Send</v-btn>
-  </div>
-</template>
+  <v-app>
 
+    <v-main style="margin-bottom:108px; padding: 16px; overflow:auto; height: calc(100vh - 112px)">
+      <v-row style="max-height: 60vh">
+        <v-col style="max-height: 60vh; overflow: auto">
+          <div v-for="(responseObject, id) in messages" :key="id"
+               :class="['d-flex flex-row align-center my-2', responseObject.nickname === nickname ? 'justify-end': null]">
+            <span v-if="responseObject.nickname === nickname" class="blue--text mr-3">{{ responseObject.content }}</span>
+            <v-avatar :color="responseObject.nickname === nickname ? 'indigo': 'red'" size="36">
+              <span class="white--text">{{ responseObject.nickname[0] }}</span>
+            </v-avatar>
+            <span v-if="responseObject.nickname !== nickname" class="blue--text ml-3">{{ responseObject.content }}</span>
+          </div>
+        </v-col>
+      </v-row>
+    </v-main>
+
+    <v-footer color="grey lighten-3" padless style="height: auto!important; position:fixed; bottom:0; width:100%;">
+      <v-row no-gutters>
+        <v-col>
+          <v-text-field v-model="message" placeholder="Type Something" @keyup.enter="sendMessage"></v-text-field>
+          <v-btn icon class="ml-4" @click="sendMessage"><v-icon>mdi-send</v-icon></v-btn>
+        </v-col>
+      </v-row>
+    </v-footer>
+
+  </v-app>
+</template>
 <script>
-import { ref, onMounted, onUnmounted } from 'vue'
+import {ref, onMounted, onUnmounted} from 'vue'
 import SockJS from 'sockjs-client'
-import { Stomp } from '@stomp/stompjs'
+import {Stomp} from '@stomp/stompjs'
 import {jwtDecode} from "jwt-decode";
 
 export default {
@@ -77,7 +92,7 @@ export default {
       }
     })
 
-    return {messages, message, sendMessage}
+    return {messages, message, sendMessage, nickname}
   }
 }
 </script>

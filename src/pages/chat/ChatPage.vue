@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <v-main style="margin-bottom:108px; padding: 16px; overflow:auto; height: calc(100vh - 112px)">
       <v-row style="max-height: 60vh">
         <v-col style="max-height: 60vh; overflow: auto">
@@ -24,7 +23,6 @@
         </v-col>
       </v-row>
     </v-footer>
-
   </v-app>
 </template>
 <script>

@@ -153,6 +153,18 @@ export default {
     //     console.error("Stomp connection is not established yet.")
     //   }
     // },
+
+    disconnect() {
+      if (this.stompClient && this.stompClient.connected) {
+        this.stompClient.unsubscribe(`/sub/chat/${this.selectedChatting.id}`);
+        this.stompClient.disconnect();
+        console.log("Disconnected from the WebSocket Connection.");
+      }
+    },
+  },
+
+  beforeUnmount() {
+    this.disconnect();
   },
 
   created() {

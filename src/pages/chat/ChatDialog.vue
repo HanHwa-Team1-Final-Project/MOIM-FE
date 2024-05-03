@@ -173,7 +173,7 @@ export default {
       }
 
       if (new Date() > new Date(this.deadline)) {
-        alert("종료일은 현재보다 전이어야 합니다.");
+        alert("종료일을 확인해주세요.");
         console.log(new Date())
         return;
       }

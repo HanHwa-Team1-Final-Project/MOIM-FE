@@ -47,6 +47,7 @@ export default {
       message: "",
       nickname: "",
       stompClient: null,
+      isConnected: false,
     }
   },
 
@@ -54,117 +55,20 @@ export default {
     // 이미 채팅 페이지가 로드된 상태에서 새로운 채팅방을 선택하는 상황을 처리.
     // selectedChatting prop이 변경될 때마다 initializeWebSocket 메서드를 호출.
     // 새로운 채팅방을 선택하면 이전 웹소켓 연결이 끊기고 새로운 웹소켓 연결이 생성되어 해당 채팅방을 구독.
-    selectedChatting(newChat, oldChat) {
+    async selectedChatting(newChat, oldChat) {
       if (oldChat) {
-        if (this.stompClient && this.stompClient.connected) {
-          this.stompClient.disconnect();
-          console.log("Disconnected from the old WebSocket connection.");
+        try {
+          await this.disconnect();
+          this.messages = [];
+        } catch (error) {
+          console.log("Failed to disconnect from old chat: ", error);
         }
       }
+
       if (newChat) {
         this.initializeWebSocket();
       }
     },
-  },
-
-  methods: {
-    initializeWebSocket() {
-      if(this.stompClient && this.stompClient.connected) return;
-
-      const url = `${process.env.VUE_APP_API_BASE_URL}/ws-endpoint`;
-      const authToken = localStorage.getItem("accessToken");
-      const socket = new SockJS(url);
-      this.stompClient = Stomp.over(socket);
-      console.log("Initialize WebSocket!");
-
-      this.stompClient.connect({ Authorization: `Bearer ${authToken}` }, () => {
-        console.log("Connected to WebSocket!");
-
-        // 메시지 수신
-        this.stompClient.subscribe("/sub/chat/" + this.selectedChatting.id, (response) => {
-          const responseObject = JSON.parse(response.body); // ChatResponse와 동일한 형식이다.
-          this.messages.push(responseObject);
-        })
-      }, (error) => {
-        console.error("WebSocket connection error: ", error)
-      })
-    },
-
-    // initializeWebSocket() {
-    //   if(this.stompClient && this.stompClient.connected) return;
-    //
-    //   const url = `${process.env.VUE_APP_API_BASE_URL}/ws-endpoint`;
-    //   const ws = new SockJS(url);
-    //
-    //   this.stompClient = Stomp.StompJs.Client.over(() => ws);
-    //
-    //   console.log("Initialize WebSocket!");
-    //
-    //   const authToken = localStorage.getItem("accessToken");
-    //
-    //   this.stompClient.connectHeaders = { Authorization: `Bearer ${authToken}` };
-    //
-    //   this.stompClient.onConnect = () => {
-    //     console.log("Connected to WebSocket!");
-    //
-    //     this.stompClient.subscribe("/sub/chat/" + this.selectedChatting.id, (response) => {
-    //       const responseObject = JSON.parse(response.body); // ChatResponse와 동일한 형식이다.
-    //       this.messages.push(responseObject);
-    //     })
-    //   };
-    //
-    //   this.stompClient.onStompError = (error) => {
-    //     console.error("WebSocket connection error: ", error)
-    //   };
-    //
-    //   this.stompClient.activate();
-    // },
-
-    sendMessage() {
-      if (this.stompClient && this.stompClient.connected) {
-        const messageData = {
-          type: "CHAT",
-          content: this.message,
-          sender: this.nickname,
-          room: this.selectedChatting.id // 채팅방 ID
-        }
-        this.stompClient.send("/pub/chat/" + this.selectedChatting.id, {}, JSON.stringify(messageData))
-        this.message = ""
-      } else {
-        console.error("Stomp connection is not established yet.")
-      }
-    },
-
-    // sendMessage() {
-    //   if (this.stompClient && this.stompClient.connected) {
-    //     const messageData = {
-    //       type: "CHAT",
-    //       content: this.message,
-    //       sender: this.nickname,
-    //       room: this.selectedChatting.id // 채팅방 ID
-    //     }
-    //     this.stompClient.publish({
-    //       destination: "/pub/chat/" + this.selectedChatting.id,
-    //       body: JSON.stringify(messageData)
-    //     });
-    //
-    //     this.message = ""
-    //   } else {
-    //     console.error("Stomp connection is not established yet.")
-    //   }
-    // },
-
-    disconnect() {
-      if (this.stompClient && this.stompClient.connected) {
-        this.stompClient.unsubscribe(`/sub/chat/${this.selectedChatting.id}`);
-        this.stompClient.disconnect();
-        console.log("Disconnected from the WebSocket Connection.");
-      }
-    },
-  },
-
-  beforeUnmount() {
-    this.disconnect();
   },
 
   created() {
@@ -182,5 +86,66 @@ export default {
     }
   },
 
+  beforeUnmount() {
+    this.disconnect();
+  },
+
+  methods: {
+    initializeWebSocket() {
+      if(this.stompClient && this.stompClient.connected) return;
+
+      const url = `${process.env.VUE_APP_API_BASE_URL}/ws-endpoint`;
+      const authToken = localStorage.getItem("accessToken");
+      const socket = new SockJS(url);
+      this.stompClient = Stomp.over(socket);
+      console.log("Initialize WebSocket!");
+
+      this.stompClient.connect({ Authorization: `Bearer ${authToken}` }, () => {
+        console.log("Connected to WebSocket!");
+        this.isConnected = true;
+
+        // 메시지 수신
+        this.stompClient.subscribe("/sub/chat/" + this.selectedChatting.id, (response) => {
+          const responseObject = JSON.parse(response.body); // ChatResponse와 동일한 형식이다.
+          this.messages.push(responseObject);
+        })
+      }, (error) => {
+        console.error("WebSocket connection error: ", error)
+      })
+    },
+
+    sendMessage() {
+      if (this.stompClient && this.stompClient.connected) {
+        const messageData = {
+          type: "CHAT",
+          content: this.message,
+          sender: this.nickname,
+          room: this.selectedChatting.id // 채팅방 ID
+        }
+        this.stompClient.send("/pub/chat/" + this.selectedChatting.id, {}, JSON.stringify(messageData))
+        this.message = ""
+      } else {
+        console.error("Stomp connection is not established yet.")
+      }
+    },
+
+    disconnect() {
+      return new Promise((resolve, reject) => {
+        if (this.stompClient && this.stompClient.connected) {
+          this.stompClient.unsubscribe(`/sub/chat/${this.selectedChatting.id}`);
+          try {
+            this.stompClient.disconnect(() => {
+              this.isConnected = false;
+              console.log("Disconnected from the WebSocket Connection.");
+              resolve();
+            });
+          } catch (error) {
+            console.log("Failed to disconnect: ", error);
+            reject(error);
+          }
+        }
+      });
+    },
+  }
 }
 </script>

@@ -167,10 +167,10 @@ export default {
       }
     },
     googleLogin() {
-      window.location.href = `${process.env.VUE_APP_API_BASE_URL}/oauth2/authorization/google?redirect_uri=http://localhost:8081/oauth2/redirect`;
+      window.location.href = `${process.env.VUE_APP_API_BASE_URL}/oauth2/authorization/google?redirect_uri=https://www.jangeunji.shop/oauth2/redirect`;
     },
     kakaoLogin() {
-      window.location.href = `${process.env.VUE_APP_API_BASE_URL}/oauth2/authorization/kakao?redirect_uri=http://localhost:8081/oauth2/redirect`;
+      window.location.href = `${process.env.VUE_APP_API_BASE_URL}/oauth2/authorization/kakao?redirect_uri=https://www.jangeunji.shop/oauth2/redirect`;
     },
   },
 };

@@ -60,18 +60,55 @@
     </v-list>
 
     <v-divider></v-divider>
+
     <v-list class="today-list">
       <v-subheader>
         <v-list-item-icon>
           <v-icon>mdi-calendar-today</v-icon>
         </v-list-item-icon>
         오늘의 일정
-        </v-subheader>
+      </v-subheader>
+      <!-- 모임 -->
       <v-list-item-group>
         <v-list-item class="schedule-item">
-          <v-list-item-content>
-            <v-list-item-title>일정 1</v-list-item-title>
-            <v-list-item-subtitle>10:00 AM</v-list-item-subtitle>
+          <v-list-item-content v-for="moim in moims" :key="moim.id">
+            <v-list-item-title> {{ moim.title }} </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ formatTime(moim.confirmedDateTime) }} ~
+              {{
+                formatTime(
+                  formattedlastDateTime(moim.confirmedDateTime, moim.runningTime)
+                )
+              }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item>
+
+        <!-- 이벤트 및 투두 리스트 -->
+        <v-list-item class="schedule-item">
+          <v-list-item-content v-for="event in events" :key="event.id">
+            <v-list-item-title> {{ event.title }} </v-list-item-title>
+            <v-list-item-subtitle
+              >{{ formatTime(event.startDate) }} ~ {{ formatTime(event.endDate) }}
+            </v-list-item-subtitle>
+
+            <v-col v-if="event.todoLists.length">
+              <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
+                <v-row>
+                  <v-col cols="12" md="2">
+                    <v-checkbox
+                      v-model="todo[2]"
+                      :true-value="'Y'"
+                      :false-value="'N'"
+                      @change="updateIsChecked(todo[0], todo[2])"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="12" md="10">
+                    <v-text-field readonly>{{ todo[1] }}</v-text-field>
+                  </v-col>
+                </v-row>
+              </v-list-item-content>
+            </v-col>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -83,6 +120,7 @@
 import EventDialog from "@/pages/event/EventDialog.vue";
 import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
 import ChatDialog from "@/pages/chat/ChatDialog.vue";
+import { formatTime } from "@/utils/date-utils";
 
 // import {useMainStore} from "@/stores";
 import axiosInstance from "@/axios";
@@ -102,16 +140,34 @@ export default {
   },
   data() {
     return {
+      moims: "",
       profileImage: "",
       email: "",
       nickname: "",
+      events: "",
+      todos: [],
+      isChecked: "",
     };
   },
-
+  setup() {
+    return {
+      formatTime: formatTime,
+    };
+  },
   mounted() {
     this.fetchUserData();
+    this.fetchMoims();
+    this.fetchEvents();
   },
   methods: {
+    isTodoChecked(todo) {
+      console.log("메소드 todo", todo);
+      if (todo[2] == "N") {
+        return false;
+      }
+      return todo[2] === "Y";
+    },
+
     async fetchUserData() {
       const authToken = localStorage.getItem("accessToken");
       const url = `${process.env.VUE_APP_API_BASE_URL}/api/members`;
@@ -166,6 +222,101 @@ export default {
     goToChattingList() {
       this.$router.push({ path: "/ChattingList" });
     },
+    async fetchMoims() {
+      const authToken = localStorage.getItem("accessToken");
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/groups/today`;
+      if (!authToken) {
+        console.error("인증 토큰이 없습니다.");
+        return;
+      }
+      try {
+        const response = await axiosInstance.get(url, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (response.data.success && response.data.status === "OK") {
+          this.moims = response.data.data;
+
+          // this.email = userData.email;
+          // this.nickname = userData.nickname;
+        } else {
+          console.error("Failed to fetch user data");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    },
+    async fetchEvents() {
+      const authToken = localStorage.getItem("accessToken");
+
+      const date = new Date(); // 현재 날짜와 시간
+      const year = date.getFullYear(); // 년도
+      const month = date.getMonth() + 1; // 월 (0-11을 1-12로 조정)
+      const day = date.getDate(); // 일
+      console.log("오늘은", year, month, day);
+
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/daily/${year}/${month}/${day}`;
+      if (!authToken) {
+        console.error("인증 토큰이 없습니다.");
+        return;
+      }
+      try {
+        const response = await axiosInstance.get(url, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        if (response.data.success && response.data.status === "OK") {
+          this.events = response.data.data;
+
+          this.events.forEach((event) => {
+            const todos = event.todoLists;
+
+            todos.forEach((todo) => {
+              console.log("foreach", todo);
+              this.isChecked = todo[2] == "Y";
+            });
+            this.todos = todos;
+            console.log("this.todos", this.todos);
+          });
+
+          // this.email = userData.email;
+          // this.nickname = userData.nickname;
+        } else {
+          console.error("Failed to get event data");
+        }
+      } catch (error) {
+        console.error("Error get event data:", error);
+      }
+    },
+    async updateIsChecked(id, isChecked) {
+      console.log("id", id);
+      console.log("isChecked", isChecked);
+      const token = localStorage.getItem("accessToken");
+      if (token == null) {
+        this.$router.push({ name: "Login" });
+        return;
+      }
+      const headers = { Authorization: `Bearer ${token}` };
+      // let checked = isChecked == true ? "Y" : "N";
+      try {
+        const response = await axiosInstance.post(
+          `${process.env.VUE_APP_API_BASE_URL}/api/events/todolist/${id}?isChecked=${isChecked}`,
+          { headers }
+        );
+        console.log(response.data.data);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    formattedlastDateTime(confirmedDateTime, runningTime) {
+      let lastDateTime = new Date(confirmedDateTime);
+      lastDateTime.setMinutes(lastDateTime.getMinutes() + runningTime);
+      return lastDateTime;
+    },
   },
 };
 </script>
@@ -183,6 +334,8 @@ export default {
 
 .today-list .schedule-item {
   margin-top: 5px;
+  
+
 }
 
 .today-list .schedule-item .v-icon {
@@ -193,4 +346,6 @@ export default {
 .today-list .schedule-item v-list-item-subtitle {
   color: #424242;
 }
+
+
 </style>

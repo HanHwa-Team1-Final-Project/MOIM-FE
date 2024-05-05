@@ -6,6 +6,10 @@
           <div class="no-moims-message">모임이 없습니다.</div>
         </v-col>
       </v-row>
+      <v-btn fab icon fixed bottom right @click="createMoim" class="fab-fixed">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <MoimDialog ref="MoimCreate"></MoimDialog>
     </v-container>
 
     <v-container v-else>
@@ -458,7 +462,7 @@ export default {
       } else {
         // 호스트인 모임일때
         if (moim.hostEmail === this.userEmail) {
-          return moim.groupType === "ROUP_CONFIRM" ? "확정" : "대기";
+          return moim.groupType === "GROUP_CONFIRM" ? "확정" : "대기";
         } else {
           // 호스트가 아닌 모임일때
           const guest = moim.guestEmailNicknameIsAgreed.find(
@@ -512,6 +516,7 @@ export default {
         if (response.data.data.isAgree == "Y") {
           Swal.fire({
             title: "참여 완료되었습니다.",
+            text: '일정이 확정되면 알려드릴게요.',
             icon: "success",
           });
         }
@@ -521,7 +526,7 @@ export default {
             icon: "error",
           });
         }
-        location.reload();
+        // location.reload();
       } catch (e) {
         alert(e);
       }

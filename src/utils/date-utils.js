@@ -31,3 +31,17 @@ export function formatDateAndTime(dateString) {
 
     return `${year}년 ${month}월 ${day}일 ${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
 }
+
+// 날짜 문자열을 "연 월 일 오전|오후 시 분" 형태로 반환
+export function formatTime(dateString) {
+    const date = new Date(dateString);
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    const ampm = hours >= 12 ? '오후' : '오전';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    return `${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+}

@@ -1,23 +1,31 @@
 <template>
   <v-app>
-    <v-main style="margin-bottom:108px; padding: 16px; overflow:auto; height: calc(100vh - 310px); background-color: #e0bb76;">
-      <v-row style="max-height: 60vh">
-        <v-col style="max-height: 60vh; overflow: auto; background-color: blue;">
+    <v-main style="padding: 16px; overflow:auto; height: calc(100vh - 30vh); background-color: #e0bb76;">
+      <v-row>
+        <v-col style="max-height: 69vh; overflow: auto; background-color: lightcoral; padding-top: 0 !important; padding-bottom: 0 !important;">
           <div v-for="(responseObject, id) in messages" :key="id"
                :class="['d-flex flex-row align-center my-5', responseObject.nickname === nickname ? 'justify-end': null]">
 
             <!-- 로그인한 유저의 말풍선 -->
-            <v-card class="pa-3" color="primary" v-if="responseObject.nickname === nickname" style="max-width: 60%;">
-              {{ responseObject.content }}
-            </v-card>
+            <v-row v-if="responseObject.nickname === nickname" class="justify-end">
+              <v-spacer/>
+              <v-col class="d-flex align-center">
+                <div class="text-end" style="margin-right: 10px;">
+                  <span>{{formatTime(responseObject.createdAt)}}</span>
+                </div>
+                <v-card class="pa-3 text-start" color="primary" style="display: inline-block;">
+                  {{ responseObject.content }}
+                </v-card>
+              </v-col>
+            </v-row>
 
             <!-- 상대방의 말풍선과 아바타 -->
-            <v-row v-if="responseObject.nickname !== nickname" class="my-1 flex-direction-row">
-              <v-avatar size="36" class="mt-2 mr-4">
+            <v-row v-if="responseObject.nickname !== nickname" class="my-1 flex-direction-row" style="padding-left: 20px">
+              <v-avatar size="36" class="mr-4">
                 <v-img alt="Profile Image" :src="responseObject.profileImage"></v-img>
               </v-avatar>
 
-              <v-col class="d-flex flex-column" style="max-width: 80%;">
+              <v-col class="d-flex flex-column" style="max-width: 80%; margin-left: 0 !important;">
                 <v-row>{{ responseObject.nickname }}</v-row>
 
                 <v-row class="d-flex">
@@ -37,18 +45,21 @@
         </v-col>
       </v-row>
     </v-main>
-
-
-    <v-footer color="grey lighten-3" padless style="height: auto!important; position:fixed; bottom:0; width:100%;">
-      <v-row no-gutters>
+    <div style="width: 100%; background: beige;">
+      <v-row no-gutters align="center">
         <v-col>
-          <v-text-field v-model="message" placeholder="Type Something" @keyup.enter="sendMessage"></v-text-field>
-          <v-btn icon class="ml-4" @click="sendMessage">
-            <v-icon>mdi-send</v-icon>
-          </v-btn>
+          <v-text-field
+              v-model="message"
+              placeholder="메시지 입력..."
+              @keyup.enter="sendMessage"
+              variant="outlined"
+              hide-details
+              class="input-message"
+          >
+          </v-text-field>
         </v-col>
       </v-row>
-    </v-footer>
+    </div>
   </v-app>
 </template>
 
@@ -114,7 +125,7 @@ export default {
 
   methods: {
     initializeWebSocket() {
-      if(this.stompClient && this.stompClient.connected) return;
+      if (this.stompClient && this.stompClient.connected) return;
 
       const url = `${process.env.VUE_APP_API_BASE_URL}/ws-endpoint`;
       const authToken = localStorage.getItem("accessToken");
@@ -122,7 +133,7 @@ export default {
       this.stompClient = Stomp.over(socket);
       console.log("Initialize WebSocket!");
 
-      this.stompClient.connect({ Authorization: `Bearer ${authToken}` }, () => {
+      this.stompClient.connect({Authorization: `Bearer ${authToken}`}, () => {
         console.log("Connected to WebSocket!");
         this.isConnected = true;
 

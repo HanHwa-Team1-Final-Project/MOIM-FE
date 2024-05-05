@@ -44,7 +44,7 @@
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting" class="chatting-card">
+          <v-card v-if="selectedChatting" class="chatting-card" style="height: 85vh">
             <v-card-title style="background-color: #2b783b">
               <v-row>
                 <v-col cols="10">
@@ -55,7 +55,7 @@
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-card-text>
+            <v-card-text class="chatting-card-text">
               <ChatPage :selectedChatting="selectedChatting"/>
             </v-card-text>
           </v-card>
@@ -217,9 +217,6 @@ export default {
   margin-left: 8px;
 }
 
-.result-card-time {
-}
-
 .selected-chatting-card {
   background-color: #cdd0cb; /* 선택되면 바뀌는 색 */
 }
@@ -232,6 +229,19 @@ export default {
 .chatting-card {
   height: 80vh;
   overflow: hidden;
+
+}
+
+.chatting-card-text {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.result-card {
+  background-color: #f8d7da;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
 }
 
 .participant-info {
@@ -239,10 +249,6 @@ export default {
   align-items: center;
   margin-bottom: 10px; /* 각 참여자 정보 사이의 간격 */
   color: #162a2c;
-}
-
-.result-card[title="취소"] {
-  background-color: #f8d7da;
 }
 
 .full-width-input {

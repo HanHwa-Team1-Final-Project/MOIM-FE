@@ -1,23 +1,43 @@
 <template>
   <v-app>
-    <v-main style="margin-bottom:108px; padding: 16px; overflow:auto; height: calc(100vh - 112px)">
+    <v-main style="margin-bottom:108px; padding: 16px; overflow:auto; height: calc(100vh - 310px); background-color: #e0bb76;">
       <v-row style="max-height: 60vh">
-        <v-col style="max-height: 60vh; overflow: auto">
+        <v-col style="max-height: 60vh; overflow: auto; background-color: blue;">
           <div v-for="(responseObject, id) in messages" :key="id"
-               :class="['d-flex flex-row align-center my-2', responseObject.nickname === nickname ? 'justify-end': null]">
-            <span v-if="responseObject.nickname === nickname" class="blue--text mr-3">{{
-                responseObject.content
-              }}</span>
-            <v-avatar :color="responseObject.nickname === nickname ? 'indigo': 'red'" size="36">
-              <span class="white--text">{{ responseObject.nickname[0] }}</span>
-            </v-avatar>
-            <span v-if="responseObject.nickname !== nickname" class="blue--text ml-3">{{
-                responseObject.content
-              }}</span>
+               :class="['d-flex flex-row align-center my-5', responseObject.nickname === nickname ? 'justify-end': null]">
+
+            <!-- 로그인한 유저의 말풍선 -->
+            <v-card class="pa-3" color="primary" v-if="responseObject.nickname === nickname" style="max-width: 60%;">
+              {{ responseObject.content }}
+            </v-card>
+
+            <!-- 상대방의 말풍선과 아바타 -->
+            <v-row v-if="responseObject.nickname !== nickname" class="my-1 flex-direction-row">
+              <v-avatar size="36" class="mt-2 mr-4">
+                <v-img alt="Profile Image" :src="responseObject.profileImage"></v-img>
+              </v-avatar>
+
+              <v-col class="d-flex flex-column" style="max-width: 80%;">
+                <v-row>{{ responseObject.nickname }}</v-row>
+
+                <v-row class="d-flex">
+                  <v-col style="max-width: 80%;" class="message-col">
+                    <v-card class="pa-3 message" color="secondary">
+                      {{ responseObject.content }}
+                    </v-card>
+                  </v-col>
+                  <v-col class="align-self-end text-end" cols="auto">
+                    <span>{{ formatTime(responseObject.createdAt) }}</span>
+                  </v-col>
+                </v-row>
+
+              </v-col>
+            </v-row>
           </div>
         </v-col>
       </v-row>
     </v-main>
+
 
     <v-footer color="grey lighten-3" padless style="height: auto!important; position:fixed; bottom:0; width:100%;">
       <v-row no-gutters>
@@ -31,10 +51,12 @@
     </v-footer>
   </v-app>
 </template>
+
 <script>
 import SockJS from 'sockjs-client'
 import {Stomp} from '@stomp/stompjs'
 import {jwtDecode} from "jwt-decode";
+import {formatTime} from "@/utils/date-utils";
 
 export default {
   props: {
@@ -107,6 +129,7 @@ export default {
         // 메시지 수신
         this.stompClient.subscribe("/sub/chat/" + this.selectedChatting.id, (response) => {
           const responseObject = JSON.parse(response.body); // ChatResponse와 동일한 형식이다.
+          console.log("responseObject 형식: ", responseObject);
           this.messages.push(responseObject);
         })
       }, (error) => {
@@ -146,6 +169,16 @@ export default {
         }
       });
     },
+
+    formatTime(time) {
+      return formatTime(time);
+    }
   }
 }
 </script>
+
+<style scoped>
+.v-card {
+  border-radius: 15px;
+}
+</style>

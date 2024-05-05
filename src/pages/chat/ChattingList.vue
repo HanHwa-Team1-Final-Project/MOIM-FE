@@ -44,8 +44,8 @@
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting">
-            <v-card-title>
+          <v-card v-if="selectedChatting" class="chatting-card">
+            <v-card-title style="background-color: #2b783b">
               <v-row>
                 <v-col cols="10">
                   {{ selectedChatting.title }}
@@ -213,18 +213,32 @@ export default {
   font-size: 20px;
 }
 
-.participant-info {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px; /* 각 참여자 정보 사이의 간격 */
-  color: #162a2c;
-}
-
 .participant-info span {
   margin-left: 8px;
 }
 
 .result-card-time {
+}
+
+.selected-chatting-card {
+  background-color: #cdd0cb; /* 선택되면 바뀌는 색 */
+}
+
+.page-button {
+  justify-content: center;
+  left: auto;
+}
+
+.chatting-card {
+  height: 80vh;
+  overflow: hidden;
+}
+
+.participant-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* 각 참여자 정보 사이의 간격 */
+  color: #162a2c;
 }
 
 .result-card[title="취소"] {
@@ -235,8 +249,12 @@ export default {
   width: 100%;
 }
 
-.selected-chatting-card {
-  background-color: #cdd0cb; /* 선택되면 바뀌는 색 */
+.chatting-detail {
+  background-color: rgba(172, 198, 255, 1);
+}
+
+.vote-button {
+  margin-right: 2%;
 }
 
 .cancelled-chatting-card-button {
@@ -262,18 +280,5 @@ export default {
   justify-content: center; /* 가로 중앙 정렬 */
   font-size: 10px; /* 글자 크기 */
   transform: translate(50%, -50%); /* 원형 표시기가 버튼의 경계를 넘어서도록 조정 */
-}
-
-.page-button {
-  justify-content: center;
-  left: auto;
-}
-
-.chatting-detail {
-  background-color: rgba(172, 198, 255, 1);
-}
-
-.vote-button {
-  margin-right: 2%;
 }
 </style>

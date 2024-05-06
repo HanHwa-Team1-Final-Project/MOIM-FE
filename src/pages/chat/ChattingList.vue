@@ -97,9 +97,9 @@ export default {
   },
   methods: {
     onChattingClick(chatting) {
-      // alert(`Chatting with ID ${chatting.id} clicked`);
       console.log("chatting 객체: ", chatting);
       this.selectedChatting = chatting;
+      this.setChattingInfo(chatting);
       this.loadingChatHistory = true;
 
       // this.messages = [];
@@ -107,6 +107,21 @@ export default {
           .finally(() => {
             this.loadingChatHistory = false;
           });
+    },
+
+    // 채팅방 정보 설정
+    setChattingInfo(chatting) {
+      const date = new Date(chatting.deleteDateTime);
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      };
+      this.chattingDeleteDateTime = date.toLocaleString("ko-KR", options);
+      this.membersNickname = chatting.memberRooms.map(memberRooms => memberRooms[1]).join(', ');
     },
 
     // 채팅방 별 채팅 내역 불러오기
@@ -151,24 +166,14 @@ export default {
           this.chattings = response.data.data.sort(
               (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           );
-          // this.selectedChatting = this.chattings[0] || null;
           this.currentPage = page;
-
-          if (this.selectedChatting) {
-            //마감시간의 날짜 형식 변경
-            const date = new Date(this.selectedChatting.deleteDateTime);
-            const options = {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            };
-            this.chattingDeleteDateTime = date.toLocaleString("ko-KR", options);
-            this.membersNickname = this.selectedChatting.memberRooms.map(memberRooms => memberRooms[1]).join(', ');
-          }
           await this.checkNextPage(page + 1);
+
+          if (this.chattings.length > 0) {
+            const firstChatRoom = this.chattings[0];
+            this.setChattingInfo(firstChatRoom);
+            this.selectedChatting = null;
+          }
         }
       } catch (error) {
         console.error("Error fetching chattings:", error);

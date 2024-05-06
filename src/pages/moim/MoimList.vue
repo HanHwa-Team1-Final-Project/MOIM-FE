@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="search-results">
+  <v-container fluid>
     <v-container v-if="moims.length === 0" class="nonMoim">
       <v-row>
         <v-col cols="12" justify="center" class="none-result">
@@ -12,7 +12,7 @@
       <MoimDialog ref="MoimCreate"></MoimDialog>
     </v-container>
 
-    <v-container v-else>
+    <v-container v-else style="margin-top: -20%;">
       <v-row>
         <v-col cols="12" md="4">
           <v-row v-if="moims.length > 0">
@@ -297,7 +297,7 @@
               </v-card-actions>
               <!-- 확정 후 -->
 
-              <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM' && selectedMoim.isAddEvent != 'Y'">
+              <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM' && addEventCheck() != 'Y'">
                 <!-- <v-spacer /> -->
                 <v-btn
                   color="#3085d6"
@@ -375,7 +375,16 @@ export default {
       );
       console.log("모든 데이터", this.selectedMoim);
     },
-
+    addEventCheck() {
+      const guest = this.selectedMoim.guestEmailNicknameIsAgreed.find(
+        (g) => g[0] === this.userEmail
+      );
+      if (guest && guest[4] === "Y") {
+              return "Y";
+      }else {
+        return "N";
+      }
+    }, 
     async fetchMoims(page = 1) {
       const authToken = localStorage.getItem("accessToken");
       const url = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups/${page}`;
@@ -632,9 +641,6 @@ export default {
 </script>
 
 <style>
-.search-results {
-  margin-top: -250px;
-}
 .nonMoim {
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
@@ -643,7 +649,7 @@ export default {
 .no-moims-message {
   text-align: center; /* 텍스트 중앙 정렬 */
   color: #162a2c;
-  font-size: 19px;
+  font-size: 18px;
 }
 .circle-button {
   border-radius: 50%;
@@ -706,7 +712,7 @@ export default {
 }
 .page-button {
   justify-content: center;
-  left: auto;
+  display: flex;
 }
 .moim-detail {
   background-color: rgba(172, 198, 255, 1);

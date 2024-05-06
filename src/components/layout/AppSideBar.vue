@@ -70,8 +70,8 @@
       <v-list-item-group>
         <v-list-item class="schedule-item" v-if="moims">
           <v-list-item-content v-for="moim in moims" :key="moim.id">
-            <v-list-item-title> {{ moim.title }} </v-list-item-title>
-            <v-list-item-subtitle>
+            <v-list-item-title v-if="moim"> {{ moim.title }} </v-list-item-title>
+            <v-list-item-subtitle v-if="moim">
               {{ formatTime(moim.confirmedDateTime) }} ~
               {{
                 formatTime(
@@ -347,7 +347,6 @@ export default {
 }
 
 .today-list .schedule-item {
-  margin-top: 5px;
   margin-left: 10px;
   
 

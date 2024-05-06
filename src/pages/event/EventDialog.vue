@@ -239,6 +239,17 @@ export default {
       this.place = moimInfo.place;
       this.startDateTime = moimInfo.confirmedDate;
       this.endDateTime = this.addMinutesToDate(moimInfo.confirmedDate, moimInfo.runningTime);
+      this.isAddEvent(moimInfo.id)
+      this.isDialogOpen = true;
+    },
+    changeDialog2(moimInfo) {
+      console.log("잘들어왔나",moimInfo)
+      this.title = moimInfo.title;
+      this.memo =  moimInfo.contents;
+      this.place = moimInfo.place;
+      this.startDateTime = moimInfo.confirmedDateTime;
+      this.endDateTime = this.addMinutesToDate(moimInfo.confirmedDateTime, moimInfo.runningTime);
+      this.isAddEvent(moimInfo.id)
       this.isDialogOpen = true;
     },
     openDialog() {
@@ -256,6 +267,15 @@ export default {
       this.repeatEndDate = null;
       this.repeatType = null;
       this.isDialogOpen = false;
+    },
+    async isAddEvent(groupId) {
+      const token = localStorage.getItem("accessToken");
+      const headers = {Authorization: `Bearer ${token}`};
+      try {
+        await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/groups/${groupId}/addEvent`, {headers});
+      }catch(e){
+        alert(e)
+      }
     },
     toggleAndReset() {
       this.showRepeatSettings = !this.showRepeatSettings;

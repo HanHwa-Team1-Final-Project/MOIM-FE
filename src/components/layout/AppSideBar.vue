@@ -68,7 +68,7 @@
       </v-subheader>
       <!-- 모임 -->
       <v-list-item-group>
-        <!-- <v-list-item class="schedule-item pa-0 ma-0" v-if="moims"> -->
+        <v-list-item class="schedule-item" v-if="moims">
           <v-list-item-content v-for="moim in moims" :key="moim.id">
             <v-list-item-title> {{ moim.title }} </v-list-item-title>
             <v-list-item-subtitle>
@@ -80,10 +80,10 @@
               }}</v-list-item-subtitle
             >
           </v-list-item-content>
-        <!-- </v-list-item> -->
+        </v-list-item>
 
         <!-- 이벤트 및 투두 리스트 -->
-        <v-list-item class="schedule-item" style="margin-left: 10px;" v-if="events">
+        <v-list-item class="schedule-item" v-if="events">
           <v-list-item-content v-for="event in events" :key="event.id">
             <v-list-item-title style="margin-top: 8px;"> {{ event.title }} </v-list-item-title>
             <v-list-item-subtitle style="margin-bottom: -5px;"
@@ -109,10 +109,10 @@
                 </v-row>
               </v-list-item-content>
             </v-col>
-            <v-col v-else></v-col>
+            <v-col  v-else></v-col>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-else style="text-align: center;">
+        <v-list-item v-if="!moims && !events" style="text-align: center;">
           일정이 없습니다.
         </v-list-item>
       </v-list-item-group>
@@ -348,6 +348,7 @@ export default {
 
 .today-list .schedule-item {
   margin-top: 5px;
+  margin-left: 10px;
   
 
 }

@@ -56,7 +56,7 @@
               </v-row>
             </v-card-title>
             <v-card-text class="chatting-card-text">
-              <ChatPage :selectedChatting="selectedChatting"/>
+              <ChatPage :selectedChatting="selectedChatting" :initialMessages="chatHistory || []"/>
             </v-card-text>
           </v-card>
         </v-col>
@@ -80,6 +80,7 @@ export default {
       membersNickname: "",
       chattingDeleteDateTime: "",
       selectedChatting: null,
+      chatHistory: [],
       currentPage: 1,
       totalPages: null,
       hasNextPage: true,
@@ -95,6 +96,32 @@ export default {
       // alert(`Chatting with ID ${chatting.id} clicked`);
       console.log("chatting 객체: ", chatting);
       this.selectedChatting = chatting;
+      this.messages = [];
+      this.fetchChatHistory(chatting.id);
+    },
+
+    // 채팅방 별 채팅 내역 불러오기
+    async fetchChatHistory(chatRoomId) {
+      const authToken = localStorage.getItem("accessToken");
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/chat/messages/${chatRoomId}`;
+      if (!authToken) {
+        console.error("인증 토큰이 없습니다.");
+        return;
+      }
+
+      try {
+        const response = await axiosInstance.get(url, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        if (response.data.success) {
+          this.chatHistory = response.data.data;
+          console.log('chatHistory: ', this.chatHistory);
+        }
+      } catch (error) {
+        console.error('Error fetching chat messages:', error);
+      }
     },
 
     async fetchChattings(page = 1) {

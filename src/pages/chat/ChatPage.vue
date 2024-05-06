@@ -67,6 +67,7 @@ import {formatTime} from "@/utils/date-utils";
 export default {
   props: {
     selectedChatting: Object,
+    initialMessages: Array,
   },
 
   data() {
@@ -95,7 +96,7 @@ export default {
       if (newChat) {
         this.initializeWebSocket();
       }
-    },
+    }
   },
 
   created() {
@@ -103,6 +104,12 @@ export default {
     const decodedToken = jwtDecode(authToken);
     this.nickname = decodedToken.nickname;
     console.log("로그인한 사용자의 닉네임: ", this.nickname);
+    console.log("채팅 잘 넘어왔나 보자!!: ", this.initialMessages);
+
+    if(this.initialMessages && this.initialMessages.length) {
+      this.messages = [...this.initialMessages];
+      console.log("채팅 담겼나? ", this.messages);
+    }
   },
 
   mounted() {
@@ -110,6 +117,12 @@ export default {
     // 만약 선택된 채팅방이 없다면 소켓 연결을 초기화하지 않고, 나중에 selectedChatting 값이 변경되거나 선택되었을 때 watch 훅에서 초기화.
     if (this.selectedChatting) {
       this.initializeWebSocket();
+    }
+
+    // 채팅 데이터 불러오기
+    if (this.initialMessages.length) { // initialMessages is passed
+      this.messages = [...this.initialMessages];
+      console.log("채팅 데이터 불러오기 성공!");
     }
   },
 

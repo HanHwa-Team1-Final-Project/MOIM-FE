@@ -105,7 +105,6 @@ import axiosInstance from "@/axios";
 import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 import EventDialog from "@/pages/event/EventDialog.vue";
 import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
-import ChatDialog from "@/pages/chat/ChatDialog.vue";
 import { formatTime } from "@/utils/date-utils";
 
 // import {useMainStore} from "@/stores";
@@ -115,8 +114,7 @@ export default {
   components: {
     EventDialog,
     MyPageDialog,
-    RoomCreateDialog,
-    ChatDialog,
+    RoomCreateDialog
   },
   data() {
     return {
@@ -314,7 +312,7 @@ export default {
 
 .today-list .schedule-item {
   margin-top: 5px;
-  
+
 
 }
 

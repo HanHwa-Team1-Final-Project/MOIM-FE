@@ -671,7 +671,7 @@ export default {
 .no-moims-message {
   text-align: center; /* 텍스트 중앙 정렬 */
   color: #162a2c;
-  font-size: 20px;
+  font-size: 19px;
 }
 .circle-button {
   border-radius: 50%;

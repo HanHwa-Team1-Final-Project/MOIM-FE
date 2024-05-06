@@ -63,12 +63,12 @@
 
     <v-col class="back">
     <v-list class="today-list">
-      <v-subheader style="color:#353535">
+      <v-subheader style="color:#353535;">
         ✅ 오늘의 일정
       </v-subheader>
       <!-- 모임 -->
       <v-list-item-group>
-        <!-- <v-list-item class="schedule-item"> -->
+        <!-- <v-list-item class="schedule-item pa-0 ma-0" v-if="moims"> -->
           <v-list-item-content v-for="moim in moims" :key="moim.id">
             <v-list-item-title> {{ moim.title }} </v-list-item-title>
             <v-list-item-subtitle>
@@ -83,7 +83,7 @@
         <!-- </v-list-item> -->
 
         <!-- 이벤트 및 투두 리스트 -->
-        <v-list-item class="schedule-item" style="margin-left: 30px;">
+        <v-list-item class="schedule-item" style="margin-left: 10px;" v-if="events">
           <v-list-item-content v-for="event in events" :key="event.id">
             <v-list-item-title style="margin-top: 8px;"> {{ event.title }} </v-list-item-title>
             <v-list-item-subtitle style="margin-bottom: -5px;"
@@ -109,7 +109,11 @@
                 </v-row>
               </v-list-item-content>
             </v-col>
+            <v-col v-else></v-col>
           </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-else style="text-align: center;">
+          일정이 없습니다.
         </v-list-item>
       </v-list-item-group>
     </v-list>
@@ -330,12 +334,12 @@ export default {
 .sidebar-navigation-drawer .today-list v-subheader {
   color: #000000;
   font-weight: bold;
-  padding-left: 20px;
+  padding-left: 10px;
   
 }
 
 .back {
-  background-color: #f2fbef; 
+  background-color: #f5fcf2; 
   border-radius: 1rem; /* Round corners */
   padding: 0%;
   margin: 12px;

@@ -458,18 +458,18 @@ export default {
 }
 
 #Q1 {
-  background: rgba(255, 242, 165, 0.6);
+  background: rgba(255, 248, 208, 0.6);
 }
 
 #Q2 {
-  background:  rgba(255, 163, 166, 0.6);
+  background:  rgba(255, 209, 210, 0.6);
 }
 
 #Q3 {
-  background: rgba(177, 255, 211, 0.6);
+  background: rgba(213, 255, 228, 0.6);
 }
 
 #Q4 {
-  background: rgba(172, 198, 255, 0.6);
+  background: rgba(215, 227, 255, 0.6);
 }
 </style>

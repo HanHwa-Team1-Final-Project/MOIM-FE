@@ -8,8 +8,10 @@
       <v-card-text>
         <v-row dense>
           <!-- 제목 -->
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="2"><h4>제목</h4></v-col>
+          <v-col cols="12" sm="10">
             <v-text-field
+              variant="underlined"
               label="제목을 입력하세요"
               :rules="[(value) => !!value || '']"
               required
@@ -19,7 +21,8 @@
           </v-col>
 
           <!-- 참여자 추가 (Auto-complete) -->
-          <v-col cols="12">
+          <v-col cols="12" sm="2"><h4>참여자</h4></v-col>
+          <v-col cols="12" sm="10">
             <v-autocomplete
               v-model="friends"
               :items="people"
@@ -65,34 +68,44 @@
           </v-col>
 
           <!-- 장소 -->
-          <v-col cols="12" sm="12">
-            <v-text-field label="장소를 입력하세요" v-model="place"> </v-text-field>
+          <v-col cols="12" sm="2"><h4>장소</h4></v-col>
+          <v-col cols="12" sm="10">
+            <v-text-field variant="underlined" label="장소를 입력하세요" v-model="place"> </v-text-field>
+          </v-col>
+
+          <!-- 메모 -->
+          <v-col cols="12" sm="2"><h4>메모</h4></v-col>
+          <v-col cols="12" md="10">
+            <v-textarea auto-grow label="메모를 입력하세요." v-model="contents"> </v-textarea>
           </v-col>
 
           <!-- 예상 모임 시간 -->
-          <v-col cols="12" md="12"><h4>예상 모임 시간</h4></v-col>
-          <v-col cols="12" md="7">
+          <v-col cols="12" md="3"><h4>소요 시간</h4></v-col>
+          <v-col cols="12" md="4">
             <v-text-field
+            variant="underlined"
               type="number"
               v-model="runningTime"
-              label="예상 모임 시간"
+              label="소요 시간"
               :rules="[(value) => !!value || '']"
               required
             >
             </v-text-field>
           </v-col>
-          <v-col cols="12" md="5">
+          <v-col cols="12" md="4">
             <v-select
+            variant="underlined"
               v-model="runningTimeType"
               :items="runningtimeTypes"
               label="시간 단위"
             >
             </v-select>
           </v-col>
+          <v-col cols="12" md="1"></v-col>
 
           <!-- 시작/종료 날짜 -->
-          <v-col cols="12" md="3"><h4>시작일</h4></v-col>
-          <v-col cols="12" md="9">
+          <v-col cols="12" md="3"><h4>설정 기간</h4></v-col>
+          <v-col cols="12" md="4">
             <input
               type="date"
               v-model="expectStartDate"
@@ -100,8 +113,9 @@
               required
             />
           </v-col>
-          <v-col cols="12" md="3"><h4>종료일</h4></v-col>
-          <v-col cols="12" md="9">
+          <v-col cols="12" md="1">~</v-col>
+          <!-- <v-col cols="12" md="2"><h4>종료일</h4></v-col> -->
+          <v-col cols="12" md="4">
             <input
               type="date"
               v-model="expectEndDate"
@@ -110,8 +124,8 @@
             />
           </v-col>
           <!-- 시작/종료 시간 -->
-          <v-col cols="12" md="3"><h4>시작 시간</h4></v-col>
-          <v-col cols="12" md="9">
+          <v-col cols="12" md="3" class="mt-3"><h4>설정 시간</h4></v-col>
+          <v-col cols="12" md="4">
             <input
               type="time"
               v-model="expectStartTime"
@@ -119,8 +133,9 @@
               required
             />
           </v-col>
-          <v-col cols="12" md="3"><h4>종료 시간</h4></v-col>
-          <v-col cols="12" md="9">
+          <v-col cols="12" md="1">~</v-col>
+          <!-- <v-col cols="12" md="2"><h4>종료 시간</h4></v-col> -->
+          <v-col cols="12" md="4">
             <input
               type="time"
               v-model="expectEndTime"
@@ -130,7 +145,7 @@
           </v-col>
 
           <!-- 투표 종료 시간 -->
-          <v-col cols="12" md="3"><h4>투표 종료 시간</h4></v-col>
+          <v-col cols="12" md="3" class="mt-3"><h4>참여 마감</h4></v-col>
           <v-col cols="12" md="9">
             <input
               type="datetime-local"
@@ -141,19 +156,16 @@
           </v-col>
 
           <!-- 투표 마감 전 알림 -->
-          <v-col cols="12" md="12"><h4>투표 마감 전 알림</h4></v-col>
-          <v-col cols="12" md="7">
-            <v-text-field type="number" v-model="alertQuantity" label="알람 시간">
+          <v-col cols="12" md="3" class="mt-2"><h4>마감 알림</h4></v-col>
+          <v-col cols="12" md="4">
+            <v-text-field variant="underlined" type="number" v-model="alertQuantity" label="알람 시간">
             </v-text-field>
           </v-col>
-          <v-col cols="12" md="5">
-            <v-select v-model="timeType" :items="timeTypes" label="시간 단위"> </v-select>
+          <v-col cols="12" md="4">
+            <v-select variant="underlined" v-model="timeType" :items="timeTypes" label="시간 단위"> </v-select>
           </v-col>
+          <v-col cols="12" md="1"></v-col>
 
-          <!-- 메모 -->
-          <v-col cols="12" md="12">
-            <v-text-field label="메모를 입력하세요." v-model="contents"> </v-text-field>
-          </v-col>
         </v-row>
       </v-card-text>
 
@@ -161,6 +173,7 @@
       <v-col cols="12" md="12">
         <v-file-input
           v-model="files"
+          variant="underlined"
           label="File input"
           placeholder="Upload your documents"
           prepend-icon="mdi-paperclip"

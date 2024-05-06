@@ -26,7 +26,6 @@
       <v-list-item prepend-icon="mdi-widgets" title="모임 생성" value="createMoim" @click="createMoimClicked"></v-list-item>
       <MoimDialog ref="MoimCreate"></MoimDialog>
       <v-list-item prepend-icon="mdi-view-dashboard" title="모임 리스트" value="moim-list" @click="goToMoimList"></v-list-item>
-      <v-list-item prepend-icon="mdi-snapchat" title="채팅 테스트" value="chat" @click="goToChat"></v-list-item>
       <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
       <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
       <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>

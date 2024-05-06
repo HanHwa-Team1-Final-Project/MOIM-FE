@@ -32,7 +32,7 @@ export function formatDateAndTime(dateString) {
     return `${year}년 ${month}월 ${day}일 ${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
 }
 
-// 날짜 문자열을 "연 월 일 오전|오후 시 분" 형태로 반환
+// "오전|오후 hh:mm" 형태로 포맷팅
 export function formatTime(dateString) {
     const date = new Date(dateString);
     let hours = date.getHours();
@@ -40,8 +40,9 @@ export function formatTime(dateString) {
 
     const ampm = hours >= 12 ? '오후' : '오전';
 
+    // 12시간제로 변환
     hours = hours % 12;
-    hours = hours ? hours : 12;
+    hours = hours ? hours : 12;  // hours가 0인 경우 12로 설정
 
     return `${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
 }

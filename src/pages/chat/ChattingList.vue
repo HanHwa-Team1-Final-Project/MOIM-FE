@@ -44,7 +44,7 @@
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting" class="chatting-card" style="height: 85vh">
+          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh">
             <v-card-title style="background-color: #2b783b">
               <v-row>
                 <v-col cols="10">
@@ -58,6 +58,9 @@
             <v-card-text class="chatting-card-text">
               <ChatPage :selectedChatting="selectedChatting" :initialMessages="chatHistory || []"/>
             </v-card-text>
+          </v-card>
+          <v-card v-else-if="loadingChatHistory">
+            <v-card-title>채팅 내역 불러오는 중...</v-card-title>
           </v-card>
         </v-col>
       </v-row>
@@ -84,6 +87,7 @@ export default {
       currentPage: 1,
       totalPages: null,
       hasNextPage: true,
+      loadingChatHistory: false,
     };
   },
   watch: {},
@@ -96,8 +100,13 @@ export default {
       // alert(`Chatting with ID ${chatting.id} clicked`);
       console.log("chatting 객체: ", chatting);
       this.selectedChatting = chatting;
-      this.messages = [];
-      this.fetchChatHistory(chatting.id);
+      this.loadingChatHistory = true;
+
+      // this.messages = [];
+      this.fetchChatHistory(chatting.id)
+          .finally(() => {
+            this.loadingChatHistory = false;
+          });
     },
 
     // 채팅방 별 채팅 내역 불러오기

@@ -1,51 +1,45 @@
 <template>
   <v-app>
-    <v-main style="padding: 16px; overflow:auto; height: calc(100vh - 30vh); background-color: #e0bb76;">
-      <v-row>
-        <v-col style="max-height: 69vh; overflow: auto; background-color: lightcoral; padding-top: 0 !important; padding-bottom: 0 !important;">
+    <v-main style="overflow:auto; height: calc(100vh - 27vh);">
+      <v-sheet>
+        <v-col style="padding-left:30px; padding-right: 30px; max-height: 69vh; overflow: auto;">
           <div v-for="(responseObject, id) in messages" :key="id"
-               :class="['d-flex flex-row align-center my-5', responseObject.nickname === nickname ? 'justify-end': null]">
+               :class="['d-flex flex-row align-center my-3', responseObject.nickname === nickname ? 'justify-end': null]">
 
             <!-- 로그인한 유저의 말풍선 -->
-            <v-row v-if="responseObject.nickname === nickname" class="justify-end">
-              <v-spacer/>
-              <v-col class="d-flex align-center">
-                <div class="text-end" style="margin-right: 10px;">
-                  <span>{{formatTime(responseObject.createdAt)}}</span>
-                </div>
-                <v-card class="pa-3 text-start" color="primary" style="display: inline-block;">
+            <v-row v-if="responseObject.nickname === nickname" class="justify-end" style="max-width: 80%;">
+              <v-col class="d-flex flex-row-reverse align-end">
+                <v-card class="pa-3" color="primary">
                   {{ responseObject.content }}
                 </v-card>
+                <v-sheet style="min-width: 70px;">
+                  {{formatTime(responseObject.createdAt)}}
+                </v-sheet>
               </v-col>
             </v-row>
 
             <!-- 상대방의 말풍선과 아바타 -->
-            <v-row v-if="responseObject.nickname !== nickname" class="my-1 flex-direction-row" style="padding-left: 20px">
-              <v-avatar size="36" class="mr-4">
+            <v-sheet v-if="responseObject.nickname !== nickname" class="d-flex" style="max-width: 80%">
+              <v-avatar size="40" class=" mr-2 mt-5">
                 <v-img alt="Profile Image" :src="responseObject.profileImage"></v-img>
               </v-avatar>
-
-              <v-col class="d-flex flex-column" style="max-width: 80%; margin-left: 0 !important;">
-                <v-row>{{ responseObject.nickname }}</v-row>
-
-                <v-row class="d-flex">
-                  <v-col style="max-width: 80%;" class="message-col">
-                    <v-card class="pa-3 message" color="secondary">
-                      {{ responseObject.content }}
-                    </v-card>
-                  </v-col>
-                  <v-col class="align-self-end text-end" cols="auto">
-                    <span>{{ formatTime(responseObject.createdAt) }}</span>
-                  </v-col>
-                </v-row>
-
+              <v-col class="d-flex flex-column">
+                <v-sheet class="opponent-nickname mb-2">{{ responseObject.nickname }}</v-sheet>
+                <v-sheet class="d-flex flex-row align-end">
+                  <v-card class="pa-3 message" color="secondary">
+                    {{ responseObject.content }}
+                  </v-card>
+                  <v-sheet style="margin-left: 10px; min-width: 70px;">
+                    {{ formatTime(responseObject.createdAt) }}
+                  </v-sheet>
+                </v-sheet>
               </v-col>
-            </v-row>
+            </v-sheet>
           </div>
         </v-col>
-      </v-row>
+      </v-sheet>
     </v-main>
-    <div style="width: 100%; background: beige;">
+    <div style="width: 100%; margin-top: -2%;" class="input-container">
       <v-row no-gutters align="center">
         <v-col>
           <v-text-field
@@ -54,6 +48,7 @@
               @keyup.enter="sendMessage"
               variant="outlined"
               hide-details
+              rounded="pill"
               class="input-message"
           >
           </v-text-field>
@@ -80,7 +75,7 @@ export default {
       message: "",
       nickname: "",
       stompClient: null,
-      isConnected: false,
+      isConnected: false
     }
   },
 
@@ -97,7 +92,6 @@ export default {
           console.log("Failed to disconnect from old chat: ", error);
         }
       }
-
       if (newChat) {
         this.initializeWebSocket();
       }
@@ -191,5 +185,18 @@ export default {
 <style scoped>
 .v-card {
   border-radius: 15px;
+}
+
+.input-container {
+  padding: 0 20px;
+}
+
+.input-message .v-input__slot{
+  padding: 0 20px;
+}
+
+.opponent-nickname {
+  font-weight: 400;
+  font-size: 18px;
 }
 </style>

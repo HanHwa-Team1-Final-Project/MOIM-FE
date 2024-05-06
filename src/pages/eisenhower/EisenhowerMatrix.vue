@@ -40,7 +40,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -70,7 +70,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -108,7 +108,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -139,7 +139,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>

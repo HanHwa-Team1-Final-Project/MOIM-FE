@@ -182,8 +182,11 @@ export default {
       if(notificationType == "EVENT") {
         this.$refs.EventDetail.openDialog(id);
       }
-      if(notificationType.substring(0, 5) == "GROUP") {
-        console.log("그룹...")
+      else if(notificationType == "ROOM") {
+        window.location.href = "/ChattingList";
+      }
+      else {
+        window.location.href = "/MoimList";
       }
       
     },

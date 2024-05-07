@@ -59,14 +59,14 @@
                       'cancelled-moim-card': moim.groupType === 'GROUP_CANCEL',
                     }"
                   >
-                    <v-list-item
+                    <v-list-item style="background-color: transparent;"
                       v-if="moim.groupType == 'GROUP_CONFIRM'"
                       title="확정일"
                       :subtitle="
                         new Date(moim.confirmedDateTime).toLocaleDateString('ko-KR')
                       "
                     />
-                    <v-list-item
+                    <v-list-item style="background-color: transparent !important;"
                       v-else
                       title="마감일"
                       :subtitle="new Date(moim.voteDeadline).toLocaleDateString('ko-KR')"
@@ -527,13 +527,27 @@ export default {
             title: "참여 완료되었습니다.",
             text: '일정이 확정되면 알려드릴게요.',
             icon: "success",
-          });
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              window.location.reload();
+            }
+          })
         }
         if (response.data.data.isAgree == "N") {
           Swal.fire({
             title: "참여 거부하였습니다.",
             icon: "error",
-          });
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if(result.isConfirmed) {
+              window.location.reload();
+            }
+          })
         }
         // location.reload();
       } catch (e) {

@@ -181,6 +181,9 @@ export default {
       if(notiInfo.notificationType == "GROUP_CONFIRM") {
         this.$refs.moimDetail.confirmDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.notificationType);
       }
+      if(notiInfo.notificationType == "GROUP_CANCEL") {
+        window.location.reload();
+      }
       if(notiInfo.notificationType == "ROOM") {
         window.location.href = "ChattingList";
       }

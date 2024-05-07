@@ -338,13 +338,27 @@ export default {
           Swal.fire({
             title: '참여 완료되었습니다.',
             text: '일정이 확정되면 알려드릴게요.',
-            icon: 'success'
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
           })
         }
         if(response.data.data.isAgree == "N") {
           Swal.fire({
             title: '참여 거부하였습니다.',
-            icon: 'error'
+            icon: 'error',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: '확인',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
           })
         }
       }catch(e){
@@ -394,7 +408,14 @@ export default {
         this.dialog = false;
         Swal.fire({
           title: '모임이 취소되었습니다.',
-          icon: 'error'
+          icon: 'error',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
         })
        
       }catch(e){

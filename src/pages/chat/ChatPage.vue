@@ -39,19 +39,19 @@
         </v-col>
       </v-sheet>
     </v-main>
-    <div style="width: 100%; margin-top: -2%;" class="input-container">
+    <div style="width: 100%; margin-top: -1%;" class="input-container">
       <v-row no-gutters align="center">
         <v-col>
           <v-text-field
               v-model="message"
               placeholder="메시지 입력..."
+              color="#0aca08"
+              density="comfortable"
               @keyup.enter="sendMessage"
               variant="outlined"
               hide-details
               rounded="pill"
-              class="input-message"
-          >
-          </v-text-field>
+              class="input-message"/>
         </v-col>
       </v-row>
     </div>

@@ -182,8 +182,11 @@ export default {
       if(notificationType == "EVENT") {
         this.$refs.EventDetail.openDialog(id);
       }
-      if(notificationType.substring(0, 5) == "GROUP") {
-        console.log("그룹...")
+      else if(notificationType == "ROOM") {
+        window.location.href = "/ChattingList";
+      }
+      else {
+        window.location.href = "/MoimList";
       }
       
     },
@@ -312,8 +315,16 @@ export default {
     max-height: 300px
     overflow-y: auto
 
-::v-deep .moim 
+::v-deep .v-toolbar-title__placeholder 
   cursor: pointer
+  width: 90px
   margin-left: 30px
+  line-height: 1.2
+  font-weight: 900 !important
+  font-size: 30px
+  background: linear-gradient(90deg, #0aca08, #06c7ba)
+  background-size: 100%
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
 
 </style>

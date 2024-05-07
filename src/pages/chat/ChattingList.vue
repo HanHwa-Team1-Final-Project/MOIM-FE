@@ -6,9 +6,13 @@
           <div class="no-chatting-message">채팅이 없습니다.</div>
         </v-col>
       </v-row>
+      <v-btn fab icon fixed bottom right @click="createRoom" class="fab-fixed">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
     </v-container>
 
-    <v-container v-else style="margin-top: -18%;">
+    <v-container v-else style="margin-top: -20%;">
       <v-row>
         <v-col cols="4">
           <v-row v-if="chattings.length > 0">
@@ -41,11 +45,15 @@
               <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
             </v-col>
           </v-row>
+          <v-btn fab icon fixed bottom right @click="createRoom" class="fab-fixed">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+          <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
         </v-col>
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh">
+          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 87vh">
             <v-card-title class="d-flex align-center chatpage-header">
               <v-btn
                   icon="mdi-arrow-left"
@@ -90,9 +98,10 @@
 <script>
 import axiosInstance from "@/axios";
 import ChatPage from "@/pages/chat/ChatPage.vue";
+import RoomCreateDialog from "./RoomCreateDialog.vue";
 
 export default {
-  components: {ChatPage},
+  components: {ChatPage, RoomCreateDialog},
   data() {
     return {
       chattings: [],
@@ -115,6 +124,14 @@ export default {
     this.fetchChattings();
   },
   methods: {
+    createRoom() {
+      // 여기에 모임 생성 로직을 추가
+      console.log("Creating a new chat...");
+      // 예를 들어, 모임 생성 폼으로 라우팅하거나 대화상자를 열 수 있음
+      // this.$router.push({ name: 'CreateMoimForm' });
+      // 또는 대화상자를 사용하는 경우
+      this.$refs.RoomCreate.openDialog();
+    },
     onChattingClick(chatting) {
       console.log("chatting 객체: ", chatting);
       this.selectedChatting = chatting;

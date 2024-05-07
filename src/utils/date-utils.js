@@ -1,3 +1,5 @@
+import { utcToZonedTime } from 'date-fns-tz';
+
 // 날짜 문자열을 받아서 "일"을 반환한다.
 export function getDay(dateString) {
     const date = new Date(dateString);
@@ -34,13 +36,11 @@ export function formatDateAndTime(dateString) {
 
 // "오전|오후 hh:mm" 형태로 포맷팅
 export function formatTime(dateString) {
-    const date = new Date(dateString);
-    const kstOffset = 9 * 60; // KST는 UTC보다 9시간 앞서 있음
-    const utcOffset = date.getTimezoneOffset();
-    date.setMinutes(date.getMinutes() + utcOffset + kstOffset);
-    let hours = date.getHours();
+    const utcDate = new Date(dateString);
+    const kstDate = utcToZonedTime(utcDate, 'Asia/Seoul');
+    let hours = kstDate.getHours();
     console.log("hors: ", hours);
-    const minutes = date.getMinutes();
+    const minutes = kstDate.getMinutes();
 
     const ampm = hours >= 12 ? '오후' : '오전';
 

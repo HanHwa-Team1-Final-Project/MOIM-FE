@@ -50,6 +50,7 @@ export default {
   methods: {
     // 일정 누르면 상세보기로 바꾸기
     handleEventClick(clickInfo) {
+      console.log("clickInfo", clickInfo)
       this.$refs.EventDetail.openDialog(clickInfo.event.id)
     },
     // 날짜 누르면 이벤트 등록하게 바꾸기

@@ -49,26 +49,25 @@
     <v-divider></v-divider>
 
     <v-col class="back">
-      <v-list class="today-list">
-        <v-subheader style="color:#353535;">
-          ✅ 오늘의 일정
-        </v-subheader>
-        <!-- 모임 -->
-        <v-list-item-group>
-          <v-list-item class="schedule-item" v-if="!moims.length == 0">
-            <v-list-item-content v-for="moim in moims" :key="moim.id">
-              <v-list-item-title v-if="moim"> {{ moim.title }}</v-list-item-title>
-              <v-list-item-subtitle v-if="moim">
-                {{ formatTime(moim.confirmedDateTime) }} ~
-                {{
-                  formatTime(
-                      formattedlastDateTime(moim.confirmedDateTime, moim.runningTime)
-                  )
-                }}
-              </v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </v-list-item>
+    <v-list class="today-list">
+      <v-subheader style="color:#353535;">
+        ✅ 오늘의 일정
+      </v-subheader>
+      <!-- 모임 -->
+      <v-list-item-group>
+        <!-- <v-list-item class="schedule-item" v-if="!moims.length == 0">
+          <v-list-item-content v-for="moim in moims" :key="moim.id">
+            <v-list-item-title v-if="moim"> {{ moim.title }} </v-list-item-title>
+            <v-list-item-subtitle v-if="moim">
+              {{ formatTime(moim.confirmedDateTime) }} ~
+              {{
+                formatTime(
+                  formattedlastDateTime(moim.confirmedDateTime, moim.runningTime)
+                )
+              }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item> -->
 
           <!-- 이벤트 및 투두 리스트 -->
           <v-list-item class="schedule-item" v-if="!events.length == 0">
@@ -78,47 +77,55 @@
               >{{ formatTime(event.startDate) }} ~ {{ formatTime(event.endDate) }}
               </v-list-item-subtitle>
 
-              <v-col v-if="event.todoLists.length">
-                <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
-                  <v-row style="height: 50px; margin-top:-15%">
-                    <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
-                      <v-checkbox
-                          style="font-size: 12px;"
-                          v-model="todo[2]"
-                          :true-value="'Y'"
-                          :false-value="'N'"
-                          @change="updateIsChecked(todo[0], todo[2])"
-                      ></v-checkbox>
-                    </v-col>
-                    <v-col cols="12" md="10" class="pa-0 pl-1" style="height: 10px;">
-                      <input type="text" readonly>{{ todo[1] }}
-                    </v-col>
-                  </v-row>
-                </v-list-item-content>
-              </v-col>
-              <v-col v-else></v-col>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="moims.length == 0 && events.length == 0" style="text-align: center;">
-            일정이 없습니다.
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
+            <v-col v-if="event.todoLists.length">
+              <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
+                <v-row style="height: 50px; margin-top:-15%">
+                  <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
+                    <v-checkbox
+                      style="font-size: 12px;"
+                      v-model="todo[2]"
+                      :true-value="'Y'"
+                      :false-value="'N'"
+                      @change="updateIsChecked(todo[0], todo[2])"
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="12" md="10" class="mt-6 pa-0 pl-1" style="height: 10px;">
+                    <div :style="todo[2] === 'Y' ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''">
+                      {{ todo[1] }}
+                    </div>
+                    <!-- <input type="text" readonly>{{ todo[1] }} -->
+                    <!-- <v-text-field variant="underlined" readonly>{{ todo[1] }}</v-text-field> -->
+                  </v-col>
+                </v-row>
+              </v-list-item-content>
+            </v-col>
+            <v-col  v-else></v-col>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="events.length == 0" style="text-align: center;">
+          일정이 없습니다.
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
     </v-col>
   </v-navigation-drawer>
 </template>
 
 <script>
 import axiosInstance from "@/axios";
+import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 import EventDialog from "@/pages/event/EventDialog.vue";
 import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
 import {formatTime} from "@/utils/date-utils";
+
+// import {useMainStore} from "@/stores";
 
 export default {
   name: "AppSidebar",
   components: {
     EventDialog,
-    MyPageDialog
+    MyPageDialog,
+    RoomCreateDialog,
   },
   data() {
     return {
@@ -180,6 +187,10 @@ export default {
     createEventClicked() {
       console.log("일정 생성 클릭");
       this.$refs.EventCreate.openDialog();
+    },
+    createChatClicked() {
+      console.log("채팅방 생성 클릭");
+      this.$refs.RoomCreate.openDialog();
     },
     goTo(route) {
       this.$router.push({name: route});

@@ -2,13 +2,14 @@
   <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false">
     <v-card class="pa-4">
       <v-card-title>
-        <v-icon class="mr-2">mdi-chat-plus-outline</v-icon>
+        <v-icon class="mr-2" style="transform: scaleX(-1)">mdi-chat-plus-outline</v-icon>
         채팅방 생성
       </v-card-title>
       <v-card-text>
         <v-row dense>
           <!-- 제목 -->
-          <v-col cols="12" sm="12">
+          <v-col cols="12" sm="2"><h4>제목</h4></v-col>
+          <v-col cols="12" sm="10">
             <v-text-field
               variant="underlined"
               label="제목을 입력하세요"
@@ -20,7 +21,8 @@
           </v-col>
 
           <!-- 참여자 추가 (Auto-complete) -->
-          <v-col cols="12">
+          <v-col cols="12" sm="2"><h4>참여자</h4></v-col>
+          <v-col cols="12" sm="10">
             <v-autocomplete
               v-model="friends"
               :items="people"
@@ -64,6 +66,13 @@
               </template>
             </v-autocomplete>
           </v-col>
+
+          <!-- 메모 -->
+          <v-col cols="12" sm="2"><h4>메모</h4></v-col>
+          <v-col cols="12" md="10">
+            <v-text-field variant="underlined" label="메모를 입력하세요." v-model="contents"> </v-text-field>
+          </v-col>
+
           <!-- 투표 종료 시간 -->
           <v-col cols="12" md="3"><h4>채팅 종료일</h4></v-col>
           <v-col cols="12" md="9">
@@ -73,11 +82,6 @@
               :rules="[(value) => !!value || '']"
               required
             />
-          </v-col>
-
-          <!-- 메모 -->
-          <v-col cols="12" md="12">
-            <v-text-field variant="underlined" label="메모를 입력하세요." v-model="contents"> </v-text-field>
           </v-col>
         </v-row>
       </v-card-text>

@@ -31,3 +31,18 @@ export function formatDateAndTime(dateString) {
 
     return `${year}년 ${month}월 ${day}일 ${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
 }
+
+// "오전|오후 hh:mm" 형태로 포맷팅
+export function formatTime(dateString) {
+    const date = new Date(dateString);
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    const ampm = hours >= 12 ? '오후' : '오전';
+
+    // 12시간제로 변환
+    hours = hours % 12;
+    hours = hours ? hours : 12;  // hours가 0인 경우 12로 설정
+
+    return `${ampm} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+}

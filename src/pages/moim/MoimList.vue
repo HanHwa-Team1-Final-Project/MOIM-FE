@@ -1,14 +1,18 @@
 <template>
-  <v-container fluid class="search-results">
+  <v-container fluid>
     <v-container v-if="moims.length === 0" class="nonMoim">
       <v-row>
         <v-col cols="12" justify="center" class="none-result">
           <div class="no-moims-message">모임이 없습니다.</div>
         </v-col>
       </v-row>
+      <v-btn fab icon fixed bottom right @click="createMoim" class="fab-fixed">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <MoimDialog ref="MoimCreate"></MoimDialog>
     </v-container>
 
-    <v-container v-else>
+    <v-container v-else style="margin-top: -20%;">
       <v-row>
         <v-col cols="12" md="4">
           <v-row v-if="moims.length > 0">
@@ -74,8 +78,8 @@
           </v-row>
           <v-row>
             <v-col class="page-button">
-              <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
-              <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
+              <v-btn @click="prevPage" :disabled="currentPage === 1">&lt;</v-btn>
+              <v-btn @click="nextPage" :disabled="!hasNextPage">&gt;</v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -107,7 +111,7 @@
                   <v-col cols="12" md="10">
                     <input type="text" :value="selectedMoim.hostNickname" readonly />
                   </v-col>
-                  <v-col cols="12" md="2"><h4>참여자 투표현황</h4></v-col>
+                  <v-col cols="12" md="2"><h4>참여 현황</h4></v-col>
                   <v-col cols="12" md="10">
                     <div
                       v-for="guest in selectedMoim.guestEmailNicknameIsAgreed"
@@ -123,7 +127,7 @@
                   >
                   <v-col
                     cols="12"
-                    md="12"
+                    md="10"
                     v-if="selectedMoim.groupType == 'GROUP_CONFIRM'"
                   >
                     <input
@@ -176,7 +180,7 @@
                     <input type="text" :value="selectedMoim.expectEndTime" readonly />
                   </v-col>
                   <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
-                    ><h4>모임 예상 시간</h4></v-col
+                    ><h4>소요 시간</h4></v-col
                   >
                   <v-col
                     cols="12"
@@ -190,7 +194,7 @@
                     />
                   </v-col>
                   <v-col cols="12" md="2" v-if="selectedMoim.groupType != 'GROUP_CONFIRM'"
-                    ><h4>투표 마감일</h4></v-col
+                    ><h4>참여 마감</h4></v-col
                   >
                   <v-col
                     cols="12"
@@ -205,13 +209,13 @@
                   </v-col>
                   <!-- </v-col> -->
 
-                  <v-col cols="12" md="2"><h4>장소</h4></v-col>
-                  <v-col cols="12" md="10">
+                  <v-col cols="12" md="2" v-if="selectedMoim.place"><h4>장소</h4></v-col>
+                  <v-col cols="12" md="10" v-if="selectedMoim.place">
                     <input type="text" :value="selectedMoim.place" readonly />
                   </v-col>
 
-                  <v-col cols="12" md="2"><h4>메모</h4></v-col>
-                  <v-col cols="12" md="10">
+                  <v-col cols="12" md="2" v-if="selectedMoim.contents"><h4>메모</h4></v-col>
+                  <v-col cols="12" md="10" v-if="selectedMoim.contents">
                     <v-textarea
                       :value="selectedMoim.contents"
                       readonly
@@ -293,7 +297,7 @@
               </v-card-actions>
               <!-- 확정 후 -->
 
-              <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM'">
+              <v-card-actions v-if="selectedMoim.groupType == 'GROUP_CONFIRM' && addEventCheck() != 'Y'">
                 <!-- <v-spacer /> -->
                 <v-btn
                   color="#3085d6"
@@ -371,7 +375,16 @@ export default {
       );
       console.log("모든 데이터", this.selectedMoim);
     },
-
+    addEventCheck() {
+      const guest = this.selectedMoim.guestEmailNicknameIsAgreed.find(
+        (g) => g[0] === this.userEmail
+      );
+      if (guest && guest[4] === "Y") {
+              return "Y";
+      }else {
+        return "N";
+      }
+    }, 
     async fetchMoims(page = 1) {
       const authToken = localStorage.getItem("accessToken");
       const url = `${process.env.VUE_APP_API_BASE_URL}/api/groups/groups/${page}`;
@@ -458,7 +471,7 @@ export default {
       } else {
         // 호스트인 모임일때
         if (moim.hostEmail === this.userEmail) {
-          return moim.groupType === "ROUP_CONFIRM" ? "확정" : "대기";
+          return moim.groupType === "GROUP_CONFIRM" ? "확정" : "대기";
         } else {
           // 호스트가 아닌 모임일때
           const guest = moim.guestEmailNicknameIsAgreed.find(
@@ -512,6 +525,7 @@ export default {
         if (response.data.data.isAgree == "Y") {
           Swal.fire({
             title: "참여 완료되었습니다.",
+            text: '일정이 확정되면 알려드릴게요.',
             icon: "success",
           });
         }
@@ -521,7 +535,7 @@ export default {
             icon: "error",
           });
         }
-        location.reload();
+        // location.reload();
       } catch (e) {
         alert(e);
       }
@@ -599,35 +613,7 @@ export default {
     },
     addEvent(GroupInfo) {
       console.log("그룹 정보", GroupInfo);
-      const startDate = new Date(GroupInfo.confirmedDateTime);
-      const endDate = new Date(startDate.getTime() + GroupInfo.runningTime * 60000);
-
-      // ISO 문자열에서 'Z' 제거하여 로컬 시간대로 변환
-      function formatLocalDateTime(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
-        const day = date.getDate();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-
-        return `${year}-${month.toString().padStart(2, "0")}-${day
-          .toString()
-          .padStart(2, "0")}T${hours
-          .toString()
-          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-      }
-
-      // GroupInfo 객체에 startDate와 endDate 추가
-      const updatedGroupInfo = {
-        ...GroupInfo,
-        startDate: formatLocalDateTime(startDate),
-        endDate: formatLocalDateTime(endDate),
-      };
-      console.log("startDate", startDate);
-      this.startDate = startDate;
-      this.endDate = endDate;
-      console.log("updatedGroupInfo", updatedGroupInfo);
-      this.$refs.eventDialog.changeDialog(GroupInfo, startDate, endDate);
+      this.$refs.eventDialog.changeDialog2(GroupInfo);
       this.dialog = false;
     },
 
@@ -637,8 +623,8 @@ export default {
 
       const formatDateTime = (date) => {
         const y = date.getFullYear();
-        const m = date.getMonth() + 1;
-        const d = date.getDate();
+        const m = (date.getMonth() + 1).toString().padStart(2, "0");
+        const d = date.getDate().toString().padStart(2, "0");
         const hour = date.getHours();
         const minute = date.getMinutes();
 
@@ -655,9 +641,6 @@ export default {
 </script>
 
 <style>
-.search-results {
-  margin-top: -250px;
-}
 .nonMoim {
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
@@ -666,7 +649,7 @@ export default {
 .no-moims-message {
   text-align: center; /* 텍스트 중앙 정렬 */
   color: #162a2c;
-  font-size: 20px;
+  font-size: 18px;
 }
 .circle-button {
   border-radius: 50%;
@@ -729,7 +712,7 @@ export default {
 }
 .page-button {
   justify-content: center;
-  left: auto;
+  display: flex;
 }
 .moim-detail {
   background-color: rgba(172, 198, 255, 1);

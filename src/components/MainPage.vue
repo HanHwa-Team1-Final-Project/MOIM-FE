@@ -14,5 +14,6 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 <style scoped>
 .test-background-area {
   background-color: white;
+  margin-top: 15%;
 }
 </style>

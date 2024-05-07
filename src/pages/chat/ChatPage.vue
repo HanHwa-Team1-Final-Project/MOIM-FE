@@ -2,18 +2,18 @@
   <v-app>
     <v-main style="overflow:auto; height: calc(100vh - 27vh);">
       <v-sheet>
-        <v-col style="padding-left:30px; padding-right: 30px; max-height: 69vh; overflow: auto;">
+        <v-col id="messageContainer" style="padding-left:30px; padding-right: 30px; max-height: 69vh; overflow: auto;">
           <div v-for="(responseObject, id) in messages" :key="id"
                :class="['d-flex flex-row align-center my-3', responseObject.nickname === nickname ? 'justify-end': null]">
 
             <!-- 로그인한 유저의 말풍선 -->
             <v-row v-if="responseObject.nickname === nickname" class="justify-end" style="max-width: 80%;">
               <v-col class="d-flex flex-row-reverse align-end">
-                <v-card class="pa-3" color="primary">
+                <v-card class="pa-3 logined-user-chat-bubble">
                   {{ responseObject.content }}
                 </v-card>
                 <v-sheet style="min-width: 70px;">
-                  {{formatTime(responseObject.createdAt)}}
+                  {{ formatTime(responseObject.createdAt) }}
                 </v-sheet>
               </v-col>
             </v-row>
@@ -26,7 +26,7 @@
               <v-col class="d-flex flex-column">
                 <v-sheet class="opponent-nickname mb-2">{{ responseObject.nickname }}</v-sheet>
                 <v-sheet class="d-flex flex-row align-end">
-                  <v-card class="pa-3 message" color="secondary">
+                  <v-card class="pa-3 opponent-chat-bubble">
                     {{ responseObject.content }}
                   </v-card>
                   <v-sheet style="margin-left: 10px; min-width: 70px;">
@@ -106,7 +106,7 @@ export default {
     console.log("로그인한 사용자의 닉네임: ", this.nickname);
     console.log("채팅 잘 넘어왔나 보자!!: ", this.initialMessages);
 
-    if(this.initialMessages && this.initialMessages.length) {
+    if (this.initialMessages && this.initialMessages.length) {
       this.messages = [...this.initialMessages];
       console.log("채팅 담겼나? ", this.messages);
     }
@@ -124,6 +124,7 @@ export default {
       this.messages = [...this.initialMessages];
       console.log("채팅 데이터 불러오기 성공!");
     }
+    this.scrollToBottom();
   },
 
   beforeUnmount() {
@@ -131,6 +132,17 @@ export default {
   },
 
   methods: {
+    scrollToBottom() {
+      // 메시지 목록을 감싸는 컨테이너 찾기
+      const container = document.getElementById('messageContainer');
+      if (container) {
+        // 잠시 딜레이를 주고 스크롤을 최하단으로 이동
+        setTimeout(() => {
+          container.scrollTop = container.scrollHeight;
+        }, 100);
+      }
+    },
+
     initializeWebSocket() {
       if (this.stompClient && this.stompClient.connected) return;
 
@@ -149,6 +161,9 @@ export default {
           const responseObject = JSON.parse(response.body); // ChatResponse와 동일한 형식이다.
           console.log("responseObject 형식: ", responseObject);
           this.messages.push(responseObject);
+
+          // 새 메시지가 수신된 후 스크롤을 아래로 이동
+          this.scrollToBottom();
         })
       }, (error) => {
         console.error("WebSocket connection error: ", error)
@@ -165,6 +180,9 @@ export default {
         }
         this.stompClient.send("/pub/chat/" + this.selectedChatting.id, {}, JSON.stringify(messageData))
         this.message = ""
+
+        // 메시지를 보낸 후 스크롤을 아래로 이동
+        this.scrollToBottom();
       } else {
         console.error("Stomp connection is not established yet.")
       }
@@ -204,12 +222,25 @@ export default {
   padding: 0 20px;
 }
 
-.input-message .v-input__slot{
+.input-message .v-input__slot {
   padding: 0 20px;
 }
 
 .opponent-nickname {
-  font-weight: 400;
+  font-weight: 500;
   font-size: 18px;
+}
+
+.logined-user-chat-bubble {
+  color: white;
+  background-color: #00d06a;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.opponent-chat-bubble {
+  background-color: #ededee;
+  font-size: 17px;
+  font-weight: 500;
 }
 </style>

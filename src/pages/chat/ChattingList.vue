@@ -8,7 +8,7 @@
       </v-row>
     </v-container>
 
-    <v-container v-else style="margin-top: -20%;">
+    <v-container v-else style="margin-top: -18%;">
       <v-row>
         <v-col cols="4">
           <v-row v-if="chattings.length > 0">

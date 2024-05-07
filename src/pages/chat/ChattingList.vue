@@ -12,7 +12,7 @@
       <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
     </v-container>
 
-    <v-container v-else style="margin-top: -18%;">
+    <v-container v-else style="margin-top: -20%;">
       <v-row>
         <v-col cols="4">
           <v-row v-if="chattings.length > 0">
@@ -53,7 +53,7 @@
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh">
+          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 87vh">
             <v-card-title class="d-flex align-center chatpage-header">
               <v-btn
                   icon="mdi-arrow-left"

@@ -6,6 +6,10 @@
           <div class="no-chatting-message">채팅이 없습니다.</div>
         </v-col>
       </v-row>
+      <v-btn fab icon fixed bottom right @click="createRoom" class="fab-fixed">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
     </v-container>
 
     <v-container v-else style="margin-top: -20%;">
@@ -17,9 +21,10 @@
                   class="mx-auto result-card"
                   :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
                   :title="chatting.title"
-                  :subtitle="chatting.hostNickName + ', ' + membersNickname"
+                  :subtitle="chatting.hostNickName + ', ' + chatting.membersNickname"
                   max-width="800"
                   @click="onChattingClick(chatting)"
+                  elevation="3"
                   link
               >
                 <template v-slot:append>
@@ -28,7 +33,7 @@
                       class="result-card-time"
                       :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
                   >
-                    <v-list-item title="채팅 종료일" :subtitle="chattingDeleteDateTime"/>
+                    <v-list-item title="채팅 종료일" :subtitle="chatting.chattingDeleteDateTime"/>
                   </v-list>
                 </template>
               </v-card>
@@ -40,27 +45,49 @@
               <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
             </v-col>
           </v-row>
+          <v-btn fab icon fixed bottom right @click="createRoom" class="fab-fixed">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+          <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
         </v-col>
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh">
-            <v-card-title style="background-color: #2b783b">
-              <v-row>
-                <v-col cols="10">
-                  {{ selectedChatting.title }}
-                </v-col>
-                <v-col cols="2">
-                  <v-btn icon="mdi-close" @click="selectedChatting = null"/>
-                </v-col>
-              </v-row>
+          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 87vh">
+            <v-card-title class="d-flex align-center chatpage-header">
+              <v-btn
+                  icon="mdi-arrow-left"
+                  @click="selectedChatting = null"
+                  left
+                  density="compact"
+                  size="large"
+                  color="white"
+              />
+              <div class="d-flex justify-center align-center flex-grow-1 chatroom-title">
+                {{ selectedChatting.title }}
+              </div>
             </v-card-title>
             <v-card-text class="chatting-card-text">
               <ChatPage :selectedChatting="selectedChatting" :initialMessages="chatHistory || []"/>
             </v-card-text>
           </v-card>
-          <v-card v-else-if="loadingChatHistory">
-            <v-card-title>채팅 내역 불러오는 중...</v-card-title>
+          <v-card v-else-if="loadingChatHistory"
+                  class="chatting-card loading-card"
+                  style="height: 85vh"
+          >
+            <v-col>
+              <v-row justify="center">
+                <v-card-text class="loading-text">채팅 내역 불러오는 중</v-card-text>
+              </v-row>
+              <v-row justify="center">
+                <v-progress-circular
+                    color="#00d06a"
+                    indeterminate
+                    :size="40"
+                    :width="6"
+                ></v-progress-circular>
+              </v-row>
+            </v-col>
           </v-card>
         </v-col>
       </v-row>
@@ -71,9 +98,10 @@
 <script>
 import axiosInstance from "@/axios";
 import ChatPage from "@/pages/chat/ChatPage.vue";
+import RoomCreateDialog from "./RoomCreateDialog.vue";
 
 export default {
-  components: {ChatPage},
+  components: {ChatPage, RoomCreateDialog},
   data() {
     return {
       chattings: [],
@@ -96,13 +124,19 @@ export default {
     this.fetchChattings();
   },
   methods: {
+    createRoom() {
+      // 여기에 모임 생성 로직을 추가
+      console.log("Creating a new chat...");
+      // 예를 들어, 모임 생성 폼으로 라우팅하거나 대화상자를 열 수 있음
+      // this.$router.push({ name: 'CreateMoimForm' });
+      // 또는 대화상자를 사용하는 경우
+      this.$refs.RoomCreate.openDialog();
+    },
     onChattingClick(chatting) {
       console.log("chatting 객체: ", chatting);
       this.selectedChatting = chatting;
       this.setChattingInfo(chatting);
       this.loadingChatHistory = true;
-
-      // this.messages = [];
       this.fetchChatHistory(chatting.id)
           .finally(() => {
             this.loadingChatHistory = false;
@@ -120,8 +154,8 @@ export default {
         minute: "2-digit",
         hour12: true,
       };
-      this.chattingDeleteDateTime = date.toLocaleString("ko-KR", options);
-      this.membersNickname = chatting.memberRooms.map(memberRooms => memberRooms[1]).join(', ');
+      chatting.chattingDeleteDateTime = date.toLocaleString("ko-KR", options);
+      chatting.membersNickname = chatting.memberRooms.map(memberRooms => memberRooms[1]).join(', ');
     },
 
     // 채팅방 별 채팅 내역 불러오기
@@ -169,11 +203,10 @@ export default {
           this.currentPage = page;
           await this.checkNextPage(page + 1);
 
-          if (this.chattings.length > 0) {
-            const firstChatRoom = this.chattings[0];
-            this.setChattingInfo(firstChatRoom);
-            this.selectedChatting = null;
-          }
+          // 모든 채팅방에 대해 참여자 닉네임과 채팅 종료일을 세팅한다.
+          this.chattings.forEach(chatting => this.setChattingInfo(chatting));
+
+          this.selectedChatting = null;
         }
       } catch (error) {
         console.error("Error fetching chattings:", error);
@@ -267,7 +300,6 @@ export default {
 .chatting-card {
   height: 80vh;
   overflow: hidden;
-
 }
 
 .chatting-card-text {
@@ -276,10 +308,40 @@ export default {
 }
 
 .result-card {
-  background-color: #f8d7da;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   margin-top: 0 !important;
+  border: 1px solid rgba(34, 173, 157, 0.14);
+}
+
+.chatpage-header {
+  background: linear-gradient(
+      90deg,
+      #00d06a,
+      #06c7ba
+  ); /* 그라데이션 배경 적용 */
+  background-size: 100%; /* 그라데이션 정도*/
+}
+
+.chatroom-title {
+  color: white;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.loading-card {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 25px;
+  font-weight: 700;
+  color: rgba(54, 54, 54, 0.86);
+  padding: 30px;
 }
 
 .participant-info {

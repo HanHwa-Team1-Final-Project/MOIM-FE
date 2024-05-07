@@ -50,6 +50,7 @@ export default {
   methods: {
     // 일정 누르면 상세보기로 바꾸기
     handleEventClick(clickInfo) {
+      console.log("clickInfo", clickInfo)
       this.$refs.EventDetail.openDialog(clickInfo.event.id)
     },
     // 날짜 누르면 이벤트 등록하게 바꾸기
@@ -156,7 +157,8 @@ export default {
                 allDay: true, // 국경일은 종일 일정에 해당됨.
                 start: this.parseDateString(holiday.locdate),
                 end: this.parseDateString(holiday.locdate),
-                color: '#378006',
+                textColor: '#555555',
+                color: '#ffffff',
                 // 국경일API response 중 fullCalendar event objects에 부합하지 않는 데이터는 extendedProps에 추가
                 extendedProps: {
                   dateKind: holiday.dateKind,
@@ -233,8 +235,8 @@ export default {
 }
 
 .fc-button-active {
-  background-color: #363636 !important;
-  border-color: #363636 !important;
+  background-color: #0aca08 !important;
+  border-color: #0aca08 !important;
   color: #ffffff !important;
   font-weight: bold !important;
 }

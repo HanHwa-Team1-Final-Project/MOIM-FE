@@ -41,12 +41,12 @@
           <!-- 할일 조회 -->
           <v-col cols="12" md="2" v-if="todos.length > 0"><h4>할 일</h4></v-col>
           <v-col cols="12" md="10" v-if="todos.length > 0">
-            <v-row dense v-for="(todo, index) in todos" :key="index" class="ma-0">
-              <v-col cols="12" md="1" class="mt-4 d-flex justify-start">
+            <v-row dense v-for="(todo, index) in todos" :key="index" class="ma-0" style="height: 30px;">
+              <v-col cols="12" md="1" class="mt-5 d-flex align-center">
                 <v-checkbox v-model="todo.isChecked" @change="updateIsChecked(todo.id, todo.isChecked)"></v-checkbox>
               </v-col>
-              <v-col cols="12" md="9" class="d-flex align-center">
-                <v-text-field variant="underlined" :value="todo.contents" readonly></v-text-field>
+              <v-col cols="12" md="9" class="d-flex align-center mb-0">
+                <div :style="todo.isChecked ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''">{{todo.contents}}</div>
               </v-col>
             </v-row>
           </v-col>

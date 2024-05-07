@@ -78,8 +78,8 @@
           </v-row>
           <v-row>
             <v-col class="page-button">
-              <v-btn @click="prevPage" :disabled="currentPage === 1">&lt;</v-btn>
-              <v-btn @click="nextPage" :disabled="!hasNextPage">&gt;</v-btn>
+              <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
+              <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
             </v-col>
           </v-row>
         </v-col>

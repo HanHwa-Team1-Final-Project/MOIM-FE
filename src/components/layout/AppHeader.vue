@@ -122,8 +122,15 @@ export default {
       sse.addEventListener('sendEventAlarm', (e) => {
         const obj = JSON.parse(e.data);
         this.Toast.fire({
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
           icon: 'info',
           title: obj.message
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.onNotiClick(obj)
+          }
         })
       });
       sse.addEventListener('sendToParticipant', (e) => {
@@ -174,6 +181,12 @@ export default {
       if(notiInfo.notificationType == "GROUP_CONFIRM") {
         this.$refs.moimDetail.confirmDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.notificationType);
       }
+      if(notiInfo.notificationType == "ROOM") {
+        window.location.href = "ChattingList";
+      }
+      if(notiInfo.notificationType == "EVENT") {
+        this.$refs.EventDetail.openDialog(notiInfo.eventId);
+      }
     },
     fromNoti(noti, event) {
       console.log("noti", noti)
@@ -182,8 +195,11 @@ export default {
       if(notificationType == "EVENT") {
         this.$refs.EventDetail.openDialog(id);
       }
-      if(notificationType.substring(0, 5) == "GROUP") {
-        console.log("그룹...")
+      else if(notificationType == "ROOM") {
+        window.location.href = "/ChattingList";
+      }
+      else {
+        window.location.href = "/MoimList";
       }
       
     },
@@ -312,8 +328,16 @@ export default {
     max-height: 300px
     overflow-y: auto
 
-::v-deep .moim 
+::v-deep .v-toolbar-title__placeholder 
   cursor: pointer
+  width: 90px
   margin-left: 30px
+  line-height: 1.2
+  font-weight: 900 !important
+  font-size: 30px
+  background: linear-gradient(90deg, #0aca08, #06c7ba)
+  background-size: 100%
+  -webkit-background-clip: text
+  -webkit-text-fill-color: transparent
 
 </style>

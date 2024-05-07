@@ -11,50 +11,44 @@
         <RoomCreateDialog ref="ChatRoomCreate"></RoomCreateDialog>
       </v-col>
     </v-row>
-    <v-btn fab icon fixed bottom right @click="createRoom" class="fab-fixed">
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
-    <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
   </v-container>
-
-    <v-container v-else style="margin-top: -17%;">
-      <v-row>
-        <v-col cols="4">
-          <v-row v-if="chattings.length > 0">
-            <v-col cols="12" v-for="chatting in chattings" :key="chatting.id">
-              <v-card
-                  class="mx-auto result-card"
-                  :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
-                  :title="chatting.title"
-                  :subtitle="chatting.hostNickName + ', ' + chatting.membersNickname"
-                  max-width="800"
-                  @click="onChattingClick(chatting)"
-                  elevation="3"
-                  link
-              >
-                <template v-slot:append>
-                  <v-list
-                      lines="one"
-                      class="result-card-time"
-                      :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
-                  >
-                    <v-list-item title="채팅 종료일" :subtitle="chatting.chattingDeleteDateTime"/>
-                  </v-list>
-                </template>
-              </v-card>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col class="page-button">
-              <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
-              <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
-            </v-col>
-          </v-row>
-          <v-btn fab icon fixed bottom right @click="createRoom" class="fab-fixed">
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-          <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
-        </v-col>
+  <v-container v-else style="margin-top: -17%;">
+    <v-row>
+      <v-col cols="4">
+        <v-row v-if="chattings.length > 0">
+          <v-col cols="12" v-for="chatting in chattings" :key="chatting.id">
+            <v-card
+                class="mx-auto result-card"
+                :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
+                :title="chatting.title"
+                :subtitle="chatting.hostNickName + ', ' + chatting.membersNickname"
+                max-width="800"
+                @click="onChattingClick(chatting)"
+                elevation="3"
+                link
+            >
+              <template v-slot:append>
+                <v-list
+                    lines="one"
+                    class="result-card-time"
+                    :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
+                >
+                  <v-list-item title="채팅 종료일" :subtitle="chatting.chattingDeleteDateTime"/>
+                </v-list>
+              </template>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="page-button">
+            <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
+            <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
+          </v-col>
+        </v-row>
+        <!-- 좌측 하단 플로팅 버튼 -->
+        <v-btn fab icon="mdi-chat-plus-outline" @click="createChatRoom" class="fab-chat"></v-btn>
+        <RoomCreateDialog ref="ChatRoomCreate"></RoomCreateDialog>
+      </v-col>
 
       <!-- 채팅 페이지 -->
       <v-col cols="8">
@@ -364,6 +358,15 @@ export default {
       #06c7ba
   );
   background-size: 100%;
+}
+
+.fab-chat {
+  color: white !important;
+  position: fixed; /* 고정 위치 */
+  left: 15vw;
+  bottom: 2vh;
+  z-index: 100; /* 다른 요소 위에 표시 */
+  background-color: #00d06a;
 }
 
 .participant-info {

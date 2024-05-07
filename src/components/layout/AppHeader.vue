@@ -122,8 +122,15 @@ export default {
       sse.addEventListener('sendEventAlarm', (e) => {
         const obj = JSON.parse(e.data);
         this.Toast.fire({
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
           icon: 'info',
           title: obj.message
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.onNotiClick(obj)
+          }
         })
       });
       sse.addEventListener('sendToParticipant', (e) => {
@@ -173,6 +180,12 @@ export default {
       }
       if(notiInfo.notificationType == "GROUP_CONFIRM") {
         this.$refs.moimDetail.confirmDialog(notiInfo.groupId, notiInfo.hostName, notiInfo.notificationType);
+      }
+      if(notiInfo.notificationType == "ROOM") {
+        window.location.href = "ChattingList";
+      }
+      if(notiInfo.notificationType == "EVENT") {
+        this.$refs.EventDetail.openDialog(notiInfo.eventId);
       }
     },
     fromNoti(noti, event) {

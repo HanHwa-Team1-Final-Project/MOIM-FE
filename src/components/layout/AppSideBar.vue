@@ -52,7 +52,7 @@
       </v-subheader>
       <!-- 모임 -->
       <v-list-item-group>
-        <v-list-item class="schedule-item" v-if="!moims.length == 0">
+        <!-- <v-list-item class="schedule-item" v-if="!moims.length == 0">
           <v-list-item-content v-for="moim in moims" :key="moim.id">
             <v-list-item-title v-if="moim"> {{ moim.title }} </v-list-item-title>
             <v-list-item-subtitle v-if="moim">
@@ -64,7 +64,7 @@
               }}</v-list-item-subtitle
             >
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
 
         <!-- 이벤트 및 투두 리스트 -->
         <v-list-item class="schedule-item" v-if="!events.length == 0">
@@ -86,8 +86,11 @@
                       @change="updateIsChecked(todo[0], todo[2])"
                     ></v-checkbox>
                   </v-col>
-                  <v-col cols="12" md="10" class="pa-0 pl-1" style="height: 10px;"> 
-                    <input type="text" readonly>{{ todo[1] }}
+                  <v-col cols="12" md="10" class="mt-6 pa-0 pl-1" style="height: 10px;"> 
+                    <div :style="todo[2] === 'Y' ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''">
+                      {{ todo[1] }}
+                    </div>
+                    <!-- <input type="text" readonly>{{ todo[1] }} -->
                     <!-- <v-text-field variant="underlined" readonly>{{ todo[1] }}</v-text-field> -->
                   </v-col>
                 </v-row>
@@ -96,7 +99,7 @@
             <v-col  v-else></v-col>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="moims.length == 0 && events.length == 0" style="text-align: center;">
+        <v-list-item v-if="events.length == 0" style="text-align: center;">
           일정이 없습니다.
         </v-list-item>
       </v-list-item-group>

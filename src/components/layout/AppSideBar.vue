@@ -38,25 +38,9 @@
         value="moim-list"
         @click="goToMoimList"
       ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-snapchat"
-        title="채팅 테스트"
-        value="chatTest"
-        @click="goToChat"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-widgets"
-        title="채팅방 생성"
-        value="createChat"
-        @click="createChatClicked"
-      ></v-list-item>
-      <ChatDialog ref="ChatCreate"></ChatDialog>
-      <v-list-item
-        prepend-icon="mdi-message-text"
-        title="채팅 리스트"
-        value="chating-list"
-        @click="goToChattingList"
-      ></v-list-item>
+      <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
+      <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
+      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>
     </v-list>
 
     <v-divider></v-divider>
@@ -122,26 +106,20 @@
 </template>
 
 <script>
+import axiosInstance from "@/axios";
+import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 import EventDialog from "@/pages/event/EventDialog.vue";
 import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
-import ChatDialog from "@/pages/chat/ChatDialog.vue";
 import { formatTime } from "@/utils/date-utils";
 
 // import {useMainStore} from "@/stores";
-import axiosInstance from "@/axios";
 
 export default {
   name: "AppSidebar",
-  // setup() {
-  //   const mainStore = useMainStore();
-  //   return {
-  //     mainStore
-  //   }
-  // },
   components: {
     EventDialog,
     MyPageDialog,
-    ChatDialog,
+    RoomCreateDialog
   },
   data() {
     return {
@@ -206,7 +184,7 @@ export default {
     },
     createChatClicked() {
       console.log("채팅방 생성 클릭");
-      this.$refs.ChatCreate.openDialog();
+      this.$refs.RoomCreate.openDialog();
     },
     goTo(route) {
       this.$router.push({ name: route });
@@ -222,7 +200,7 @@ export default {
       this.$refs.MyPageDialog.openDialog();
     },
     goToChat() {
-      this.$router.push({ path: "/chatTest" });
+      this.$router.push({path: '/chat'})
     },
     goToChattingList() {
       this.$router.push({ path: "/ChattingList" });
@@ -348,8 +326,6 @@ export default {
 
 .today-list .schedule-item {
   margin-left: 10px;
-  
-
 }
 
 .today-list .schedule-item .v-icon {

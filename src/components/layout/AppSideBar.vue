@@ -113,7 +113,6 @@
 
 <script>
 import axiosInstance from "@/axios";
-import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 import EventDialog from "@/pages/event/EventDialog.vue";
 import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
 import {formatTime} from "@/utils/date-utils";
@@ -124,8 +123,7 @@ export default {
   name: "AppSidebar",
   components: {
     EventDialog,
-    MyPageDialog,
-    RoomCreateDialog,
+    MyPageDialog
   },
   data() {
     return {

@@ -45,7 +45,7 @@
 
         <!-- 채팅 페이지 -->
         <v-col cols="8">
-          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh">
+          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh" elevation="3">
             <v-card-title class="d-flex align-center chatpage-header">
               <v-btn
                   icon="mdi-arrow-left"
@@ -66,6 +66,7 @@
           <v-card v-else-if="loadingChatHistory"
                   class="chatting-card loading-card"
                   style="height: 85vh"
+                  elevation="3"
           >
             <v-col>
               <v-row justify="center">

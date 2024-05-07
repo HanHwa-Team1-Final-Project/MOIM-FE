@@ -2,10 +2,10 @@
   <v-navigation-drawer class="sidebar-navigation-drawer" permanent>
     <v-list>
       <v-list-item
-        :prepend-avatar="profileImage"
-        :subtitle="email"
-        :title="nickname"
-        @click="MyPageClicked"
+          :prepend-avatar="profileImage"
+          :subtitle="email"
+          :title="nickname"
+          @click="MyPageClicked"
       ></v-list-item>
       <MyPageDialog ref="MyPageDialog"></MyPageDialog>
     </v-list>
@@ -14,112 +14,111 @@
 
     <v-list density="compact" nav>
       <v-list-item
-        prepend-icon="mdi-calendar"
-        title="캘린더"
-        value="calendar"
-        @click="goTo('fullCalendarComponent')"
+          prepend-icon="mdi-calendar"
+          title="캘린더"
+          value="calendar"
+          @click="goTo('fullCalendarComponent')"
       ></v-list-item>
       <v-list-item
-        prepend-icon="mdi-trello"
-        title="아이젠하워 메트릭스"
-        value="matrix"
-        @click="goToEisenhowerMatrix"
+          prepend-icon="mdi-trello"
+          title="아이젠하워 메트릭스"
+          value="matrix"
+          @click="goToEisenhowerMatrix"
       ></v-list-item>
       <v-list-item
-        prepend-icon="mdi-calendar-plus"
-        title="일정 생성"
-        value="createEvent"
-        @click="createEventClicked"
+          prepend-icon="mdi-calendar-plus"
+          title="일정 생성"
+          value="createEvent"
+          @click="createEventClicked"
       ></v-list-item>
       <EventDialog ref="EventCreate"></EventDialog>
       <v-list-item
-        prepend-icon="mdi-account-details"
-        title="모임 리스트"
-        value="moim-list"
-        @click="goToMoimList"
+          prepend-icon="mdi-account-details"
+          title="모임 리스트"
+          value="moim-list"
+          @click="goToMoimList"
       ></v-list-item>
-      <v-list-item prepend-icon="mdi-widgets" title="채팅방 생성" value="createChat" @click="createChatClicked"></v-list-item>
-      <RoomCreateDialog ref="RoomCreate"></RoomCreateDialog>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="채팅 리스트" value="chating-list" @click="goToChattingList"></v-list-item>
+      <v-list-item
+          prepend-icon="mdi-chat-outline"
+          title="채팅 리스트"
+          value="chating-list"
+          @click="goToChattingList"
+      ></v-list-item>
     </v-list>
 
     <v-divider></v-divider>
 
     <v-col class="back">
-    <v-list class="today-list">
-      <v-subheader style="color:#353535;">
-        ✅ 오늘의 일정
-      </v-subheader>
-      <!-- 모임 -->
-      <v-list-item-group>
-        <v-list-item class="schedule-item" v-if="!moims.length == 0">
-          <v-list-item-content v-for="moim in moims" :key="moim.id">
-            <v-list-item-title v-if="moim"> {{ moim.title }} </v-list-item-title>
-            <v-list-item-subtitle v-if="moim">
-              {{ formatTime(moim.confirmedDateTime) }} ~
-              {{
-                formatTime(
-                  formattedlastDateTime(moim.confirmedDateTime, moim.runningTime)
-                )
-              }}</v-list-item-subtitle
-            >
-          </v-list-item-content>
-        </v-list-item>
+      <v-list class="today-list">
+        <v-subheader style="color:#353535;">
+          ✅ 오늘의 일정
+        </v-subheader>
+        <!-- 모임 -->
+        <v-list-item-group>
+          <v-list-item class="schedule-item" v-if="!moims.length == 0">
+            <v-list-item-content v-for="moim in moims" :key="moim.id">
+              <v-list-item-title v-if="moim"> {{ moim.title }}</v-list-item-title>
+              <v-list-item-subtitle v-if="moim">
+                {{ formatTime(moim.confirmedDateTime) }} ~
+                {{
+                  formatTime(
+                      formattedlastDateTime(moim.confirmedDateTime, moim.runningTime)
+                  )
+                }}
+              </v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </v-list-item>
 
-        <!-- 이벤트 및 투두 리스트 -->
-        <v-list-item class="schedule-item" v-if="!events.length == 0">
-          <v-list-item-content v-for="event in events" :key="event.id">
-            <v-list-item-title style="margin-top: 8px;"> {{ event.title }} </v-list-item-title>
-            <v-list-item-subtitle style="margin-bottom: -5px;"
+          <!-- 이벤트 및 투두 리스트 -->
+          <v-list-item class="schedule-item" v-if="!events.length == 0">
+            <v-list-item-content v-for="event in events" :key="event.id">
+              <v-list-item-title style="margin-top: 8px;"> {{ event.title }}</v-list-item-title>
+              <v-list-item-subtitle style="margin-bottom: -5px;"
               >{{ formatTime(event.startDate) }} ~ {{ formatTime(event.endDate) }}
-            </v-list-item-subtitle>
+              </v-list-item-subtitle>
 
-            <v-col v-if="event.todoLists.length">
-              <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
-                <v-row style="height: 50px; margin-top:-15%">
-                  <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
-                    <v-checkbox
-                      style="font-size: 12px;"
-                      v-model="todo[2]"
-                      :true-value="'Y'"
-                      :false-value="'N'"
-                      @change="updateIsChecked(todo[0], todo[2])"
-                    ></v-checkbox>
-                  </v-col>
-                  <v-col cols="12" md="10" class="pa-0 pl-1" style="height: 10px;"> 
-                    <input type="text" readonly>{{ todo[1] }}
-                    <!-- <v-text-field variant="underlined" readonly>{{ todo[1] }}</v-text-field> -->
-                  </v-col>
-                </v-row>
-              </v-list-item-content>
-            </v-col>
-            <v-col  v-else></v-col>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="moims.length == 0 && events.length == 0" style="text-align: center;">
-          일정이 없습니다.
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+              <v-col v-if="event.todoLists.length">
+                <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
+                  <v-row style="height: 50px; margin-top:-15%">
+                    <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
+                      <v-checkbox
+                          style="font-size: 12px;"
+                          v-model="todo[2]"
+                          :true-value="'Y'"
+                          :false-value="'N'"
+                          @change="updateIsChecked(todo[0], todo[2])"
+                      ></v-checkbox>
+                    </v-col>
+                    <v-col cols="12" md="10" class="pa-0 pl-1" style="height: 10px;">
+                      <input type="text" readonly>{{ todo[1] }}
+                    </v-col>
+                  </v-row>
+                </v-list-item-content>
+              </v-col>
+              <v-col v-else></v-col>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="moims.length == 0 && events.length == 0" style="text-align: center;">
+            일정이 없습니다.
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
     </v-col>
   </v-navigation-drawer>
 </template>
 
 <script>
 import axiosInstance from "@/axios";
-import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 import EventDialog from "@/pages/event/EventDialog.vue";
 import MyPageDialog from "@/pages/myPage/MyPageDialog.vue";
-import { formatTime } from "@/utils/date-utils";
-
-// import {useMainStore} from "@/stores";
+import {formatTime} from "@/utils/date-utils";
 
 export default {
   name: "AppSidebar",
   components: {
     EventDialog,
-    MyPageDialog,
-    RoomCreateDialog
+    MyPageDialog
   },
   data() {
     return {
@@ -182,19 +181,15 @@ export default {
       console.log("일정 생성 클릭");
       this.$refs.EventCreate.openDialog();
     },
-    createChatClicked() {
-      console.log("채팅방 생성 클릭");
-      this.$refs.RoomCreate.openDialog();
-    },
     goTo(route) {
-      this.$router.push({ name: route });
+      this.$router.push({name: route});
     },
     goToEisenhowerMatrix() {
-      this.$router.push({ path: "/EisenhowerMatrix" });
+      this.$router.push({path: "/EisenhowerMatrix"});
     },
 
     goToMoimList() {
-      this.$router.push({ path: "/MoimList" });
+      this.$router.push({path: "/MoimList"});
     },
     MyPageClicked() {
       this.$refs.MyPageDialog.openDialog();
@@ -203,7 +198,7 @@ export default {
       this.$router.push({path: '/chat'})
     },
     goToChattingList() {
-      this.$router.push({ path: "/ChattingList" });
+      this.$router.push({path: "/ChattingList"});
     },
     async fetchMoims() {
       const authToken = localStorage.getItem("accessToken");
@@ -280,15 +275,15 @@ export default {
       console.log("isChecked", isChecked);
       const token = localStorage.getItem("accessToken");
       if (token == null) {
-        this.$router.push({ name: "Login" });
+        this.$router.push({name: "Login"});
         return;
       }
-      const headers = { Authorization: `Bearer ${token}` };
+      const headers = {Authorization: `Bearer ${token}`};
       // let checked = isChecked == true ? "Y" : "N";
       try {
         const response = await axiosInstance.post(
-          `${process.env.VUE_APP_API_BASE_URL}/api/events/todolist/${id}?isChecked=${isChecked}`,
-          { headers }
+            `${process.env.VUE_APP_API_BASE_URL}/api/events/todolist/${id}?isChecked=${isChecked}`,
+            {headers}
         );
         console.log(response.data.data);
       } catch (e) {
@@ -313,15 +308,15 @@ export default {
   color: #000000;
   font-weight: bold;
   padding-left: 10px;
-  
+
 }
 
 .back {
-  background-color: #f5fcf2; 
+  background-color: #f5fcf2;
   border-radius: 1rem; /* Round corners */
   padding: 0%;
   margin: 12px;
-  width:auto;
+  width: auto;
 }
 
 .today-list .schedule-item {

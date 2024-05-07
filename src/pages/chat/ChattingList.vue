@@ -1,99 +1,104 @@
 <template>
-  <v-container fluid class="search-results">
-    <v-container v-if="chattings.length === 0" class="nonChatting">
-      <v-row>
-        <v-col cols="12" justify="center" class="none-result">
-          <div class="no-chatting-message">채팅이 없습니다.</div>
-        </v-col>
-      </v-row>
-    </v-container>
+  <v-container v-if="chattings.length === 0" class="nonChatting" style="margin-top: -20%;">
+    <v-row>
+      <v-col cols="12" class="d-flex flex-column justify-center align-center" style="height: calc(100vh - 27vh);">
+        <div class="d-flex justify-center">
+          <v-icon class="no-message-icon">mdi-chat-processing-outline</v-icon>
+        </div>
+        <div style="font-size: 24px; font-weight: 500;">채팅이 없습니다</div>
+        <div style="font-size: 19px; font-weight: 300; color: #555555" class="pa-3">채팅방을 생성해서 메시지를 보내보세요</div>
+        <v-btn flat @click="createChatRoom" class="no-message-btn">메시지 보내기</v-btn>
+        <RoomCreateDialog ref="ChatRoomCreate"></RoomCreateDialog>
+      </v-col>
+    </v-row>
+  </v-container>
 
-    <v-container v-else style="margin-top: -18%;">
-      <v-row>
-        <v-col cols="4">
-          <v-row v-if="chattings.length > 0">
-            <v-col cols="12" v-for="chatting in chattings" :key="chatting.id">
-              <v-card
-                  class="mx-auto result-card"
-                  :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
-                  :title="chatting.title"
-                  :subtitle="chatting.hostNickName + ', ' + chatting.membersNickname"
-                  max-width="800"
-                  @click="onChattingClick(chatting)"
-                  elevation="3"
-                  link
-              >
-                <template v-slot:append>
-                  <v-list
-                      lines="one"
-                      class="result-card-time"
-                      :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
-                  >
-                    <v-list-item title="채팅 종료일" :subtitle="chatting.chattingDeleteDateTime"/>
-                  </v-list>
-                </template>
-              </v-card>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col class="page-button">
-              <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
-              <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
+  <v-container v-else style="margin-top: -17%;">
+    <v-row>
+      <v-col cols="4">
+        <v-row v-if="chattings.length > 0">
+          <v-col cols="12" v-for="chatting in chattings" :key="chatting.id">
+            <v-card
+                class="mx-auto result-card"
+                :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
+                :title="chatting.title"
+                :subtitle="chatting.hostNickName + ', ' + chatting.membersNickname"
+                max-width="800"
+                @click="onChattingClick(chatting)"
+                elevation="3"
+                link
+            >
+              <template v-slot:append>
+                <v-list
+                    lines="one"
+                    class="result-card-time"
+                    :class="{'selected-chatting-card': selectedChatting && chatting.id === selectedChatting.id}"
+                >
+                  <v-list-item title="채팅 종료일" :subtitle="chatting.chattingDeleteDateTime"/>
+                </v-list>
+              </template>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="page-button">
+            <v-btn @click="prevPage" :disabled="currentPage === 1">이전 페이지</v-btn>
+            <v-btn @click="nextPage" :disabled="!hasNextPage">다음 페이지</v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
 
-        <!-- 채팅 페이지 -->
-        <v-col cols="8">
-          <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh" elevation="3">
-            <v-card-title class="d-flex align-center chatpage-header">
-              <v-btn
-                  icon="mdi-arrow-left"
-                  @click="selectedChatting = null"
-                  left
-                  density="compact"
-                  size="large"
-                  color="white"
-              />
-              <div class="d-flex justify-center align-center flex-grow-1 chatroom-title">
-                {{ selectedChatting.title }}
-              </div>
-            </v-card-title>
-            <v-card-text class="chatting-card-text">
-              <ChatPage :selectedChatting="selectedChatting" :initialMessages="chatHistory || []"/>
-            </v-card-text>
-          </v-card>
-          <v-card v-else-if="loadingChatHistory"
-                  class="chatting-card loading-card"
-                  style="height: 85vh"
-                  elevation="3"
-          >
-            <v-col>
-              <v-row justify="center">
-                <v-card-text class="loading-text">채팅 내역 불러오는 중</v-card-text>
-              </v-row>
-              <v-row justify="center">
-                <v-progress-circular
-                    color="#00d06a"
-                    indeterminate
-                    :size="40"
-                    :width="6"
-                ></v-progress-circular>
-              </v-row>
-            </v-col>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+      <!-- 채팅 페이지 -->
+      <v-col cols="8">
+        <v-card v-if="selectedChatting && !loadingChatHistory" class="chatting-card" style="height: 85vh" elevation="3">
+          <v-card-title class="d-flex align-center chatpage-header">
+            <v-btn
+                icon="mdi-arrow-left"
+                @click="selectedChatting = null"
+                left
+                density="compact"
+                size="large"
+                color="white"
+            />
+            <div class="d-flex justify-center align-center flex-grow-1 chatroom-title">
+              {{ selectedChatting.title }}
+            </div>
+          </v-card-title>
+          <v-card-text class="chatting-card-text">
+            <ChatPage :selectedChatting="selectedChatting" :initialMessages="chatHistory || []"/>
+          </v-card-text>
+        </v-card>
+        <v-card v-else-if="loadingChatHistory"
+                class="chatting-card loading-card"
+                style="height: 85vh"
+                elevation="3"
+        >
+          <v-col>
+            <v-row justify="center">
+              <v-card-text class="loading-text">채팅 내역 불러오는 중</v-card-text>
+            </v-row>
+            <v-row justify="center">
+              <v-progress-circular
+                  color="#00d06a"
+                  indeterminate
+                  :size="40"
+                  :width="6"
+              ></v-progress-circular>
+            </v-row>
+          </v-col>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import axiosInstance from "@/axios";
 import ChatPage from "@/pages/chat/ChatPage.vue";
+import RoomCreateDialog from "@/pages/chat/RoomCreateDialog.vue";
 
 export default {
-  components: {ChatPage},
+  components: {RoomCreateDialog, ChatPage},
   data() {
     return {
       chattings: [],
@@ -116,6 +121,11 @@ export default {
     this.fetchChattings();
   },
   methods: {
+    // 채팅룸 생성 다이얼로그 띄우기
+    createChatRoom() {
+      this.$refs.ChatRoomCreate.openDialog();
+    },
+
     onChattingClick(chatting) {
       console.log("chatting 객체: ", chatting);
       this.selectedChatting = chatting;
@@ -262,12 +272,6 @@ export default {
   height: 100vh;
 }
 
-.no-chatting-message {
-  text-align: center; /* 텍스트 중앙 정렬 */
-  color: #162a2c;
-  font-size: 18px;
-}
-
 .participant-info span {
   margin-left: 8px;
 }
@@ -326,6 +330,32 @@ export default {
   font-weight: 700;
   color: rgba(54, 54, 54, 0.86);
   padding: 30px;
+}
+
+.no-message-icon {
+  font-size: 100px;
+  background: linear-gradient(
+      90deg,
+      #00d06a,
+      #06c7ba
+  ); /* 그라데이션 배경 적용 */
+  background-size: 100%; /* 그라데이션 정도*/
+  -webkit-background-clip: text; /* 그라데이션을 텍스트에 적용 */
+  -webkit-text-fill-color: transparent; /* 원래의 텍스트 색상을 투명하게 하여 그라데이션을 보여줌 */
+}
+
+.no-message-btn {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 19px !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  background: linear-gradient(
+      90deg,
+      #00d06a,
+      #06c7ba
+  );
+  background-size: 100%;
 }
 
 .participant-info {

@@ -37,6 +37,8 @@ export function formatTime(dateString) {
     const date = new Date(dateString);
     const kstOffset = 9 * 60; // KST는 UTC보다 9시간 앞서 있음
     date.setMinutes(date.getMinutes() + kstOffset);
+    console.log(date.getMinutes() + kstOffset)
+    console.log(date)
     let hours = date.getHours();
     console.log("hors: ", hours);
     const minutes = date.getMinutes();

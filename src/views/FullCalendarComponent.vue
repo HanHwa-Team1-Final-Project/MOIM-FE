@@ -235,8 +235,8 @@ export default {
 }
 
 .fc-button-active {
-  background-color: #363636 !important;
-  border-color: #363636 !important;
+  background-color: #0aca08 !important;
+  border-color: #0aca08 !important;
   color: #ffffff !important;
   font-weight: bold !important;
 }

@@ -45,19 +45,17 @@
 
     <v-divider></v-divider>
 
+    <v-col class="back">
     <v-list class="today-list">
-      <v-subheader>
-        <v-list-item-icon>
-          <v-icon>mdi-calendar-today</v-icon>
-        </v-list-item-icon>
-        오늘의 일정
+      <v-subheader style="color:#353535;">
+        ✅ 오늘의 일정
       </v-subheader>
       <!-- 모임 -->
       <v-list-item-group>
-        <v-list-item class="schedule-item">
+        <v-list-item class="schedule-item" v-if="!moims.length == 0">
           <v-list-item-content v-for="moim in moims" :key="moim.id">
-            <v-list-item-title> {{ moim.title }} </v-list-item-title>
-            <v-list-item-subtitle>
+            <v-list-item-title v-if="moim"> {{ moim.title }} </v-list-item-title>
+            <v-list-item-subtitle v-if="moim">
               {{ formatTime(moim.confirmedDateTime) }} ~
               {{
                 formatTime(
@@ -69,34 +67,41 @@
         </v-list-item>
 
         <!-- 이벤트 및 투두 리스트 -->
-        <v-list-item class="schedule-item">
+        <v-list-item class="schedule-item" v-if="!events.length == 0">
           <v-list-item-content v-for="event in events" :key="event.id">
-            <v-list-item-title> {{ event.title }} </v-list-item-title>
-            <v-list-item-subtitle
+            <v-list-item-title style="margin-top: 8px;"> {{ event.title }} </v-list-item-title>
+            <v-list-item-subtitle style="margin-bottom: -5px;"
               >{{ formatTime(event.startDate) }} ~ {{ formatTime(event.endDate) }}
             </v-list-item-subtitle>
 
             <v-col v-if="event.todoLists.length">
               <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
-                <v-row>
-                  <v-col cols="12" md="2">
+                <v-row style="height: 50px; margin-top:-15%">
+                  <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
                     <v-checkbox
+                      style="font-size: 12px;"
                       v-model="todo[2]"
                       :true-value="'Y'"
                       :false-value="'N'"
                       @change="updateIsChecked(todo[0], todo[2])"
                     ></v-checkbox>
                   </v-col>
-                  <v-col cols="12" md="10">
-                    <v-text-field readonly>{{ todo[1] }}</v-text-field>
+                  <v-col cols="12" md="10" class="pa-0 pl-1" style="height: 10px;"> 
+                    <input type="text" readonly>{{ todo[1] }}
+                    <!-- <v-text-field variant="underlined" readonly>{{ todo[1] }}</v-text-field> -->
                   </v-col>
                 </v-row>
               </v-list-item-content>
             </v-col>
+            <v-col  v-else></v-col>
           </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="moims.length == 0 && events.length == 0" style="text-align: center;">
+          일정이 없습니다.
         </v-list-item>
       </v-list-item-group>
     </v-list>
+    </v-col>
   </v-navigation-drawer>
 </template>
 
@@ -305,24 +310,31 @@ export default {
 }
 
 .sidebar-navigation-drawer .today-list v-subheader {
-  color: #1976d2;
+  color: #000000;
   font-weight: bold;
-  padding-left: 16px;
+  padding-left: 10px;
+  
+}
+
+.back {
+  background-color: #f5fcf2; 
+  border-radius: 1rem; /* Round corners */
+  padding: 0%;
+  margin: 12px;
+  width:auto;
 }
 
 .today-list .schedule-item {
-  margin-top: 5px;
-
-
+  margin-left: 10px;
 }
 
 .today-list .schedule-item .v-icon {
-  color: #1976d2;
+  color: #6d6d6d;
 }
 
 .today-list .schedule-item v-list-item-title,
 .today-list .schedule-item v-list-item-subtitle {
-  color: #424242;
+  color: #353535;
 }
 
 

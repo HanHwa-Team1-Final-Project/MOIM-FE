@@ -101,7 +101,6 @@ export default {
 }
 
 .none-result {
-  margin-top: 10%;
   font-size: 18px;
 }
 

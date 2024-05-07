@@ -40,7 +40,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -70,7 +70,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -108,7 +108,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -139,7 +139,7 @@
               <v-card :key="element.id" class="mb-3 event-item" @click="onEventClick(element)">
                 <v-row align="center" class="pa-2" no-gutters>
                   <v-col cols="auto" class="no-background">
-                    <v-icon>mdi-check-circle-outline</v-icon>
+                    <!-- <v-icon>mdi-check-circle-outline</v-icon> -->
                   </v-col>
                   <v-col class="no-background">
                     <div class="title-text">{{ element.title }}</div>
@@ -458,18 +458,18 @@ export default {
 }
 
 #Q1 {
-  background: rgba(255, 242, 165, 0.6);
+  background: rgba(255, 248, 208, 0.6);
 }
 
 #Q2 {
-  background:  rgba(255, 163, 166, 0.6);
+  background:  rgba(255, 209, 210, 0.6);
 }
 
 #Q3 {
-  background: rgba(177, 255, 211, 0.6);
+  background: rgba(213, 255, 228, 0.6);
 }
 
 #Q4 {
-  background: rgba(172, 198, 255, 0.6);
+  background: rgba(215, 227, 255, 0.6);
 }
 </style>

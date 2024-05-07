@@ -156,7 +156,8 @@ export default {
                 allDay: true, // 국경일은 종일 일정에 해당됨.
                 start: this.parseDateString(holiday.locdate),
                 end: this.parseDateString(holiday.locdate),
-                color: '#378006',
+                textColor: '#555555',
+                color: '#ffffff',
                 // 국경일API response 중 fullCalendar event objects에 부합하지 않는 데이터는 extendedProps에 추가
                 extendedProps: {
                   dateKind: holiday.dateKind,

@@ -438,7 +438,6 @@ export default {
           }).then((result) => {
             if(result.isConfirmed) {
               this.$router.push({ name: "fullCalendarComponent" });
-              window.location.reload();
             }
           })
         // this.$router.push({ name: "fullCalendarComponent" });

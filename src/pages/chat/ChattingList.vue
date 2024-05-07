@@ -8,7 +8,7 @@
       </v-row>
     </v-container>
 
-    <v-container v-else>
+    <v-container v-else style="margin-top: -20%;">
       <v-row>
         <v-col cols="4">
           <v-row v-if="chattings.length > 0">
@@ -238,9 +238,6 @@ export default {
 </script>
 
 <style>
-.search-results {
-  margin-top: 1vh;
-}
 
 .nonChatting {
   display: flex;
@@ -251,7 +248,7 @@ export default {
 .no-chatting-message {
   text-align: center; /* 텍스트 중앙 정렬 */
   color: #162a2c;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .participant-info span {

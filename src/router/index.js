@@ -65,10 +65,8 @@ const routes = [
                 name: "EisenhowerMatrix",
                 component: EisenhowerMatrix
             },
-
-            // 검색 결과
             {
-                path: "/search",
+                path: "search",
                 name: "Search",
                 component: SearchResults,
             },
@@ -82,7 +80,6 @@ const routes = [
                 name: "eventDetail",
                 component: EventDetailDialog
             },
-            // 일정 수정
             {
                 path: "updateEvent",
                 name: "updateEvent",

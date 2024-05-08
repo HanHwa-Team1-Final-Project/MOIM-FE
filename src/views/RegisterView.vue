@@ -1,8 +1,7 @@
 <template>
   <v-container fluid>
-    <v-row justify="center" align="center" style="height: 100vh">
+    <v-row justify="center" align="center" style="height: 100vh; margin-left:7%">
       <v-col cols="12" sm="8" md="7" lg="5" xl="3">
-        <div class="left-panel">
           <!-- 회원가입 폼 -->
           <v-card class="elevation-5 pt-5 rounded-card" style="width: 30vw;">
             <v-toolbar class="custom-toolbar justify-center">
@@ -135,8 +134,6 @@
               </v-form>
             </v-card-text>
           </v-card>
-
-        </div>
       </v-col>
     </v-row>
   </v-container>

@@ -125,7 +125,7 @@
           </v-col>
           <!-- 시작/종료 시간 -->
           <v-col cols="12" md="3" class="mt-3"><h4>설정 시간</h4></v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="4" class="mt-3">
             <input
               type="time"
               v-model="expectStartTime"
@@ -133,9 +133,9 @@
               required
             />
           </v-col>
-          <v-col cols="12" md="1">~</v-col>
+          <v-col cols="12" md="1" class="mt-3">~</v-col>
           <!-- <v-col cols="12" md="2"><h4>종료 시간</h4></v-col> -->
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="4" class="mt-3">
             <input
               type="time"
               v-model="expectEndTime"
@@ -146,7 +146,7 @@
 
           <!-- 투표 종료 시간 -->
           <v-col cols="12" md="3" class="mt-3"><h4>참여 마감</h4></v-col>
-          <v-col cols="12" md="9">
+          <v-col cols="12" md="9" class="mt-3">
             <input
               type="datetime-local"
               v-model="voteDeadline"

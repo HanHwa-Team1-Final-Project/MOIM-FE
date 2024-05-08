@@ -1,18 +1,5 @@
 <template>
-  <v-container v-if="chattings.length === 0" class="nonChatting" style="margin-top: -20%;">
-    <v-row>
-      <v-col cols="12" class="d-flex flex-column justify-center align-center" style="height: calc(100vh - 27vh);">
-        <div class="d-flex justify-center">
-          <v-icon class="no-message-icon">mdi-chat-processing-outline</v-icon>
-        </div>
-        <div style="font-size: 24px; font-weight: 500;">채팅이 없습니다</div>
-        <div style="font-size: 19px; font-weight: 300; color: #555555" class="pa-3">채팅방을 생성해서 메시지를 보내보세요</div>
-        <v-btn flat @click="createChatRoom" class="no-message-btn">메시지 보내기</v-btn>
-        <RoomCreateDialog ref="ChatRoomCreate"></RoomCreateDialog>
-      </v-col>
-    </v-row>
-  </v-container>
-  <v-container v-else style="margin-top: -17%;">
+  <v-container v-if="chattings.length === 0" style="margin-top: -17%;">
     <v-row>
       <v-col cols="4">
         <v-row v-if="chattings.length > 0">
@@ -89,6 +76,19 @@
             </v-row>
           </v-col>
         </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-container v-else class="nonChatting" style="margin-top: -20%;">
+    <v-row>
+      <v-col cols="12" class="d-flex flex-column justify-center align-center" style="height: calc(100vh - 27vh);">
+        <div class="d-flex justify-center">
+          <v-icon class="no-message-icon">mdi-chat-processing-outline</v-icon>
+        </div>
+        <div style="font-size: 24px; font-weight: 500;">채팅이 없습니다</div>
+        <div style="font-size: 19px; font-weight: 300; color: #555555" class="pa-3">채팅방을 생성해서 메시지를 보내보세요</div>
+        <v-btn flat @click="createChatRoom" class="no-message-btn">메시지 보내기</v-btn>
+        <RoomCreateDialog ref="ChatRoomCreate"></RoomCreateDialog>
       </v-col>
     </v-row>
   </v-container>

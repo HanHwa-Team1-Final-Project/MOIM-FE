@@ -699,7 +699,7 @@ export default {
   justify-content: center;
   align-items: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  background-color: #e0bb76;
+  background-color: #fbdfab;
   color: #162a2c;
   margin-right: 20px;
   margin-left: 10px;
@@ -732,7 +732,7 @@ export default {
 }
 
 .cancelled-moim-card-button {
-  background-color: #dc8686;
+  background-color: #eca4a4;
 }
 
 .confirm-moim-card-button {

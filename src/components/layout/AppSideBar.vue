@@ -78,34 +78,35 @@
         <!-- 일정이 있을 경우 -->
         <template v-else>
           <v-list-item class="schedule-item" v-for="(event, index) in events" :key="event.id">
-            <v-list-item-content>
-              <v-row>
-                <v-col cols="12" md="2" class="mt-2">
-                  <v-icon class="mr-2">mdi-chat-plus-outline</v-icon>
-                </v-col>
-                <v-col cols="12" md="10">
-                  <v-list-item-title >{{ event.title }}</v-list-item-title>
+            <v-list-item-content class="todayEvent">
+              <!-- <v-row> -->
+                <!-- <v-col cols="12" md="2" class="mt-2">
+                  <v-icon class="mr-1">mdi-circle-small</v-icon>
+                </v-col> -->
+                <!-- <v-col cols="12" md="10" class="todayEvent"> -->
+                  <v-list-item-title >
+                    <v-icon style="margin-left: -5%;">mdi-circle-small</v-icon>{{ event.title }}</v-list-item-title>
                   <v-list-item-subtitle>
                     {{ matrixToDescription(event.matrix) }}
                   </v-list-item-subtitle>
-                </v-col>
-              </v-row>
+                <!-- </v-col> -->
+              <!-- </v-row> -->
               <!-- 투두리스트 -->
-              <v-row v-if="event.todoLists.length > 0" style="margin-top: -10%; margin-left: 10%;">
+              <v-row v-if="event.todoLists.length > 0" style="margin-top: -8%; margin-left: 2%; margin-bottom:5%">
                 <v-col cols="12">
                   <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
-                    <v-row style="height: 50px; margin-top:-15%">
+                    <v-row style="height: 50px; margin-top:-20%; padding-top: 8%; margin-left: -13%">
                       <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
                         <v-checkbox
-                          style="font-size: 12px;"
+                          style="font-size: 10px;"
                           v-model="todo[2]"
                           :true-value="'Y'"
                           :false-value="'N'"
                           @change="updateIsChecked(todo[0], todo[2])"
                         ></v-checkbox>
                       </v-col>
-                      <v-col cols="12" md="10" class="mt-6 pa-0 pl-1" style="height: 10px;">
-                        <div :style="todo[2] === 'Y' ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''">
+                      <v-col cols="12" md="10" class="mt-6 pa-0" style="height: 10px;">
+                        <div :style="todo[2] === 'Y' ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''" style="font-size: 14px;">
                           {{ todo[1] }}
                         </div>
                       </v-col>
@@ -354,6 +355,15 @@ export default {
   padding: 0%;
   margin: 12px;
   width: auto;
+}
+
+.todayEvent .v-list-item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.todayEvent .v-list-item-subtitle {
+  font-size: 0.75rem;
 }
 
 .today-list .schedule-item {

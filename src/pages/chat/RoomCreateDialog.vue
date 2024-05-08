@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false">
+  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false" @click:outside="closeDialog">
     <v-card class="pa-4">
       <v-card-title>
         <v-icon class="mr-2" style="transform: scaleX(-1)">mdi-chat-plus-outline</v-icon>
@@ -11,11 +11,12 @@
           <v-col cols="12" sm="2"><h4>제목</h4></v-col>
           <v-col cols="12" sm="10">
             <v-text-field
-              variant="underlined"
-              label="제목을 입력하세요"
-              :rules="[(value) => !!value || '']"
-              required
-              v-model="title"
+                maxlength="50"
+                variant="underlined"
+                placeholder="제목을 입력하세요"
+                :rules="[rules.required, rules.roomTitle]"
+                required
+                v-model="title"
             >
             </v-text-field>
           </v-col>
@@ -24,38 +25,35 @@
           <v-col cols="12" sm="2"><h4>참여자</h4></v-col>
           <v-col cols="12" sm="10">
             <v-autocomplete
-              v-model="friends"
-              :items="people"
-              color="blue-grey-lighten-2"
-              item-text="email"
-              item-value="email"
-              label="참여자를 추가하세요"
-              chips
-              dense
-              multiple
-              closable-chips
-              autocomplete="on"
-              :rules="[
-                (v) => !!v.length || '최소 한명의 참가자가 있어야 모임이 생성됩니다.',
-              ]"
-            >
-              >
+                v-model="friends"
+                :items="people"
+                color="blue-grey-lighten-2"
+                item-text="email"
+                item-value="email"
+                label="참여자를 추가하세요"
+                chips
+                dense
+                multiple
+                closable-chips
+                autocomplete="on"
+                :rules="[rules.required, rules.participants]">
+
               <!-- 참여자 추가하세요 뜨는 부분 -->
               <template v-slot:chip="{ props, item }">
                 <v-chip
-                  v-bind="props"
-                  :prepend-avatar="item.raw.profileImage"
-                  :text="item.raw.nickname"
+                    v-bind="props"
+                    :prepend-avatar="item.raw.profileImage"
+                    :text="item.raw.nickname"
                 ></v-chip>
               </template>
 
               <!-- 눌렀을때 뜨는 부분 -->
               <template v-slot:item="{ props, item }">
                 <v-list-item
-                  v-bind="props"
-                  :prepend-avatar="item.raw.profileImage"
-                  :title="item.raw.nickname"
-                  :subtitle="item.raw.email"
+                    v-bind="props"
+                    :prepend-avatar="item.raw.profileImage"
+                    :title="item.raw.nickname"
+                    :subtitle="item.raw.email"
                 ></v-list-item>
               </template>
 
@@ -70,17 +68,22 @@
           <!-- 메모 -->
           <v-col cols="12" sm="2"><h4>메모</h4></v-col>
           <v-col cols="12" md="10">
-            <v-text-field variant="underlined" label="메모를 입력하세요." v-model="contents"> </v-text-field>
+            <v-text-field
+                variant="underlined"
+                placeholder="메모를 입력하세요."
+                maxlength="100"
+                :rules="[rules.memo]"
+                v-model="contents">
+            </v-text-field>
           </v-col>
 
-          <!-- 투표 종료 시간 -->
           <v-col cols="12" md="3"><h4>채팅 종료일</h4></v-col>
           <v-col cols="12" md="9">
             <input
-              type="datetime-local"
-              v-model="deadline"
-              :rules="[(value) => !!value || '']"
-              required
+                type="datetime-local"
+                v-model="deadline"
+                :rules="[rules.required]"
+                required
             />
           </v-col>
         </v-row>
@@ -107,6 +110,20 @@ export default {
       people: [],
       deadline: "",
       contents: "",
+      rules: {
+        required: (value) => !!value || '값을 입력해주세요',
+        roomTitle: (value) => {
+          if (value.length > 50) {
+            return '제목은 50자를 넘을 수 없습니다.';
+          }
+        },
+        memo: (value) => {
+          if (value.length > 100) {
+            return '메모는 100자까지만 입력할 수 있습니다.';
+          }
+        },
+        participants: (value) => !!value.length || '최소 한 명의 참가자가 있어야 모임이 생성됩니다.',
+      }
     };
   },
   mounted() {
@@ -117,13 +134,14 @@ export default {
     openDialog() {
       this.isDialogOpen = true;
     },
+
     closeDialog() {
       this.isDialogOpen = false;
       this.title = "";
       this.friends = [];
       this.people = [];
-      this.deadline= "";
-      this.contents= "";
+      this.deadline = "";
+      this.contents = "";
     },
 
     async fetchPeople() {
@@ -146,8 +164,8 @@ export default {
             id: user.id,
             name: user.nickname,
             profileImage:
-              user.profileImage ||
-              "https://moim-bucket.s3.ap-northeast-2.amazonaws.com/members/default_profile.png",
+                user.profileImage ||
+                "https://moim-bucket.s3.ap-northeast-2.amazonaws.com/members/default_profile.png",
             nickname: user.nickname,
             email: user.email,
           }));
@@ -189,7 +207,7 @@ export default {
       formData.append('memo', this.contents);
 
       // memberRoomRequests 조립
-      const roomMembers = this.friends.map((friend) => ({ memberEmail: friend }));
+      const roomMembers = this.friends.map((friend) => ({memberEmail: friend}));
       console.log("roommembers", roomMembers)
       const memberBlob = new Blob([JSON.stringify(roomMembers)], {
         type: "application/json",
@@ -219,17 +237,17 @@ export default {
         this.closeDialog();
 
         Swal.fire({
-            title: '채팅방이 생성되었습니다.',
-            text: '채팅에 참여해주세요.',
-            icon: 'success',
-            showConfirmButton: true,
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: '확인',
-          }).then((result) => {
-            if(result.isConfirmed) {
-              window.location.reload();
-            }
-          })
+          title: '채팅방이 생성되었습니다.',
+          text: '채팅에 참여해주세요.',
+          icon: 'success',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        })
 
 
       } catch (error) {

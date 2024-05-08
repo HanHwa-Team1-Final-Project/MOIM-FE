@@ -238,13 +238,14 @@ export default {
     async fetchEvents() {
       const authToken = localStorage.getItem("accessToken");
 
-      const date = new Date(); // 현재 날짜와 시간
-      const year = date.getFullYear(); // 년도
-      const month = date.getMonth() + 1; // 월 (0-11을 1-12로 조정)
-      const day = date.getDate(); // 일
-      console.log("오늘은", year, month, day);
+      // const date = new Date(); // 현재 날짜와 시간
+      // const year = date.getFullYear(); // 년도
+      // const month = date.getMonth() + 1; // 월 (0-11을 1-12로 조정)
+      // const day = date.getDate(); // 일
+      // console.log("오늘은", year, month, day);
 
-      const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/daily/${year}/${month}/${day}`;
+      // const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/daily/${year}/${month}/${day}`;
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/today`;
       if (!authToken) {
         console.error("인증 토큰이 없습니다.");
         return;

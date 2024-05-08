@@ -256,6 +256,7 @@ export default {
     },
     openDialog() {
       this.isDialogOpen = true;
+      this.fetchPeople();
     },
     closeDialog() {
       this.isDialogOpen = false;

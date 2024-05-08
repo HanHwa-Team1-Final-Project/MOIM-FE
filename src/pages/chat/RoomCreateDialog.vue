@@ -133,6 +133,7 @@ export default {
   methods: {
     openDialog() {
       this.isDialogOpen = true;
+      this.fetchPeople();
     },
 
     closeDialog() {

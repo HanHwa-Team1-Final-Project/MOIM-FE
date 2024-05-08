@@ -40,6 +40,14 @@ const routes = [
     {
         path: "/",
         redirect: '/main',
+        beforeEnter: (to, from, next) => {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                next('/login'); // accessToken이 없으면 /login으로 리다이렉트
+            } else {
+                next(); // accessToken이 있다면 리다이렉트 없이 현재 경로를 유지
+            }
+        },
         component: MainPage,
         children: [
             {
@@ -57,10 +65,8 @@ const routes = [
                 name: "EisenhowerMatrix",
                 component: EisenhowerMatrix
             },
-
-            // 검색 결과
             {
-                path: "/search",
+                path: "search",
                 name: "Search",
                 component: SearchResults,
             },
@@ -74,7 +80,6 @@ const routes = [
                 name: "eventDetail",
                 component: EventDetailDialog
             },
-            // 일정 수정
             {
                 path: "updateEvent",
                 name: "updateEvent",

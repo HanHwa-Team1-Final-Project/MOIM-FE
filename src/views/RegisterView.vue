@@ -208,11 +208,20 @@ export default {
 
   methods: {
     validateFileSize(event) {
-      const file = event.target.files[0];
-      const maxFileSize = 2 * 1024 * 1024; // 2MB를 바이트로 변환
+      const files = event.target.files;
+      if (!files.length) {
+        // 파일이 선택되지 않았을 때의 로직
+        this.profileImage = null;
+        this.imageUrl = null;
+        this.fileTooLarge = false;  // 파일이 없더라도 register 함수 내의 첫 if문을 통과하는데 문제가 없도록 처리
+        return; // 함수를 여기서 종료시킴
+      }
+
+      const file = files[0];
+      const maxFileSize = 3 * 1024 * 1024; // 3MB를 바이트로 변환
 
       if (file.size > maxFileSize) {
-        alert('파일 크기는 최대 2MB까지입니다.');
+        alert('파일 크기는 최대 3MB까지입니다.');
       } else {
         this.fileTooLarge = false;
         this.previewImage(event); // 파일 사이즈가 적절하면 previewImage 실행
@@ -223,6 +232,9 @@ export default {
       this.profileImage = event.target.files[0];
       if (this.profileImage) {
         this.imageUrl = URL.createObjectURL(this.profileImage);
+      } else {
+        // 파일이 선택되지 않았을 경우
+        this.imageUrl = null;
       }
     },
 
@@ -339,11 +351,11 @@ export default {
     async register() {
       // 회원가입 로직
       console.log("register 진입했음!")
-      if (this.emailDuplicated &&
-          this.nicknameDuplicated &&
-          !this.emailCodeSent &&
-          !this.emailCodeVerified &&
-          this.fileTooLarge) {
+      if (this.emailDuplicated ||
+          this.nicknameDuplicated ||
+          !this.emailCodeSent ||
+          !this.emailCodeVerified ||
+          (this.fileTooLarge && this.profileImage)) {
         alert("입력되지 않은 값이 있습니다.");
         return;
       }

@@ -35,13 +35,6 @@
           <v-col cols="12" md="10">
             <input type="text" :value="matrix" readonly>
           </v-col>
-          <!-- 알람 조회 -->
-          <v-col cols="12" md="2" v-if="displayAlarmInfo">
-            <v-icon class="mr-2">mdi-bell-outline</v-icon>
-          </v-col>
-          <v-col cols="12" md="10" v-if="displayAlarmInfo">
-            <p v-html="displayAlarmInfo"></p>
-          </v-col>
           <!-- 메모 조회 -->
           <v-col cols="12" md="2" v-if="memo">
             <v-icon class="mr-2">mdi-format-align-left</v-icon>
@@ -49,6 +42,26 @@
           <v-col cols="12" md="10" v-if="memo">
             <v-textarea :value="memo" variant="solo-filled" readonly auto-grow></v-textarea>
           </v-col>
+          <!-- 할일 조회 -->
+          <v-col cols="12" md="2" v-if="todos.length > 0" style="margin-top: -5%;"><h4>할 일</h4></v-col>
+          <v-col cols="12" md="10" v-if="todos.length > 0" style="margin-top: -5%;">
+            <v-row dense v-for="(todo, index) in todos" :key="index" class="ma-0" style="height: 30px;">
+              <v-col cols="12" md="1" class="d-flex align-center">
+                <v-checkbox v-model="todo.isChecked" @change="updateIsChecked(todo.id, todo.isChecked)"></v-checkbox>
+              </v-col>
+              <v-col cols="12" md="9" class="d-flex align-center" style="margin-top: -5%">
+                <div :style="todo.isChecked ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''">{{todo.contents}}</div>
+              </v-col>
+            </v-row>
+          </v-col>
+          <!-- 알람 조회 -->
+          <v-col cols="12" md="2" class="mt-4" v-if="displayAlarmInfo">
+            <v-icon class="mr-2">mdi-bell-outline</v-icon>
+          </v-col>
+          <v-col cols="12" md="10" class="mt-4" v-if="displayAlarmInfo">
+            <p v-html="displayAlarmInfo"></p>
+          </v-col>
+          
           <!-- 파일 다운로드 -->
           <v-col cols="12" md="2" v-if="fileUrl">
             <v-icon class="mr-2">mdi-file-multiple-outline</v-icon>
@@ -84,6 +97,7 @@ export default {
   components: {DeleteRepeatEvent},
   data() {
     return {
+      id: '',
       dialog: false,
       title: '',
       startDate: '',
@@ -95,6 +109,7 @@ export default {
       alarmInfo: '',
       displayAlarmInfo: '',
       fileUrl: '',
+      todos: [],
     };
   },
   methods: {
@@ -130,6 +145,7 @@ export default {
       this.repeatParent = repeatParent;
       this.dialog = true;
       this.getAlarmInfo(id);
+      this.getTodoList(id);
     },
     showDeleteDialog() {
       this.$refs.delRepeatDialog.openDeleteRepeatEventDialog();
@@ -167,7 +183,46 @@ export default {
         console.log(error);
       }
     },
-
+    async getTodoList(eventId) {
+      const token = localStorage.getItem("accessToken");
+      if (token == null) {
+        this.$router.push({name: "Login"});
+        return;
+      }
+      const headers = {Authorization: `Bearer ${token}`};
+      try{
+        const response = await axiosInstance.get(`${process.env.VUE_APP_API_BASE_URL}/api/events/${eventId}/todolist`, {headers});
+        const todoInfo = response.data.data;
+        const todos = [];
+        todoInfo.forEach(todo => {
+          console.log("foreach", todo)
+          let isChecked = todo.isChecked == "Y";
+          todos.push({
+            id: todo.id,
+            contents: todo.contents,
+            isChecked: isChecked
+          })
+        });
+        this.todos = todos;
+      } catch(e) {
+        console.log(e)
+      }
+    },
+    async updateIsChecked(id, isChecked) {
+      const token = localStorage.getItem("accessToken");
+      if (token == null) {
+        this.$router.push({name: "Login"});
+        return;
+      }
+      const headers = {Authorization: `Bearer ${token}`};
+      let checked = isChecked == true ? "Y" : "N";
+      try {
+        const response = await axiosInstance.post(`${process.env.VUE_APP_API_BASE_URL}/api/events/todolist/${id}?isChecked=${checked}`, {headers})
+        console.log(response.data.data);
+      }catch(e) {
+        console.log(e)
+      }
+    },
     async deleteSingleEvent() {
       this.dialog=false;
       try {

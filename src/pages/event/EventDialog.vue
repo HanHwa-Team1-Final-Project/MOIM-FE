@@ -437,6 +437,7 @@ export default {
             confirmButtonText: '확인',
           }).then((result) => {
             if(result.isConfirmed) {
+              window.location.reload();
               this.$router.push({ name: "fullCalendarComponent" });
             }
           })

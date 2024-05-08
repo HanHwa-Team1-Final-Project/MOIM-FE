@@ -1,7 +1,8 @@
 import {defineStore} from "pinia";
 
 export const useSearchStore = defineStore({
-    id: 'search',
+    // id: 'search',
+    id: 'searchList',
     state: () => ({
         results: []
     }),

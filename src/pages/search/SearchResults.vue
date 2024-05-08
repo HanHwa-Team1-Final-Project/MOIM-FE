@@ -2,33 +2,39 @@
   <v-container class="search-results">
     <v-row v-if="results.length > 0">
       <EventDetail ref="dialog"></EventDetail>
-      <v-col cols="12" v-for="result in results" :key="result.id">
-        <v-card
-            class="mx-auto result-card"
-            :title="result.title"
-            :subtitle="formatDate(result.startDate)"
-            max-width="800"
-            @click="onResultClick(result)"
-            link>
-          <template v-slot:prepend>
-            <span class="circle-day" :style="{ backgroundColor: getBackgroundColor(result.matrix) }">
-              {{ getDay(result.startDate) }}
-            </span>
-          </template>
-          <template v-slot:append >
-            <v-list lines="one" class="result-card-a">
-              <v-list-item
-                  :title="'시작'"
-                  :subtitle="formatDateAndTime(result.startDate)"
-              />
-              <v-list-item
-                  :title="'종료'"
-                  :subtitle="formatDateAndTime(result.endDate)"
-              />
-            </v-list>
-          </template>
-<!--          <v-text-field>{{result}}</v-text-field>-->
-        </v-card>
+      <v-col cols="12">
+        <v-list>
+          <v-list-item-group>
+            <template  v-for="(result, index) in results" :key="result.id">
+              <v-list-item 
+                  class="mx-auto result-card"
+                  :title="result.title"
+                  :subtitle="formatDate(result.startDate)"
+                  max-width="800"
+                  @click="onResultClick(result)"
+                  link>
+                <template v-slot:prepend>
+                  <span class="circle-day" :style="{ backgroundColor: getBackgroundColor(result.matrix) }">
+                    {{ getDay(result.startDate) }}
+                  </span>
+                </template>
+                <template v-slot:append >
+                  <v-list lines="one" class="result-card-time">
+                    <v-list-item
+                        :title="'시작일'"
+                        :subtitle="formatDateAndTime(result.startDate)"
+                    />
+                    <v-list-item
+                        :title="'종료일'"
+                        :subtitle="formatDateAndTime(result.endDate)"
+                    />
+                  </v-list>
+                </template>
+              </v-list-item>
+              <v-divider v-if="index < results.length - 1"  class="my-custom-divider"></v-divider>
+            </template>
+          </v-list-item-group>
+        </v-list>
       </v-col>
     </v-row>
     <v-row justify="center" class="none-result" v-else>
@@ -67,13 +73,13 @@ export default {
     getBackgroundColor(matrixValue) {
       switch(matrixValue) {
         case 'Q2':
-          return '#FF5252'; // 빨간색
+          return '#FF7A85'; // 빨간색
         case 'Q1':
-          return '#FFCA28'; // 노란색
+          return '#FFEB5A'; // 노란색
         case 'Q4':
-          return '#29B6F6'; // 파란색
+          return '#1EDDFF'; // 파란색
         case 'Q3':
-          return '#66BB6A'; // 녹색
+          return '#5BFFB0'; // 녹색
         default:
           return '#ffffff'; // 기본값은 흰색
       }
@@ -94,6 +100,11 @@ export default {
 </script>
 
 <style>
+.search-results {
+  margin-top: -20%;
+}
+
+
 .search-results .result-card {
   margin-top: 20px;
   transition: box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out;
@@ -119,16 +130,30 @@ export default {
   margin-left: 10px;
   font-weight: bold; 
   font-size: 16px; 
-  border: 2px solid #162A2C;
+}
+
+.my-custom-divider {
+  padding-left: 10px; /* 왼쪽 패딩 */
+  padding-right: 10px; /* 오른쪽 패딩 */
+}
+
+.small-text .v-list-item__title, .small-text .v-list-item__subtitle {
+  font-size: 12px; /* 원하는 글씨 크기로 조정하세요 */
 }
 
 .result-card {
   background-color: #ffffff;
+  border: none !important;
 }
+
+.result-card-time {
+  background-color: transparent;
+}
+
 
 .result-card-time .v-list-item-title,
 .result-card-time .v-list-item-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 </style>

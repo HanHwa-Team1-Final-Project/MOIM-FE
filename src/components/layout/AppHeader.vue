@@ -32,7 +32,7 @@
     <v-menu>
       <template v-slot:activator="{ props }">
         <v-btn icon v-bind="props" @click="getNotification">
-          <v-badge color="red" :content="newNotification">
+          <v-badge color="red" :content="notificationStore.newNotificationCount">
             <v-icon>mdi-bell-outline</v-icon>
           </v-badge>
         </v-btn>
@@ -43,7 +43,7 @@
           v-for="(item, i) in items"
           :key="i"
           :value="i"
-          @click="fromNoti(item, $event)"
+          @click="fromNoti(item)"
           :data-notificationType="item.notificationType"
           :data-id="item.id"
           :data-nickname="item.nickname"
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import { useNotificationStore } from '@/stores/notificationStore';
 import { useSearchStore } from '@/stores/searchStore'
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import Swal from 'sweetalert2'
@@ -83,6 +84,7 @@ export default {
     EventDetailDialog,
   },
   setup() {
+    const notificationStore = useNotificationStore();
     const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
@@ -94,6 +96,7 @@ export default {
       }
     })
     return {
+      notificationStore,
       Toast,
     }
   },
@@ -108,65 +111,99 @@ export default {
     };
   },
   created() {
-    if(localStorage.getItem('accessToken') != null){
-      const token = localStorage.getItem('accessToken');
-      var sse = new EventSourcePolyfill('http://localhost:8080/connect', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      sse.addEventListener('connect', (e) => {
-        const { data: receivedConnectData } = e;
-        console.log('connect event data: ',receivedConnectData);
-      });
-      sse.addEventListener('sendEventAlarm', (e) => {
-        const obj = JSON.parse(e.data);
-        this.Toast.fire({
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: '확인',
-          icon: 'info',
-          title: obj.message
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.onNotiClick(obj)
-          }
-        })
-      });
-      sse.addEventListener('sendToParticipant', (e) => {
-        const obj = JSON.parse(e.data);
-        console.log("sse 정보", obj)
-        this.Toast.fire({
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: '확인',
-          icon: 'info',
-          title: obj.message,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.onNotiClick(obj)
-          }
-        })
-      });
-      sse.addEventListener('sendRoomAlarm', (e) => {
-        const obj = JSON.parse(e.data);
-        console.log("sse 정보", obj)
-        this.Toast.fire({
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: '확인',
-          icon: 'info',
-          title: obj.message,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.onNotiClick(obj)
-          }
-        })
-      });
-      this.getNotification();
-    }
+    this.setupSSE();
+    this.initializeNotificationCount();
   },
   methods: {
+    async initializeNotificationCount() {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const headers = { Authorization: `Bearer ${token}` };
+        if (!token) {
+          this.$router.push({ name: 'Login' });
+          return;
+        }
+        const response = await axiosInstance.get(
+          `${process.env.VUE_APP_API_BASE_URL}/api/notification`,
+          { headers }
+        );
+        const notifications = response.data.data;
+        if (notifications.length === 0) {
+          this.notificationStore.initializeCount(0);
+        } else {
+          this.notificationStore.initializeCount(notifications.length);
+        }
+        } catch (error) {
+        // 알림이 없을 때 처리: 0으로 초기화
+        if (error.response.data.error.type === 'NotificationNotFoundException') {
+          this.notificationStore.initializeCount(0);
+          this.items = [];
+        }
+        console.error(error);
+        }
+    },
+    setupSSE(){
+      if(localStorage.getItem('accessToken') != null){
+        const token = localStorage.getItem('accessToken');
+        var sse = new EventSourcePolyfill('http://localhost:8080/connect', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        sse.addEventListener('connect', (e) => {
+          const { data: receivedConnectData } = e;
+          console.log('connect event data: ',receivedConnectData);
+        });
+        sse.addEventListener('sendEventAlarm', (e) => {
+          const obj = JSON.parse(e.data);
+          this.Toast.fire({
+            showConfirmButton: true,
+            confirmButtonColor: '#3085D6',
+            confirmButtonText: '확인',
+            icon: 'info',
+            title: obj.message
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.onNotiClick(obj)
+            }
+          })
+          this.notificationStore.incrementCount();
+        });
+        sse.addEventListener('sendToParticipant', (e) => {
+          const obj = JSON.parse(e.data);
+          console.log("sse 정보", obj)
+          this.Toast.fire({
+            showConfirmButton: true,
+            confirmButtonColor: '#3085D6',
+            confirmButtonText: '확인',
+            icon: 'info',
+            title: obj.message,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.onNotiClick(obj)
+            }
+          })
+          this.notificationStore.incrementCount();
+        });
+        sse.addEventListener('sendRoomAlarm', (e) => {
+          const obj = JSON.parse(e.data);
+          console.log("sse 정보", obj)
+          this.Toast.fire({
+            showConfirmButton: true,
+            confirmButtonColor: '#3085D6',
+            confirmButtonText: '확인',
+            icon: 'info',
+            title: obj.message,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.onNotiClick(obj)
+            }
+          })
+          this.notificationStore.incrementCount();
+        });
+        this.getNotification();
+      }
+    },
     logout() {
         localStorage.clear();
         window.location.href = "/";
@@ -191,20 +228,28 @@ export default {
         this.$refs.EventDetail.openDialog(notiInfo.eventId);
       }
     },
-    fromNoti(noti, event) {
-      console.log("noti", noti)
-      const notificationType = event.currentTarget.getAttribute('data-notificationType')
-      const id = event.currentTarget.getAttribute('data-id')
-      if(notificationType == "EVENT") {
-        this.$refs.EventDetail.openDialog(id);
+    async fromNoti(noti) {
+      // 알림을 읽음으로 표시하는 API 엔드포인트로 PATCH 요청을 보냄
+      try {
+        const headers = { Authorization: `Bearer ${localStorage.getItem('accessToken')}` };
+        await axiosInstance.patch(`${process.env.VUE_APP_API_BASE_URL}/api/notification/${noti.redisId}`, null, { headers });
+        // 요청이 성공하면 알림을 사용된 상태로 처리
+        this.notificationStore.decrementCount();
+        console.log("알림을 읽음 처리하였습니다.");
+      } catch (error) {
+        console.error("알림을 읽음 처리하는 중 오류가 발생하였습니다: ", error);
       }
-      else if(notificationType == "ROOM") {
-        window.location.href = "/ChattingList";
-      }
-      else {
-        window.location.href = "/MoimList";
-      }
-      
+        const notificationType = noti.notificationType;
+        const id = noti.id;
+        if(notificationType == "EVENT") {
+          this.$refs.EventDetail.openDialog(id);
+        }
+        else if(notificationType == "ROOM") {
+          window.location.href = "/ChattingList";
+        }
+        else {
+          window.location.href = "/MoimList";
+        }
     },
     getAuthToken() {
       const token = localStorage.getItem("accessToken");
@@ -271,6 +316,7 @@ export default {
               title: noti.message,
               subtitle: timeAgo,
               id: noti.id,
+              redisId: noti.redisId,
               notificationType: noti.notificationType
           });
         });

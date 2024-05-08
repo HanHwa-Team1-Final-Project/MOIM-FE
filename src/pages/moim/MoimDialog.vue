@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false">
+  <v-dialog v-model="isDialogOpen" max-width="600" :persistent="false" @click:outside="closeDialog">
     <v-card class="pa-4">
       <v-card-title>
         <v-icon class="mr-2">mdi-calendar-plus</v-icon>
@@ -256,6 +256,7 @@ export default {
     },
     openDialog() {
       this.isDialogOpen = true;
+      this.fetchPeople();
     },
     closeDialog() {
       this.isDialogOpen = false;

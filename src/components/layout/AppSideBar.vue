@@ -20,18 +20,18 @@
           @click="goTo('fullCalendarComponent')"
       ></v-list-item>
       <v-list-item
-          prepend-icon="mdi-trello"
-          title="아이젠하워 메트릭스"
-          value="matrix"
-          @click="goToEisenhowerMatrix"
-      ></v-list-item>
-      <v-list-item
           prepend-icon="mdi-calendar-plus"
           title="일정 생성"
           value="createEvent"
           @click="createEventClicked"
       ></v-list-item>
       <EventDialog ref="EventCreate"></EventDialog>
+      <v-list-item
+          prepend-icon="mdi-trello"
+          title="아이젠하워 메트릭스"
+          value="matrix"
+          @click="goToEisenhowerMatrix"
+      ></v-list-item>
       <v-list-item
           prepend-icon="mdi-account-details"
           title="모임 리스트"
@@ -40,7 +40,7 @@
       ></v-list-item>
       <v-list-item
           prepend-icon="mdi-chat-outline"
-          title="채팅 리스트"
+          title="채팅"
           value="chating-list"
           @click="goToChattingList"
       ></v-list-item>

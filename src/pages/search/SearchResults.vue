@@ -1,6 +1,9 @@
 <template>
   <v-container class="search-results">
-    <v-row v-if="results.length > 0">
+    <v-row justify="center" class="none-result" v-if="results.length == 0">
+      <p>검색 결과가 없습니다.</p>
+    </v-row>
+    <v-row v-else>
       <EventDetail ref="dialog"></EventDetail>
       <v-col cols="12">
         <v-list>
@@ -36,9 +39,6 @@
           </v-list-item-group>
         </v-list>
       </v-col>
-    </v-row>
-    <v-row justify="center" class="none-result" v-else>
-      <p>검색 결과가 없습니다.</p>
     </v-row>
   </v-container>
 </template>
@@ -113,6 +113,7 @@ export default {
 
 .none-result {
   font-size: 18px;
+  margin-top: 15%;
 }
 
 .circle-day {

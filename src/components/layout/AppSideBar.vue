@@ -69,42 +69,56 @@
           </v-list-item-content>
         </v-list-item> -->
 
-          <!-- 이벤트 및 투두 리스트 -->
-          <v-list-item class="schedule-item" v-if="!events.length == 0">
-            <v-list-item-content v-for="event in events" :key="event.id">
-              <v-list-item-title style="margin-top: 8px;"> {{ event.title }}</v-list-item-title>
-              <v-list-item-subtitle style="margin-bottom: -5px;"
-              >{{ formatTime(event.startDate) }} ~ {{ formatTime(event.endDate) }}
-              </v-list-item-subtitle>
-
-            <v-col v-if="event.todoLists.length">
-              <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
-                <v-row style="height: 50px; margin-top:-15%">
-                  <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
-                    <v-checkbox
-                      style="font-size: 12px;"
-                      v-model="todo[2]"
-                      :true-value="'Y'"
-                      :false-value="'N'"
-                      @change="updateIsChecked(todo[0], todo[2])"
-                    ></v-checkbox>
-                  </v-col>
-                  <v-col cols="12" md="10" class="mt-6 pa-0 pl-1" style="height: 10px;">
-                    <div :style="todo[2] === 'Y' ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''">
-                      {{ todo[1] }}
-                    </div>
-                    <!-- <input type="text" readonly>{{ todo[1] }} -->
-                    <!-- <v-text-field variant="underlined" readonly>{{ todo[1] }}</v-text-field> -->
-                  </v-col>
-                </v-row>
-              </v-list-item-content>
-            </v-col>
-            <v-col  v-else></v-col>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="events.length == 0" style="text-align: center;">
+        <!-- 이벤트 및 투두 리스트 -->
+        <!-- 일정이 없을 경우 -->
+        <v-list-item v-if="events.length === 0" style="text-align: center;">
           일정이 없습니다.
         </v-list-item>
+
+        <!-- 일정이 있을 경우 -->
+        <template v-else>
+          <v-list-item class="schedule-item" v-for="(event, index) in events" :key="event.id">
+            <v-list-item-content class="todayEvent">
+              <!-- <v-row> -->
+                <!-- <v-col cols="12" md="2" class="mt-2">
+                  <v-icon class="mr-1">mdi-circle-small</v-icon>
+                </v-col> -->
+                <!-- <v-col cols="12" md="10" class="todayEvent"> -->
+                  <v-list-item-title >
+                    <v-icon style="margin-left: -5%;">mdi-circle-small</v-icon>{{ event.title }}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ matrixToDescription(event.matrix) }}
+                  </v-list-item-subtitle>
+                <!-- </v-col> -->
+              <!-- </v-row> -->
+              <!-- 투두리스트 -->
+              <v-row v-if="event.todoLists.length > 0" style="margin-top: -8%; margin-left: 2%; margin-bottom:5%">
+                <v-col cols="12">
+                  <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
+                    <v-row style="height: 50px; margin-top:-20%; padding-top: 8%; margin-left: -13%">
+                      <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
+                        <v-checkbox
+                          style="font-size: 10px;"
+                          v-model="todo[2]"
+                          :true-value="'Y'"
+                          :false-value="'N'"
+                          @change="updateIsChecked(todo[0], todo[2])"
+                        ></v-checkbox>
+                      </v-col>
+                      <v-col cols="12" md="10" class="mt-6 pa-0" style="height: 10px;">
+                        <div :style="todo[2] === 'Y' ? 'text-decoration: line-through; text-decoration-color: #6d6d6d;' : ''" style="font-size: 14px;">
+                          {{ todo[1] }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-list-item-content>
+                </v-col>
+              </v-row>
+            </v-list-item-content>
+            <!-- 이벤트 사이의 구분선 -->
+            <v-divider v-if="index < events.length - 1" class="mt-2"></v-divider>
+          </v-list-item>
+        </template>
       </v-list-item-group>
     </v-list>
     </v-col>
@@ -153,6 +167,20 @@ export default {
         return false;
       }
       return todo[2] === "Y";
+    },
+    matrixToDescription(matrix) {
+      switch (matrix) {
+          case 'Q1':
+              return '중요 & 긴급하지 않음';
+          case 'Q2':
+              return '중요 & 긴급';
+          case 'Q3':
+              return '긴급 & 중요하지 않음';
+          case 'Q4':
+              return '긴급하지 않음 & 중요하지 않음';
+          default:
+              return '';
+      }
     },
 
     async fetchUserData() {
@@ -238,13 +266,14 @@ export default {
     async fetchEvents() {
       const authToken = localStorage.getItem("accessToken");
 
-      const date = new Date(); // 현재 날짜와 시간
-      const year = date.getFullYear(); // 년도
-      const month = date.getMonth() + 1; // 월 (0-11을 1-12로 조정)
-      const day = date.getDate(); // 일
-      console.log("오늘은", year, month, day);
+      // const date = new Date(); // 현재 날짜와 시간
+      // const year = date.getFullYear(); // 년도
+      // const month = date.getMonth() + 1; // 월 (0-11을 1-12로 조정)
+      // const day = date.getDate(); // 일
+      // console.log("오늘은", year, month, day);
 
-      const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/daily/${year}/${month}/${day}`;
+      // const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/daily/${year}/${month}/${day}`;
+      const url = `${process.env.VUE_APP_API_BASE_URL}/api/events/today`;
       if (!authToken) {
         console.error("인증 토큰이 없습니다.");
         return;
@@ -326,6 +355,15 @@ export default {
   padding: 0%;
   margin: 12px;
   width: auto;
+}
+
+.todayEvent .v-list-item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.todayEvent .v-list-item-subtitle {
+  font-size: 0.75rem;
 }
 
 .today-list .schedule-item {

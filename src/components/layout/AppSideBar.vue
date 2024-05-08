@@ -95,7 +95,7 @@
               <v-row v-if="event.todoLists.length > 0" style="margin-top: -8%; margin-left: 2%; margin-bottom:5%">
                 <v-col cols="12">
                   <v-list-item-content v-for="todo in event.todoLists" :key="todo[0]">
-                    <v-row style="height: 50px; margin-top:-20%; padding-top: 8%; margin-left: -13%">
+                    <v-row style="height: 50px; margin-top:-20%; padding-top: 8%; margin-left: -13%; margin-bottom: 1%;">
                       <v-col cols="12" md="2" class="mt-2 pa-0 d-flex align-center">
                         <v-checkbox
                           style="font-size: 10px;"

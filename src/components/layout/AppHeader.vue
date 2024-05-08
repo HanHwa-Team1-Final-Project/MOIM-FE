@@ -145,7 +145,7 @@ export default {
     setupSSE(){
       if(localStorage.getItem('accessToken') != null){
         const token = localStorage.getItem('accessToken');
-        var sse = new EventSourcePolyfill('http://localhost:8080/connect', {
+        var sse = new EventSourcePolyfill('https://server.jangeunji.shop/connect', {
           headers: {
             Authorization: `Bearer ${token}`
           }

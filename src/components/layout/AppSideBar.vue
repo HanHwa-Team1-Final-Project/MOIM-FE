@@ -28,13 +28,13 @@
       <EventDialog ref="EventCreate"></EventDialog>
       <v-list-item
           prepend-icon="mdi-trello"
-          title="아이젠하워 메트릭스"
+          title="아이젠하워 매트릭스"
           value="matrix"
           @click="goToEisenhowerMatrix"
       ></v-list-item>
       <v-list-item
           prepend-icon="mdi-account-details"
-          title="모임 리스트"
+          title="모임"
           value="moim-list"
           @click="goToMoimList"
       ></v-list-item>

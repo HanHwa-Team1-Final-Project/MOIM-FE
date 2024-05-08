@@ -363,7 +363,7 @@ export default {
 .fab-chat {
   color: white !important;
   position: fixed; /* 고정 위치 */
-  left: 15vw;
+  left: 18vw;
   bottom: 2vh;
   z-index: 100; /* 다른 요소 위에 표시 */
   background-color: #00d06a;

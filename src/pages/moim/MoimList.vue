@@ -717,6 +717,7 @@ export default {
 }
 
 .result-card-time {
+  background-color: transparent !important;
 }
 
 .result-card[title="취소"] {

@@ -20,11 +20,11 @@
           </v-col>
           <v-col cols="12" md="2"><h4>시작일</h4></v-col>
           <v-col cols="12" md="10">
-            <input type="datetime-local" v-model="startDateTime" />
+            <input type="datetime-local" v-model="startDateTime"/>
           </v-col>
           <v-col cols="12" md="2" class="mt-2 mb-3"><h4>종료일</h4></v-col>
           <v-col cols="12" md="10">
-            <input type="datetime-local" v-model="endDateTime" />
+            <input type="datetime-local" v-model="endDateTime"/>
           </v-col>
           <v-col cols="12" md="2"><h4>중요도</h4></v-col>
           <v-col cols="12" sm="10">
@@ -324,6 +324,11 @@ export default {
 
       if (!this.endDateTime) {
         alert("종료일을 입력하세요.");
+        return;
+      }
+
+      if (new Date(this.startDateTime) > new Date(this.endDateTime)) {
+        alert("시작일은 종료일보다 전이어야 합니다.");
         return;
       }
 

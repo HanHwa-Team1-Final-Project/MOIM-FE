@@ -82,8 +82,8 @@ export default {
         const events = [];
         getEvents.forEach(event => {
           const color = event.matrix === 'Q2' ? '#FF7A85' :
-                  event.matrix === 'Q1' ? '#FFEB5A' :
-                  event.matrix === 'Q3' ? '#5BFFB0' : '#1EDDFF'; // 'defaultColor'는 event.matrix가 q1, q2, q3 중 어느 것에도 해당하지 않을 때 사용할 색상입니다.
+                  event.matrix === 'Q1' ? '#FFD300' :
+                  event.matrix === 'Q3' ? '#29B473' : '#00AFF0'; // 'defaultColor'는 event.matrix가 q1, q2, q3 중 어느 것에도 해당하지 않을 때 사용할 색상입니다.
 
             events.push({
               title: event.title,

@@ -327,6 +327,11 @@ export default {
         return;
       }
 
+      if (new Date(this.startDateTime) > new Date(this.endDateTime)) {
+        alert("시작일은 종료일보다 전이어야 합니다.");
+        return;
+      }
+
       // alarmRequests 조립
       const alarmList = [];
       let alarmYn = "N";

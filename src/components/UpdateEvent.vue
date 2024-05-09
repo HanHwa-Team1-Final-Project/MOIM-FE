@@ -178,6 +178,7 @@ export default {
         alert("시작일은 종료일보다 전이어야 합니다.");
         return;
       }
+
       // eventRequest 조립
       let eventRequest = {
         title: this.eventTitle,

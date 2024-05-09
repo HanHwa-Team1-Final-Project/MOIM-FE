@@ -2,24 +2,28 @@
   <v-container class="update-main">
     <v-form ref="form" lazy-validation>
       <v-text-field
+          variant="underlined"
           v-model="eventTitle"
-          label="일정 제목"
+          label="제목"
           :rules="rules.title"
           @blur="$refs.form.validate()"/>
       <v-text-field
           v-model="eventStartDate"
-          label="일정 시작 날짜"
+          variant="underlined"
+          label="시작일"
           type="datetime-local"
           :rules="[rules.startNotAfterEnd()]"
           @blur="$refs.form.validate()"/>
       <v-text-field
           v-model="eventEndDate"
-          label="일정 종료 날짜"
+          variant="underlined"
+          label="종료일"
           type="datetime-local"
           :rules="[rules.endNotBeforeStart()]"
           @blur="$refs.form.validate()"/>
       <v-text-field
           v-model="eventPlace"
+          variant="underlined"
           label="장소"/>
       <!-- Add Radio buttons for eventMatrix-->
       <v-col cols="12" md="2"><h4>중요도</h4></v-col>
@@ -53,12 +57,13 @@
       </v-col>
       <v-textarea
           v-model="eventMemo"
-          label="일정 메모"
+          label="메모"
           auto-grow
           :rules="rules.memo"
           @blur="$refs.form.validate()"/>
       <v-file-input
           v-model="files"
+          variant="underlined"
           label="File input"
           placeholder="Upload your documents"
           prepend-icon="mdi-paperclip"

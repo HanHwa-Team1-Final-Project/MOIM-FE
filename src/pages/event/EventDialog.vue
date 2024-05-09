@@ -20,11 +20,11 @@
           </v-col>
           <v-col cols="12" md="2"><h4>시작일</h4></v-col>
           <v-col cols="12" md="10">
-            <input type="datetime-local" v-model="startDateTime" />
+            <input type="datetime-local" v-model="startDateTime"/>
           </v-col>
           <v-col cols="12" md="2" class="mt-2 mb-3"><h4>종료일</h4></v-col>
           <v-col cols="12" md="10">
-            <input type="datetime-local" v-model="endDateTime" />
+            <input type="datetime-local" v-model="endDateTime"/>
           </v-col>
           <v-col cols="12" md="2"><h4>중요도</h4></v-col>
           <v-col cols="12" sm="10">

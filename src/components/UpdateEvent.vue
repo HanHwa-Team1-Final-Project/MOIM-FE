@@ -154,6 +154,26 @@ export default {
   },
   methods: {
     async updateForm() {
+      if (!this.eventTitle) {
+        alert("제목을 입력하세요.");
+        return;
+      }
+
+      if (!this.eventStartDate) {
+        alert("시작일을 입력하세요.");
+        return;
+      }
+
+      if (!this.eventEndDate) {
+        alert("종료일을 입력하세요.");
+        return;
+      }
+
+      if (new Date(this.eventStartDate) > new Date(this.eventEndDate)) {
+        alert("시작일은 종료일보다 전이어야 합니다.");
+        return;
+      }
+
       // eventRequest 조립
       let eventRequest = {
         title: this.eventTitle,

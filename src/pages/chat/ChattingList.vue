@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="chattings.length === 0" style="margin-top: -17%;">
+  <v-container v-if="chattings.length > 0" style="margin-top: -17%;">
     <v-row>
       <v-col cols="4">
         <v-row v-if="chattings.length > 0">
